@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23ff172bcc0a28448aa0891b8a0de296, type: 3}
+  m_Name: War Factory
+  m_EditorClassIdentifier: 
+  shellPrefab: {fileID: -3709638587535559466, guid: 2ebde8fb209ddf247a93ead961de3e5a,
+    type: 3}
+  explosionPrefab: {fileID: 3225790992336973164, guid: 46c8ad951953d43478d169f7b0df7a5e,
+    type: 3}
+  toxinPrefab: {fileID: 6921666494744857033, guid: 66c98420ff5953a4aa8da655806bc8ce,
+    type: 3}
+  icePrefab: {fileID: 5450329733256625055, guid: 8cfd8adb8337740408f2e8f6b95521d3,
+    type: 3}
+  corrosionPrefab: {fileID: -3671361349428561902, guid: c24c5fb0d26a76243a6c7d6fb734e594,
+    type: 3}
