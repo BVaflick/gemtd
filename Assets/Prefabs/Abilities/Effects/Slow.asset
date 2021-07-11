@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8803c0f07a7db484e8ed6c1ec2fa0ab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 22693b824558401439219f72ca9c921d, type: 3}
   m_Name: Slow
   m_EditorClassIdentifier: 

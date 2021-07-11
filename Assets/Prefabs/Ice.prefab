@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3770022509559828970}
   - component: {fileID: 5450329733256625055}
   m_Layer: 0
-  m_Name: Slow
+  m_Name: Ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,10 +56,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ee6a0ddc2331c04bb7f87f7a17f0ec3, type: 2}
+  - {fileID: 2100000, guid: 0778ec937cc256f449ddf0c41ac49c42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5450329733256625055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,30 +91,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 8846632257337941991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52f88e4b6e26e4349aead21f431f1228, type: 3}
+  m_Script: {fileID: 11500000, guid: 4700887d7116e5044b7e06aff162b76b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  name1: 
   opacityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.0041656494
-      value: 0
-      inSlope: 0.81976944
-      outSlope: 0.81976944
-      tangentMode: 0
+      time: 0.00833359
+      value: 0.0047169924
+      inSlope: 0.28669384
+      outSlope: 0.28669384
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.024895279
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
-      value: -0.0059358776
-      inSlope: -0.90879583
-      outSlope: -0.90879583
-      tangentMode: 0
+      time: 0.5103651
+      value: 0.14864635
+      inSlope: -0.009956285
+      outSlope: -0.009956285
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.03734446
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9874878
+      value: 0.002357483
+      inSlope: -0.3066064
+      outSlope: -0.3066064
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -121,24 +132,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.012378693
-      value: 0.00033569336
-      inSlope: 0.13494699
-      outSlope: 0.13494699
-      tangentMode: 0
+      time: 0
+      value: 0
+      inSlope: 0.1523202
+      outSlope: 0.1523202
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.08333318
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.9792175
-      value: 0.049179234
-      inSlope: 0.012726842
-      outSlope: 0.012726842
-      tangentMode: 0
+      time: 0.9874573
+      value: 0.1504097
+      inSlope: 0.1523202
+      outSlope: 0.1523202
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.22268367
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  duration: 6
+  duration: 5

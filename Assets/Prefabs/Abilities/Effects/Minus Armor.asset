@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c99f4e86ef033404490c08e9da1c8b60, type: 3}
+  m_Script: {fileID: 11500000, guid: f0a9623e38a9c2f4c89dde9e02462b7c, type: 3}
   m_Name: Minus Armor
   m_EditorClassIdentifier: 

@@ -9,60 +9,60 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7bc67184aabe42bc8225bf83c68dc84, type: 3}
+  m_Script: {fileID: 11500000, guid: 492aef34ad40bf54187c228bcae53904, type: 3}
   m_Name: Enemy Factory
   m_EditorClassIdentifier: 
   small:
-    prefab: {fileID: 7012074777765284301, guid: 741f8bafe745a45c19c4f476701681b4,
+    prefab: {fileID: 7012074777765284301, guid: 09eb5f41a77a69e478f4d400ba7e6f99,
       type: 3}
     scale:
       min: 0.5
-      max: 0.5
-    speed:
-      min: 2
-      max: 2
-    pathOffset:
-      min: 0
-      max: 0
-    health:
-      min: 20
-      max: 20
-    armor:
-      min: 1
-      max: 1
-  medium:
-    prefab: {fileID: 7012074777765284301, guid: 48f48cf72fccbad49be9853ce2c01397,
-      type: 3}
-    scale:
-      min: 0.9
       max: 1.2
     speed:
-      min: 2
-      max: 2
+      min: 3
+      max: 3
     pathOffset:
+      min: -0.4
+      max: 0.4
+    health:
+      min: 15
+      max: 20
+    armor:
       min: 0
       max: 0
-    health:
-      min: 40
-      max: 40
-    armor:
-      min: 1
-      max: 1
-  large:
-    prefab: {fileID: 7012074777765284301, guid: fa2fffa1ab941a44e83e9e5a8f69073b,
+  medium:
+    prefab: {fileID: 7012074777765284301, guid: 31d8e6bc670377143a5dccf0d7ab26f4,
       type: 3}
     scale:
-      min: 1.2
-      max: 1.5
+      min: 1
+      max: 1
     speed:
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     pathOffset:
       min: 0
       max: 0
     health:
-      min: 60
-      max: 60
+      min: 100
+      max: 100
     armor:
+      min: 100
+      max: 100
+  large:
+    prefab: {fileID: 7012074777765284301, guid: 184b973351dfb284283720fadda64798,
+      type: 3}
+    scale:
       min: 1
       max: 1
+    speed:
+      min: 1
+      max: 1
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 100
+      max: 100
+    armor:
+      min: 100
+      max: 100

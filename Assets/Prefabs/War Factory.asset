@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23ff172bcc0a28448aa0891b8a0de296, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b3f91dac8475f14e8674a671d0978ff, type: 3}
   m_Name: War Factory
   m_EditorClassIdentifier: 
-  shellPrefab: {fileID: -3709638587535559466, guid: 2ebde8fb209ddf247a93ead961de3e5a,
+  shellPrefab: {fileID: -3709638587535559466, guid: 3ca0315f9765e4642a75ff73754df26b,
     type: 3}
-  explosionPrefab: {fileID: 3225790992336973164, guid: 46c8ad951953d43478d169f7b0df7a5e,
+  explosionPrefab: {fileID: 3225790992336973164, guid: 6360f082c8d49e146b256c4952dc9f88,
     type: 3}
-  toxinPrefab: {fileID: 6921666494744857033, guid: 66c98420ff5953a4aa8da655806bc8ce,
+  toxinPrefab: {fileID: 6921666494744857033, guid: 5f47b8c15d9661748871b7361f823dca,
     type: 3}
-  icePrefab: {fileID: 5450329733256625055, guid: 8cfd8adb8337740408f2e8f6b95521d3,
+  icePrefab: {fileID: 5450329733256625055, guid: 5d7a4e846da3f92419845ef358a5b753,
     type: 3}
-  corrosionPrefab: {fileID: -3671361349428561902, guid: c24c5fb0d26a76243a6c7d6fb734e594,
+  corrosionPrefab: {fileID: -3671361349428561902, guid: 8e87d327815918f41b3df46348669909,
     type: 3}

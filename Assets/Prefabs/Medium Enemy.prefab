@@ -41,10 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4595697995525508858}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20a33691447514bf5b213305ab39d24d, type: 3}
+  m_Script: {fileID: 11500000, guid: d7ed5a3f47b721740b90cf6b0c1d8e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 3856211051644105591}
+  model: {fileID: 6203277498881417615}
 --- !u!1 &5705819550884722837
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,10 +102,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 23401b6ce59fd5f4daee6357eae541ed, type: 2}
+  - {fileID: 2100000, guid: 0dc04e55fab5f0643a983532556e12a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -126,6 +127,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &3319163777003488191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,7 +137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5705819550884722837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d4fe287662f1345adae5a367b87983, type: 3}
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!135 &3309243551621373226

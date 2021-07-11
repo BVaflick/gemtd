@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a6ce9ded125ef146aad3675c8e387b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 124a3296eb0c0d44a9cd87debaf0d19b, type: 3}
   m_Name: Damage1
   m_EditorClassIdentifier: 
   level: 1
-  buff: {fileID: 11400000, guid: 674fbf3d0077fa74a9fc409e077cc33f, type: 2}
+  buff: {fileID: 11400000, guid: 4378536c52e77a24a8c3892d0456912f, type: 2}

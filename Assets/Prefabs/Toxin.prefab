@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3770022509559828970}
   - component: {fileID: 6921666494744857033}
   m_Layer: 0
-  m_Name: Poison
+  m_Name: Toxin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,10 +56,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1dc1e734da514aa42a1a2f7265e1a70e, type: 2}
+  - {fileID: 2100000, guid: 89f3a3e3200eabe4fa3d45919b4da3d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &6921666494744857033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,29 +91,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 8846632257337941991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aec47713e1b71f94f8060b5fc67d4ab6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3be8d1ea666f0244aa8b39f2e3961363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name1: 
   opacityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.1665238
-      outSlope: 0.1665238
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.22429591
+      outWeight: 0
     - serializedVersion: 3
-      time: 0.97748053
-      value: 0.29564106
-      inSlope: -0.10202843
-      outSlope: -0.10202843
+      time: 0.65112746
+      value: 0.32571298
+      inSlope: -0.122479856
+      outSlope: -0.122479856
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.26169264
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9750061
+      value: -0.0047187805
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

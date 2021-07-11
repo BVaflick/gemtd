@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 8b7c82028861cee45b35e1a89ff1359c,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +119,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -197,6 +200,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &171715579
@@ -239,13 +243,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 495667347}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13d9eae456e854dbb8e88de75bb54069, type: 3}
+  m_Script: {fileID: 11500000, guid: 485744c70663c904e9ee9c04e25e30cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ground: {fileID: 1218397809}
-  tilePrefab: {fileID: 8445076794503322131, guid: b6581b0301d964e92ad5edd7dd7ad0ee,
+  tilePrefab: {fileID: 1173560126060867365, guid: 46f22ebec212085448e584a4212cfa27,
     type: 3}
-  gridTexture: {fileID: 2800000, guid: 60e4548047ffa4add965f53d3acae855, type: 3}
+  gridTexture: {fileID: 2800000, guid: 022cdeb8e3441f74683cd49dc0f43719, type: 3}
 --- !u!4 &495667352
 Transform:
   m_ObjectHideFlags: 0
@@ -353,10 +357,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 463e4a444cc894e29a436c70a10a3d1e, type: 2}
+  - {fileID: 2100000, guid: 40a73ee74993dd1418da05ecd00941c5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -377,6 +382,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1218397812
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -415,6 +421,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
 --- !u!114 &1562160015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +440,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
 --- !u!4 &1562160016
 Transform:
   m_ObjectHideFlags: 0
@@ -550,14 +566,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2025098016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4a8c46f22f8c47a1a14e9657bbb981b, type: 3}
+  m_Script: {fileID: 11500000, guid: c273b3db43e59054990d4830eb135b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 17, y: 17}
   board: {fileID: 495667348}
-  tileContentFactory: {fileID: 11400000, guid: 50b576fe36976479e97d482d8067eae9, type: 2}
-  warFactory: {fileID: 11400000, guid: 23b7ca648c7cc1c489a0f1bec13c88bc, type: 2}
-  scenario: {fileID: 11400000, guid: 2375c9cedacfa5949be1a4cd2e64662b, type: 2}
+  tileContentFactory: {fileID: 11400000, guid: c32a5bc6e40adb94c83f737ffdd679bb, type: 2}
+  warFactory: {fileID: 11400000, guid: cc4ae3791562d054397b5b079992ebe4, type: 2}
+  scenario: {fileID: 11400000, guid: 77984653207800d4ab44f41420ca3637, type: 2}
   playSpeed: 1
 --- !u!4 &2025098018
 Transform:
