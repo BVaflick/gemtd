@@ -28,7 +28,7 @@ public class Game : MonoBehaviour {
 	};
 
 	float[] towerTypeProbability = {0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f};
-	//float[] towerTypeProbability = { 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
+	// float[] towerTypeProbability = { 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
 	string[] towerTypeNames = {"Amethyst", "Aquamarine", "Diamond", "Emerald", "Opal", "Ruby", "Sapphire", "Topaz"};
 
 	[SerializeField] GameTileContentFactory tileContentFactory = default;
@@ -235,7 +235,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void RemoveWall() {
-		GameTile tile = board.GetTile(PressRay());
+		GameTile tile = board.GetTile(TouchRay);
 		// bool isTower = newTowers.Find(t => t == tile);
 		// if (tile != null && !isTower && availableBuilds > 0) {
 		if (tile != null && availableBuilds > 0) {
@@ -244,7 +244,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void BuildTower() {
-		GameTile tile = board.GetTile(PressRay());
+		GameTile tile = board.GetTile(TouchRay);
 		bool isTower = newTowers.Find(t => t == tile);
 		if (tile != null && !isTower && availableBuilds > 0) {
 			TowerType type = prepareTowerType();
@@ -320,7 +320,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void CombineOneshot() {
-		GameTile tile = board.GetTile(PressRay());
+		GameTile tile = board.GetTile(TouchRay);
 		Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 		if (tower && availableBuilds == 0) {
 			int type = (int) findCombos(tower, tileContentFactory.TowerPrefabs.ToList(), newTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
@@ -347,7 +347,7 @@ public class Game : MonoBehaviour {
 	}
 	
 	void CombineSame(bool two) {
-		GameTile tile = board.GetTile(PressRay());
+		GameTile tile = board.GetTile(TouchRay);
 		Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 		if (tower && 
 		    availableBuilds == 0 &&

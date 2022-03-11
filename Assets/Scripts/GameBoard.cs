@@ -230,6 +230,7 @@ public class GameBoard : MonoBehaviour {
 	public GameTile GetTile(Vector3 position) {
 		int x = (int) (position.x + size.x * 0.5f);
 		int y = (int) (position.z + size.y * 0.5f);
+		print(position.x + " " + position.y + " " + x + " " + y);
 		if (x >= 0 && x < size.x && y >= 0 && y < size.y) {
 			return tiles[x + y * size.x];
 		}

@@ -100,10 +100,10 @@ public class GameTile : MonoBehaviour {
     }
 
     static Quaternion
-        northRotation = Quaternion.Euler(90f, 0f, 0f),
-        eastRotation = Quaternion.Euler(90f, 90f, 0f),
-        southRotation = Quaternion.Euler(90f, 180f, 0f),
-        westRotation = Quaternion.Euler(90f, 270f, 0f);
+        northRotation = Quaternion.Euler(0f, 0f, 0f),
+        eastRotation = Quaternion.Euler(0f, 0f, 270f),
+        southRotation = Quaternion.Euler(0f, 0f, 180f),
+        westRotation = Quaternion.Euler(0f, 0f, 90f);
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
         Debug.Assert(
