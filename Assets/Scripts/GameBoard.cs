@@ -2,9 +2,15 @@
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour {
-
+	
+	// [SerializeField]
+	// Transform ground = default;
+	
 	[SerializeField]
-	Transform ground = default;
+	Material greenGround = default;
+	
+	[SerializeField]
+	Material darkGreenGround = default;
 
 	[SerializeField]
 	GameTile tilePrefab = default;
@@ -34,12 +40,12 @@ public class GameBoard : MonoBehaviour {
 		get => showGrid;
 		set {
 			showGrid = value;
-			Material m = ground.GetComponent<MeshRenderer>().material;
+			// Material m = ground.GetComponent<MeshRenderer>().material;
 			if (showGrid) {
-				m.mainTexture = gridTexture;
+				// m.mainTexture = gridTexture;
 				// m.SetTextureScale("_MainTex", size / 3);
 			} else {
-				m.mainTexture = null;
+				// m.mainTexture = null;
 			}
 		}
 	}
@@ -66,7 +72,7 @@ public class GameBoard : MonoBehaviour {
 	public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
 		this.size = size;
 		this.contentFactory = contentFactory;
-		ground.localScale = new Vector3(size.x, size.y, 1f);
+		// ground.localScale = new Vector3(size.x, size.y, 1f);
 
 		Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 		tiles = new GameTile[size.x * size.y];
@@ -74,6 +80,8 @@ public class GameBoard : MonoBehaviour {
 			for (int x = 0; x < size.x; x++, i++) {
 				GameTile tile = tiles[i] = Instantiate(tilePrefab);
 				tile.transform.SetParent(transform, false);
+				tile.transform.GetComponent<MeshRenderer>().material = i % 2 == 0 ? greenGround : darkGreenGround;
+				tile.Material = i % 2 == 0 ? greenGround : darkGreenGround;
 				tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
 				if (x > 0) {
 					GameTile.MakeEastWestNeighbors(tile, tiles[i - 1]);
@@ -89,10 +97,10 @@ public class GameBoard : MonoBehaviour {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 			}
 		}
-		prepareChackPoints();
+		prepareCheckPoints();
 	}
 
-	void prepareChackPoints() {
+	void prepareCheckPoints() {
 		ToggleSpawnPoint(tiles[size.x * (size.y - 3) + 2]); //Respawn (2,14)
 		ToggleDestination(tiles[size.x * (size.y / 2) + 2]); //(2,8) 
 		ToggleDestination(tiles[size.x * (size.y / 2) + size.y - 3]); //(14,8)
@@ -109,7 +117,7 @@ public class GameBoard : MonoBehaviour {
 		spawnPoints.Clear();
 		checkpoints.Clear();
 		updatingContent.Clear();
-		prepareChackPoints();
+		prepareCheckPoints();
 	}
 
 	public void GameUpdate() {

@@ -3,9 +3,5 @@
 Library
 Logs
 Temp
-ProjectSettings
-Packages
 .vs
-*.sln
-*.csproj
 obj
