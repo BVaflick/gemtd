@@ -6,3 +6,6 @@ Temp
 ProjectSettings
 Packages
 .vs
+*.sln
+*.csproj
+obj
