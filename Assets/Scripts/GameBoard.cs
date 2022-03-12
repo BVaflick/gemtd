@@ -89,6 +89,8 @@ public class GameBoard : MonoBehaviour {
 				if (y > 0) {
 					GameTile.MakeNorthSouthNeighbors(tile, tiles[i - size.x]);
 				}
+				if (y > 0 && x < size.x -1) GameTile.MakeDiagonalNeighbors2(tile, tiles[i - size.x + 1]);
+				if (y > 0 && x > 0) GameTile.MakeDiagonalNeighbors1(tile, tiles[i - size.x - 1]);
 				tile.IsAlternative = (x & 1) == 0;
 				if ((y & 1) == 0) {
 					tile.IsAlternative = !tile.IsAlternative;
@@ -249,17 +251,25 @@ public class GameBoard : MonoBehaviour {
 			while (searchFrontier.Count > 0) {
 				GameTile tile = searchFrontier.Dequeue();
 				if (tile != null) {
-					if (tile.IsAlternative) {
+					// if (tile.IsAlternative) {
 						searchFrontier.Enqueue(tile.GrowPathNorth(i));
 						searchFrontier.Enqueue(tile.GrowPathSouth(i));
 						searchFrontier.Enqueue(tile.GrowPathEast(i));
 						searchFrontier.Enqueue(tile.GrowPathWest(i));
-					} else {
-						searchFrontier.Enqueue(tile.GrowPathWest(i));
-						searchFrontier.Enqueue(tile.GrowPathEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouth(i));
-						searchFrontier.Enqueue(tile.GrowPathNorth(i));
-					}
+						searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
+						searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
+						searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
+						searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
+					// } else {
+					// 	searchFrontier.Enqueue(tile.GrowPathWest(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathEast(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathSouth(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathNorth(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
+					// 	searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
+					// }
 				}
 			}
 			if ((i == 0 && !spawnPoints[0].HasPath(i)) || (i != 0 && !checkpoints[i - 1].HasPath(i))) {

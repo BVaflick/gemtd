@@ -13,7 +13,7 @@ public class GameTile : MonoBehaviour {
 
     public Material Material { get; set; }
 
-    GameTile north, east, south, west;
+    private GameTile north, northEast, east, southEast, south, southWest, west, northWest;
 
     GameTile[] nextOnPath = new GameTile[6];
 
@@ -61,12 +61,16 @@ public class GameTile : MonoBehaviour {
     }
 
     public GameTile GrowPathNorth(int num) => GrowPathTo(num, north, Direction.South);
+    public GameTile GrowPathNorthEast(int num) => GrowPathTo(num, northEast, Direction.South);
 
     public GameTile GrowPathEast(int num) => GrowPathTo(num, east, Direction.West);
+    public GameTile GrowPathSouthEast(int num) => GrowPathTo(num, southEast, Direction.West);
 
     public GameTile GrowPathSouth(int num) => GrowPathTo(num, south, Direction.North);
+    public GameTile GrowPathSouthWest(int num) => GrowPathTo(num, southWest, Direction.North);
 
     public GameTile GrowPathWest(int num) => GrowPathTo(num, west, Direction.East);
+    public GameTile GrowPathNorthWest(int num) => GrowPathTo(num, northWest, Direction.East);
 
     GameTile GrowPathTo(int num, GameTile neighbor, Direction direction) {
         Debug.Assert(HasPath(num), "No path!");
@@ -94,16 +98,24 @@ public class GameTile : MonoBehaviour {
         arrow.gameObject.SetActive(true);
         arrow.localRotation =
             nextOnPath[num] == north ? northRotation :
+            nextOnPath[num] == northEast ? northEastRotation :
             nextOnPath[num] == east ? eastRotation :
+            nextOnPath[num] == southEast ? southEastRotation :
             nextOnPath[num] == south ? southRotation :
+            nextOnPath[num] == southWest ? southWestRotation :
+            nextOnPath[num] == northWest ? northWestRotation :
             westRotation;
     }
 
     static Quaternion
         northRotation = Quaternion.Euler(0f, 0f, 0f),
+        northEastRotation = Quaternion.Euler(0f, 0f, 315f),
         eastRotation = Quaternion.Euler(0f, 0f, 270f),
+        southEastRotation = Quaternion.Euler(0f, 0f, 225f),
         southRotation = Quaternion.Euler(0f, 0f, 180f),
-        westRotation = Quaternion.Euler(0f, 0f, 90f);
+        southWestRotation = Quaternion.Euler(0f, 0f, 135f),
+        westRotation = Quaternion.Euler(0f, 0f, 90f),
+        northWestRotation = Quaternion.Euler(0f, 0f, 45f);
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
         Debug.Assert(
@@ -119,6 +131,22 @@ public class GameTile : MonoBehaviour {
         );
         south.north = north;
         north.south = south;
+    }
+    
+    public static void MakeDiagonalNeighbors1(GameTile northEast, GameTile southWest) {
+        Debug.Assert(
+            southWest.northEast == null && northEast.southWest == null, "Redefined neighbors!"
+        );
+        southWest.northEast = northEast;
+        northEast.southWest = southWest;
+    }
+
+    public static void MakeDiagonalNeighbors2(GameTile northWest, GameTile southEast) {
+        Debug.Assert(
+            southEast.northWest == null && northWest.southEast == null, "Redefined neighbors!"
+        );
+        southEast.northWest = northWest;
+        northWest.southEast = southEast;
     }
 
     private void OnMouseEnter() {
