@@ -1,61 +1,54 @@
 ﻿using UnityEngine;
 
 public enum Direction {
-	North, East, South, West
+	North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest
 }
 
 public enum DirectionChange {
-	None, TurnRight, TurnLeft, TurnAround
+	None, TurnRight45, TurnRight90, TurnRight135, TurnLeft45, TurnLeft90, TurnLeft135, TurnAround
 }
 
 public static class DirectionExtensions {
-
-	static Vector3[] halfVectors = {
-		Vector3.forward * 0.5f,
-		Vector3.right * 0.5f,
-		Vector3.back * 0.5f,
-		Vector3.left * 0.5f
-	};
-
-	static Vector3[] vectors = {
-		Vector3.right,
-		Vector3.back,
-		Vector3.left,
-		Vector3.forward
-	};
-
-	static Quaternion[] rotations = {
-		Quaternion.identity,
-		Quaternion.Euler(0f, 90f, 0f),
+	
+	private static Quaternion[] rotations = {
+		Quaternion.Euler(0f, 0f, 0f),
+		Quaternion.Euler(0f, 315f, 0f),
+		Quaternion.Euler(0f, 270f, 0f),
+		Quaternion.Euler(0f, 225f, 0f),
 		Quaternion.Euler(0f, 180f, 0f),
-		Quaternion.Euler(0f, 270f, 0f)
+		Quaternion.Euler(0f, 135f, 0f),
+		Quaternion.Euler(0f, 90f, 0f),
+		Quaternion.Euler(0f, 45f, 0f)
 	};
 
 	public static float GetAngle (this Direction direction) {
-		return (float)direction * 90f;
+		return (float)direction * 45f;
 	}
-
 	public static DirectionChange GetDirectionChangeTo (
 		this Direction current, Direction next
 	) {
 		if (current == next) {
 			return DirectionChange.None;
 		}
-		else if (current + 1 == next || current - 3 == next) {
-			return DirectionChange.TurnRight;
+		else if (current + 2 == next || current - 6 == next) {
+			return DirectionChange.TurnRight90;
 		}
-		else if (current - 1 == next || current + 3 == next) {
-			return DirectionChange.TurnLeft;
+		else if (current - 2 == next || current + 6 == next) {
+			return DirectionChange.TurnLeft90;
+		}
+		else if (current + 1 == next || current - 7 == next) {
+			return DirectionChange.TurnRight45;
+		}
+		else if (current - 1 == next || current + 7 == next) {
+			return DirectionChange.TurnLeft45;
+		}
+		else if (current + 3 == next || current - 5 == next) {
+			return DirectionChange.TurnRight135;
+		}
+		else if (current - 3 == next || current + 5 == next) {
+			return DirectionChange.TurnLeft135;
 		}
 		return DirectionChange.TurnAround;
-	}
-
-	public static Vector3 GetHalfVector (this Direction direction) {
-		return halfVectors[(int)direction];
-	}
-
-	public static Vector3 GetVector (this Direction direction) {
-		return vectors[(int)direction];
 	}
 
 	public static Quaternion GetRotation (this Direction direction) {

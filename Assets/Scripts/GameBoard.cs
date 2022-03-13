@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour {
 	
-	// [SerializeField]
-	// Transform ground = default;
-	
 	[SerializeField]
 	Material greenGround = default;
 	
@@ -54,20 +51,20 @@ public class GameBoard : MonoBehaviour {
 		get => showPath;
 		set {
 			showPath = value;
-			if (value != 9) {
-				foreach (GameTile tile in tiles) {
-					tile.ShowPath(showPath);
-				}
-			} else {
-				foreach (GameTile tile in tiles) {
-					tile.HidePath();
+			foreach (GameTile t in tiles) {
+				t.HidePath();
+			}
+			if (showPath != 9) {
+				GameTile tile = value == 0 ? spawnPoints[0] : checkpoints[value - 1].NextTileOnPath(value);
+				while (!tile.IsDestination(value)) {
+					tile.ShowPath(value);
+					tile = tile.NextTileOnPath(value);
 				}
 			}
-
 		}
 	}
 
-	public int SpawnPointCount => spawnPoints.Count;
+	public int  SpawnPointCount => spawnPoints.Count;
 
 	public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
 		this.size = size;
@@ -251,7 +248,7 @@ public class GameBoard : MonoBehaviour {
 			while (searchFrontier.Count > 0) {
 				GameTile tile = searchFrontier.Dequeue();
 				if (tile != null) {
-					// if (tile.IsAlternative) {
+					if (tile.IsAlternative) {
 						searchFrontier.Enqueue(tile.GrowPathNorth(i));
 						searchFrontier.Enqueue(tile.GrowPathSouth(i));
 						searchFrontier.Enqueue(tile.GrowPathEast(i));
@@ -260,16 +257,16 @@ public class GameBoard : MonoBehaviour {
 						searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
 						searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
 						searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
-					// } else {
-					// 	searchFrontier.Enqueue(tile.GrowPathWest(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathEast(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathSouth(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathNorth(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
-					// 	searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
-					// }
+					} else {
+						searchFrontier.Enqueue(tile.GrowPathWest(i));
+						searchFrontier.Enqueue(tile.GrowPathEast(i));
+						searchFrontier.Enqueue(tile.GrowPathSouth(i));
+						searchFrontier.Enqueue(tile.GrowPathNorth(i));
+						searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
+						searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
+						searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
+						searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
+					}
 				}
 			}
 			if ((i == 0 && !spawnPoints[0].HasPath(i)) || (i != 0 && !checkpoints[i - 1].HasPath(i))) {
@@ -277,11 +274,7 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 
-		if (showPath != 9) {
-			foreach (GameTile tile in tiles) {
-				tile.ShowPath(showPath);
-			}
-		}
+		ShowPath = showPath;
 		return true;
 	}
 }

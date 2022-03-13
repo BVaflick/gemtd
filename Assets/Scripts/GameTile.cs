@@ -43,6 +43,8 @@ public class GameTile : MonoBehaviour {
 
     public bool HasPath(int num) => distances[num] != int.MaxValue;
 
+    public bool IsDestination(int num) => distances[num] == 0;
+
     public GameTile NextTileOnPath(int num) => nextOnPath[num];
 
     public void BecomeDestination(int num) {
@@ -61,27 +63,33 @@ public class GameTile : MonoBehaviour {
     }
 
     public GameTile GrowPathNorth(int num) => GrowPathTo(num, north, Direction.South);
-    public GameTile GrowPathNorthEast(int num) => GrowPathTo(num, northEast, Direction.South);
+    public GameTile GrowPathNorthEast(int num) => GrowPathTo(num, northEast, Direction.SouthWest);
 
     public GameTile GrowPathEast(int num) => GrowPathTo(num, east, Direction.West);
-    public GameTile GrowPathSouthEast(int num) => GrowPathTo(num, southEast, Direction.West);
+    public GameTile GrowPathSouthEast(int num) => GrowPathTo(num, southEast, Direction.NorthWest);
 
     public GameTile GrowPathSouth(int num) => GrowPathTo(num, south, Direction.North);
-    public GameTile GrowPathSouthWest(int num) => GrowPathTo(num, southWest, Direction.North);
+    public GameTile GrowPathSouthWest(int num) => GrowPathTo(num, southWest, Direction.NorthEast);
 
     public GameTile GrowPathWest(int num) => GrowPathTo(num, west, Direction.East);
-    public GameTile GrowPathNorthWest(int num) => GrowPathTo(num, northWest, Direction.East);
+    public GameTile GrowPathNorthWest(int num) => GrowPathTo(num, northWest, Direction.SouthEast);
 
     GameTile GrowPathTo(int num, GameTile neighbor, Direction direction) {
         Debug.Assert(HasPath(num), "No path!");
-        if (neighbor == null || neighbor.HasPath(num)) {
+        if (neighbor == null || 
+            neighbor.HasPath(num) ||
+            direction == Direction.NorthEast && south.Content.BlocksPath && west.Content.BlocksPath || 
+            direction == Direction.NorthWest && south.Content.BlocksPath && east.Content.BlocksPath ||
+            direction == Direction.SouthEast && north.Content.BlocksPath && west.Content.BlocksPath ||
+            direction == Direction.SouthWest && north.Content.BlocksPath && east.Content.BlocksPath) {
             return null;
         }
 
         neighbor.distances[num] = distances[num] + 1;
         neighbor.nextOnPath[num] = this;
-        neighbor.exitPoint[num] = neighbor.transform.localPosition + direction.GetHalfVector();
+        // neighbor.exitPoint[num] = neighbor.transform.localPosition + direction.GetHalfVector();
         neighbor.PathDirection[num] = direction;
+        
         return neighbor.Content.BlocksPath ? null : neighbor;
     }
 

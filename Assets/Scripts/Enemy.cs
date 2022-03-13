@@ -59,7 +59,10 @@ public class Enemy : GameBehavior {
 			Recycle();
 			return false;
 		}
-		progress += Time.deltaTime * progressFactor;
+
+		if (direction == Direction.NorthEast || direction == Direction.NorthWest || direction == Direction.SouthEast ||
+		    direction == Direction.SouthWest) progress += Time.deltaTime * (progressFactor / Mathf.Sqrt(2));
+		else progress += Time.deltaTime * progressFactor;
 		while (progress >= 1f) {
 			if (tileTo == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
@@ -70,13 +73,11 @@ public class Enemy : GameBehavior {
 			PrepareNextState();
 			progress *= progressFactor;
 		}
-		if (directionChange == DirectionChange.None) {
-			transform.localPosition =
-				Vector3.LerpUnclamped(positionFrom, positionTo, progress);
-		} else {
-			float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress);
+		if (directionChange != DirectionChange.None && progress * 3 < 1) {
+			float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress * 3);
 			transform.localRotation = Quaternion.Euler(0f, angle, 0f);
 		}
+		transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
 		return true;
 	}
 
@@ -85,7 +86,6 @@ public class Enemy : GameBehavior {
 		model.localScale = new Vector3(scale, scale, scale);
 		this.speed = speed;
 		this.armor = armor;
-		this.pathOffset = pathOffset;
 		Health = health;
 		Effects = new GameBehaviorCollection();
 		// Health = 20f * scale;
@@ -124,72 +124,75 @@ public class Enemy : GameBehavior {
 				tileTo = tileFrom.NextTileOnPath(num);
 			}
 		}
-		positionTo = tileFrom.exitPoint[num];
+		positionTo = tileTo.transform.localPosition;
 		directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection[num]);
 		direction = tileFrom.PathDirection[num];
 		directionAngleFrom = directionAngleTo;
 		switch (directionChange) {
-			case DirectionChange.None:
-				PrepareForward();
-				break;
-			case DirectionChange.TurnRight:
-				PrepareTurnRight();
-				break;
-			case DirectionChange.TurnLeft:
-				PrepareTurnLeft();
-				break;
-			default:
-				PrepareTurnAround();
-				break;
+			case DirectionChange.None: PrepareForward(); break;
+			case DirectionChange.TurnRight45: PrepareTurnRight45(); break;
+			case DirectionChange.TurnRight90: PrepareTurnRight90(); break;
+			case DirectionChange.TurnRight135: PrepareTurnRight135(); break;
+			case DirectionChange.TurnLeft45: PrepareTurnLeft45(); break;
+			case DirectionChange.TurnLeft90: PrepareTurnLeft90(); break;
+			case DirectionChange.TurnLeft135: PrepareTurnLeft135(); break;
+			default: PrepareTurnAround(); break;
 		}
 	}
 
 	void PrepareForward() {
 		transform.localRotation = direction.GetRotation();
 		directionAngleTo = direction.GetAngle();
-		model.localPosition = new Vector3(pathOffset, 0f);
 		progressFactor = speed + additionalSpeed;
 	}
 
-	void PrepareTurnRight() {
+	void PrepareTurnRight45() {
+		directionAngleTo = directionAngleFrom + 45f;
+		progressFactor = (speed + additionalSpeed);
+	}
+	void PrepareTurnRight90() {
 		directionAngleTo = directionAngleFrom + 90f;
-		model.localPosition = new Vector3(pathOffset - 0.5f, 0f);
-		transform.localPosition = positionFrom + direction.GetHalfVector();
-		progressFactor = (speed + additionalSpeed) / (Mathf.PI * 0.5f * (0.5f - pathOffset));
+		progressFactor = (speed + additionalSpeed);
+	}
+	void PrepareTurnRight135() {
+		directionAngleTo = directionAngleFrom + 135f;
+		progressFactor = (speed + additionalSpeed);
 	}
 
-	void PrepareTurnLeft() {
+	void PrepareTurnLeft45() {
+		directionAngleTo = directionAngleFrom - 45f;
+		progressFactor = (speed + additionalSpeed);
+	}
+	void PrepareTurnLeft90() {
 		directionAngleTo = directionAngleFrom - 90f;
-		model.localPosition = new Vector3(pathOffset + 0.5f, 0f);
-		transform.localPosition = positionFrom + direction.GetHalfVector();
-		progressFactor = (speed + additionalSpeed) / (Mathf.PI * 0.5f * (0.5f + pathOffset));
+		progressFactor = (speed + additionalSpeed);
+	}
+	void PrepareTurnLeft135() {
+		directionAngleTo = directionAngleFrom - 135f;
+		progressFactor = (speed + additionalSpeed);
 	}
 
 	void PrepareTurnAround() {
-		directionAngleTo = directionAngleFrom + (pathOffset < 0f ? 180f : -180f);
-		model.localPosition = new Vector3(pathOffset, 0f);
+		directionAngleTo = directionAngleFrom + 180f;
 		transform.localPosition = positionFrom;
-		progressFactor =
-			(speed + additionalSpeed) / (Mathf.PI * Mathf.Max(Mathf.Abs(pathOffset), 0.2f));
+		progressFactor = (speed + additionalSpeed);
 	}
 
 	void PrepareIntro() {
 		positionFrom = tileFrom.transform.localPosition;
-		positionTo = tileFrom.exitPoint[num];
+		positionTo = tileTo.transform.localPosition;
 		direction = tileFrom.PathDirection[num];
 		directionChange = DirectionChange.None;
 		directionAngleFrom = directionAngleTo = direction.GetAngle();
-		model.localPosition = new Vector3(pathOffset, 0f);
 		transform.localRotation = direction.GetRotation();
-		progressFactor = 2f * (speed + additionalSpeed);
+		progressFactor = (speed + additionalSpeed);
 	}
 
 	void PrepareOutro() {
 		positionTo = tileFrom.transform.localPosition;
 		directionChange = DirectionChange.None;
 		directionAngleTo = direction.GetAngle();
-		model.localPosition = new Vector3(pathOffset, 0f);
 		transform.localRotation = direction.GetRotation();
-		progressFactor = 2f * (speed + additionalSpeed);
+		progressFactor = (speed + additionalSpeed);
 	}
 }
