@@ -56,5 +56,6 @@
 	Uranium238,
 	Uranium235,
 	AsteritedRuby,
-	Vulcano
+	Vulcano,
+	FlyingTower
 }	

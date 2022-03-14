@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
@@ -43,6 +44,8 @@ public class Game : MonoBehaviour {
 
 	bool isBuildPhase = true;
 
+	private bool isBuilding = false;
+
 	List<GameTile> newTowers = new List<GameTile>();
 
 	static Game instance;
@@ -63,11 +66,15 @@ public class Game : MonoBehaviour {
 
 	const float pausedTimeScale = 0f;
 
+	[SerializeField] private Tower flyingTower = null;
+
 	[SerializeField, Range(1f, 10f)] float playSpeed = 1f;
 
 	void Awake() {
 		board.Initialize(boardSize, tileContentFactory);
 		board.ShowGrid = true;
+		flyingTower = Instantiate(flyingTower);
+		flyingTower.gameObject.SetActive(false);
 	}
 
 	void OnEnable() {
@@ -102,6 +109,15 @@ public class Game : MonoBehaviour {
 			}
 		}
 
+		if (isBuilding && availableBuilds > 0) {
+			GameTile tile = board.GetTile(TouchRay);
+			if (tile != null) {
+				flyingTower.gameObject.SetActive(true);
+				flyingTower.transform.position = tile.transform.position;
+			} else flyingTower.gameObject.SetActive(false);
+		}
+		else flyingTower.gameObject.SetActive(false);
+
 		nonEnemies.GameUpdate();
 		enemies.GameUpdate();
 		Physics.SyncTransforms();
@@ -127,7 +143,7 @@ public class Game : MonoBehaviour {
 			
 		}
 		if (Input.GetMouseButtonDown(0)) {
-			// HandleTouch();
+			HandleTouch();
 		}
 
 		if (Input.GetMouseButtonDown(1)) {
@@ -197,16 +213,15 @@ public class Game : MonoBehaviour {
 	}
 
 	void HandleTouch() {
-		// GameTile tile = board.GetTile(TouchRay);
-		// if (tile != null) {
-		// 	GameObject obj = tile.Content.gameObject;
-		// 	Selection.activeGameObject = obj;
-		// 	print("1" + obj);
-		// } else {
-		if (Physics.Raycast(TouchRay, out RaycastHit hit)) {
-			GameObject obj = hit.transform.gameObject;
-			Selection.activeGameObject = obj;
-			// }
+		if (isBuilding) {
+			BuildTower();
+		}
+		else {
+			GameTile tile = board.GetTile(TouchRay);
+			if (tile != null) {
+				GameObject obj = tile.Content.gameObject;
+				Selection.activeGameObject = obj;
+			}
 		}
 	}
 
@@ -215,23 +230,85 @@ public class Game : MonoBehaviour {
 		style.normal.textColor = Color.white;
 		Vector3 position = new Vector3(-15f, 0f, 8f);
 		Handles.Label(position, "Wave: " + (1 + activeScenario.CurrentWave()), style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Enemies: " + enemies.Count, style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "HP: " + playerHealth, style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Level: " + level, style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Build phase: " + isBuildPhase, style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Builds: " + availableBuilds, style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position,
 			"Towers built: " + string.Join(" ", newTowers.Select(item => $"{item.Content.name.Split('(')[0]}")), style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Wave is in progress: " + activeScenario.WaveIsInProgress(), style);
-		position.z -= 0.3f;
+		position.z -= 0.4f;
 		Handles.Label(position, "Scenario is in progress: " + scenarioIsInProgress, style);
+		position.z -= 0.4f;
+	}
+
+	void OnGUI() {
+		GizmoExtensions.showPath = GUI.Toggle(new Rect(220, 805, 100, 20), GizmoExtensions.showPath, "Show paths");
+		GizmoExtensions.showTowerRange = GUI.Toggle(new Rect(220, 825, 150, 20), GizmoExtensions.showTowerRange, "Show attack range");
+		if (GUI.Button(new Rect(220, 785, 100, 20), GizmoExtensions.buildButtonText))
+			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+		if (GizmoExtensions.showTowerTypes) {
+			if (GUI.Button(new Rect(220, 605, 100, 20), "Random")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Random";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+			if (GUI.Button(new Rect(220, 625, 100, 20), "Amethyst")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Amethyst";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 645, 100, 20), "Aquamarine")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Aquamarine";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 665, 100, 20), "Diamond")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Diamond";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 685, 100, 20), "Emerald")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Emerald";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 705, 100, 20), "Opal")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Opal";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 725, 100, 20), "Ruby")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Ruby";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 745, 100, 20), "Sapphire")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Sapphire";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+
+			if (GUI.Button(new Rect(220, 765, 100, 20), "Topaz")) {
+				isBuilding = true;
+				GizmoExtensions.buildButtonText = "Topaz";
+				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+			}
+		}
 	}
 
 	void RemoveWall() {
@@ -247,7 +324,10 @@ public class Game : MonoBehaviour {
 		GameTile tile = board.GetTile(TouchRay);
 		bool isTower = newTowers.Find(t => t == tile);
 		if (tile != null && !isTower && availableBuilds > 0) {
-			TowerType type = prepareTowerType();
+			TowerType type;
+			if(GizmoExtensions.buildButtonText == "Choose tower" || GizmoExtensions.buildButtonText == "Random")
+				type = prepareTowerType(); //Генератор случайного типа башни. Не забыть вернуть, после тестирования
+			else type = (TowerType) Enum.Parse(typeof(TowerType), GizmoExtensions.buildButtonText + level);
 			bool built = board.ToggleTower(tile, type);
 			// bool built = board.ToggleTower(tile, TowerType.Silver);
 			// bool built;
@@ -309,6 +389,7 @@ public class Game : MonoBehaviour {
 		}
 
 		isBuildPhase = false;
+		isBuilding = false;
 		// for(var i = 0; i < TargetPoint.BufferedCount; i++) {
 		// 	TargetPoint t = TargetPoint.GetBuffered(i);				
 		// }
@@ -399,7 +480,7 @@ public class Game : MonoBehaviour {
 
 /*
  * TODO:
- * 1. Поиск пути по диагонали											-
+ * 1. Поиск пути по диагонали											+
  * 2. Комбинирование башен не только в режиме постройки					-
  * 3. Привести атрибуты башен, юнитов и способностей в соответствие		-
  * 3а. Адаптировать фабрику для удобной настройки волн: 				

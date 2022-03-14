@@ -143,23 +143,28 @@ public class Tower : GameTileContent {
 
 	// void OnDrawGizmosSelected() {
 	void OnDrawGizmos() {
-		GUIStyle style = new GUIStyle();
-		style.normal.textColor = Color.white;
-		Gizmos.color = Color.yellow;
-		Vector3 position = transform.localPosition;
-		position.y += 0.01f;
-		Handles.color = new Color(1, 1, 1, 0.05f);
-		Handles.DrawSolidDisc(position, transform.up, (float) targetingRange);
-		Handles.Label(position, TowerType.ToString(), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "SP: " + attackSpeed + (additionalAttackSpeed != 0 ? "+" + additionalAttackSpeed : ""), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "Effects: " + string.Join(" ", statusEffects.Select(statusEffect => $"{statusEffect.name.Split('(')[0]}")), style);
-		// Gizmos.DrawWireSphere(position, targetingRange);
-		if (targets.Count != 0) {
-			foreach (var target in targets) {
-				if (target != null) {
-					Gizmos.DrawLine(turret.transform.position, target.Position);
+		if (GizmoExtensions.showTowerRange && TowerType != TowerType.FlyingTower) {
+			GUIStyle style = new GUIStyle();
+			style.normal.textColor = Color.white;
+			Gizmos.color = Color.yellow;
+			Vector3 position = transform.localPosition;
+			position.y += 0.01f;
+			Handles.color = new Color(1, 1, 1, 0.05f);
+			Handles.DrawSolidDisc(position, transform.up, (float) targetingRange);
+			Handles.Label(position, TowerType.ToString(), style);
+			position.z -= 0.3f;
+			Handles.Label(position,
+				"SP: " + attackSpeed + (additionalAttackSpeed != 0 ? "+" + additionalAttackSpeed : ""), style);
+			position.z -= 0.3f;
+			Handles.Label(position,
+				"Effects: " + string.Join(" ",
+					statusEffects.Select(statusEffect => $"{statusEffect.name.Split('(')[0]}")), style);
+			// Gizmos.DrawWireSphere(position, targetingRange);
+			if (targets.Count != 0) {
+				foreach (var target in targets) {
+					if (target != null) {
+						Gizmos.DrawLine(turret.transform.position, target.Position);
+					}
 				}
 			}
 		}

@@ -9,6 +9,9 @@ public class Enemy : GameBehavior {
 	[SerializeField]
 	Transform model = default;
 
+	[SerializeField]
+	GameObject blastPatricals = null;
+	
 	EnemyFactory originFactory;
 
 	GameTile tileFrom, tileTo;
@@ -56,6 +59,10 @@ public class Enemy : GameBehavior {
 		additionalArmor = 0f;
 		Effects.GameUpdate();
 		if (Health <= 0f) {
+			Vector3 position = transform.position;
+			position.y += 0.5f;
+			GameObject effectInstance = (GameObject) Instantiate(blastPatricals, position, transform.rotation);
+			Destroy(effectInstance, 2f);
 			Recycle();
 			return false;
 		}

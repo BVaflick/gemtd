@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3833609056597290237}
   - component: {fileID: 5229603623047022240}
   - component: {fileID: 3743168922435813002}
-  - component: {fileID: 2524604951079761770}
   m_Layer: 10
   m_Name: Turret
   m_TagString: Untagged
@@ -57,10 +56,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 50d8327011b20f4459a98fa75ff2b550, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &3743168922435813002
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -94,18 +95,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2524604951079761770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1793620852136004217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d4fe287662f1345adae5a367b87983, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4660965802250335855
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,10 +151,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a98b1b7592d166b48898dc88dd58cc85, type: 2}
+  - {fileID: 2100000, guid: c60604421d647c843b69af48c9c2c7be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186,6 +176,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &409612627003302995
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -255,10 +246,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a98b1b7592d166b48898dc88dd58cc85, type: 2}
+  - {fileID: 2100000, guid: c60604421d647c843b69af48c9c2c7be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -279,6 +271,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &3174728151699869840
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -336,16 +329,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6160676102297866072}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bc7f10b2b627dd47be89bc5bb781b8b, type: 3}
+  m_Script: {fileID: 11500000, guid: 38b67f92050f9c0448fcf6e3fe05a18b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
-  targetingRange: 2.5
+  targetingRange: 3
   towerType: 48
   combo: 0c000000240000002a000000
-  damage: 40
+  damage: 50.1
   turret: {fileID: 224102258314045308}
-  launchSpeed: 1000
+  launchSpeed: 30
   abilities: []
   auras: []
 --- !u!1 &6787000539347584138
@@ -404,10 +397,11 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1053569e73f2f4bf4a24c051f93bee76, type: 2}
+  - {fileID: 2100000, guid: c60604421d647c843b69af48c9c2c7be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -428,6 +422,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &3517585313952711411
 BoxCollider:
   m_ObjectHideFlags: 0

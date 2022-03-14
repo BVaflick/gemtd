@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour {
@@ -55,10 +57,12 @@ public class GameBoard : MonoBehaviour {
 				t.HidePath();
 			}
 			if (showPath != 9) {
-				GameTile tile = value == 0 ? spawnPoints[0] : checkpoints[value - 1].NextTileOnPath(value);
-				while (!tile.IsDestination(value)) {
-					tile.ShowPath(value);
-					tile = tile.NextTileOnPath(value);
+				for (int i = 0; i <= 5; i++) {
+					GameTile tile = i == 0 ? spawnPoints[0] : checkpoints[i - 1].NextTileOnPath(i);
+					while (!tile.IsDestination(i)) {
+						tile.ShowPath(i);
+						tile = tile.NextTileOnPath(i);
+					}
 				}
 			}
 		}
@@ -107,6 +111,7 @@ public class GameBoard : MonoBehaviour {
 		ToggleDestination(tiles[size.x * (size.y - 3) + (size.y / 2)]); //(8,14)
 		ToggleDestination(tiles[size.x * 2 + (size.y / 2)]); //(8,2)
 		ToggleDestination(tiles[size.x * 2 + size.y - 3]); //(14,2)
+		FindPaths();
 	}
 
 	public void Clear() {
@@ -144,12 +149,12 @@ public class GameBoard : MonoBehaviour {
 			if (checkpoints.Count > 1) {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 				checkpoints.Remove(tile);
-				FindPaths();
+				// FindPaths();
 			}
 		} else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.Destination);
 			checkpoints.Add(tile);
-			FindPaths();
+			// FindPaths();
 		}
 	}
 
@@ -276,5 +281,22 @@ public class GameBoard : MonoBehaviour {
 
 		ShowPath = showPath;
 		return true;
+	}
+
+	private void OnDrawGizmos() {
+		if (GizmoExtensions.showPath) {
+			for (int i = 0; i <= 5; i++) {
+				GameTile tile = i == 0 ? spawnPoints[0] : checkpoints[i - 1];
+				Handles.color = new Color(1, 1, 1, 0.075f);
+				Handles.DrawSolidDisc(tile.transform.position, transform.up, (float) 0.0375f);
+				while (!tile.IsDestination(i)) {
+					if (tile.PathDirection[i].GetDirectionChangeTo(tile.NextTileOnPath(i).PathDirection[i]) !=
+					    DirectionChange.None)
+						Handles.DrawSolidDisc(tile.NextTileOnPath(i).transform.position, transform.up, (float) 0.0375f);
+					Handles.DrawDottedLine(tile.transform.position, tile.NextTileOnPath(i).transform.position, 4f);
+					tile = tile.NextTileOnPath(i);
+				}
+			}
+		}
 	}
 }

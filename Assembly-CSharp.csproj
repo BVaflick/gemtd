@@ -95,6 +95,7 @@
      <Compile Include="Assets\Scripts\Abilities\Ability.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splitshot.cs" />
      <Compile Include="Assets\Scripts\Abilities\SpeedUp.cs" />
+     <Compile Include="Assets\Scripts\GizmoExtensions.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
