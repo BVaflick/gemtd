@@ -12,6 +12,9 @@ public class Enemy : GameBehavior {
 	[SerializeField]
 	GameObject blastPatricals = null;
 	
+	[SerializeField]
+	Material material = null;
+	
 	EnemyFactory originFactory;
 
 	GameTile tileFrom, tileTo;
@@ -95,6 +98,7 @@ public class Enemy : GameBehavior {
 		this.armor = armor;
 		Health = health;
 		Effects = new GameBehaviorCollection();
+		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		// Health = 20f * scale;
 	}
 
