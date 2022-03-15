@@ -34,35 +34,35 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 31d8e6bc670377143a5dccf0d7ab26f4,
       type: 3}
     scale:
-      min: 1
-      max: 1
+      min: 0.75
+      max: 1.5
     speed:
-      min: 1
-      max: 1
+      min: 3
+      max: 3
     pathOffset:
       min: 0
       max: 0
     health:
-      min: 100
-      max: 100
+      min: 25
+      max: 50
     armor:
-      min: 100
-      max: 100
+      min: 1
+      max: 5
   large:
     prefab: {fileID: 7012074777765284301, guid: 184b973351dfb284283720fadda64798,
       type: 3}
     scale:
-      min: 1
-      max: 1
+      min: 1.5
+      max: 2
     speed:
-      min: 1
-      max: 1
+      min: 4
+      max: 4
     pathOffset:
       min: 0
       max: 0
     health:
-      min: 100
+      min: 50
       max: 100
     armor:
-      min: 100
-      max: 100
+      min: 5
+      max: 10
