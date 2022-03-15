@@ -4,6 +4,9 @@ using UnityEngine;
 public class GameTile : MonoBehaviour {
     [SerializeField]
     Transform arrow = default;
+    
+    [SerializeField]
+    Transform grass = default;
 
     [SerializeField]
     public Material[] Materials;
@@ -11,7 +14,15 @@ public class GameTile : MonoBehaviour {
     [SerializeField]
     Material hoverMaterial = default;
 
-    public Material Material { get; set; }
+    private Material material = default;
+
+    public Material Material {
+        get => material; 
+        set {
+            material = value;
+            grass.transform.GetComponent<MeshRenderer>().material = value;
+        } 
+    }
 
     private GameTile north, northEast, east, southEast, south, southWest, west, northWest;
 
@@ -158,10 +169,10 @@ public class GameTile : MonoBehaviour {
     }
 
     private void OnMouseEnter() {
-        transform.GetComponent<MeshRenderer>().material = hoverMaterial;
+        grass.transform.GetComponent<MeshRenderer>().material = hoverMaterial;
     }
 
     private void OnMouseExit() {
-        transform.GetComponent<MeshRenderer>().material = Material;
+        grass.transform.GetComponent<MeshRenderer>().material = Material;
     }
 }

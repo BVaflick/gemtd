@@ -153,6 +153,7 @@ public class GameBoard : MonoBehaviour {
 			}
 		} else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.Destination);
+			tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
 			checkpoints.Add(tile);
 			// FindPaths();
 		}
@@ -212,6 +213,7 @@ public class GameBoard : MonoBehaviour {
 			}
 		} else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
+			tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
 			spawnPoints.Add(tile);
 		}
 	}
