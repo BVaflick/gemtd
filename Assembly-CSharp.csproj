@@ -54,7 +54,6 @@
   <ItemGroup>
      <Compile Include="Assets\gametile.cs" />
      <Compile Include="Assets\Scripts\GameTileContentFactory.cs" />
-     <Compile Include="Assets\Scripts\EnemyAnimator.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameTileContentType.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Explosion.cs" />
@@ -79,7 +78,6 @@
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemyType.cs" />
      <Compile Include="Assets\Scripts\Shell.cs" />
-     <Compile Include="Assets\Scripts\EnemyAnimationConfig.cs" />
      <Compile Include="Assets\Scripts\Abilities\Slow.cs" />
      <Compile Include="Assets\Scripts\GameObjectFactory.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splash.cs" />
@@ -98,6 +96,8 @@
      <Compile Include="Assets\Scripts\Abilities\Ability.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splitshot.cs" />
      <Compile Include="Assets\Scripts\Abilities\SpeedUp.cs" />
+     <Compile Include="Assets\Scripts\EnemyAnimationConfig.cs" />
+     <Compile Include="Assets\Scripts\EnemyAnimator.cs" />
      <None Include="Assets\TowerDefence_Vsquad\INFO\Info.txt" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeLash.shader" />
