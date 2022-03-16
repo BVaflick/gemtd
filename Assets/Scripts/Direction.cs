@@ -12,13 +12,13 @@ public static class DirectionExtensions {
 	
 	private static Quaternion[] rotations = {
 		Quaternion.Euler(0f, 0f, 0f),
-		Quaternion.Euler(0f, 315f, 0f),
-		Quaternion.Euler(0f, 270f, 0f),
-		Quaternion.Euler(0f, 225f, 0f),
-		Quaternion.Euler(0f, 180f, 0f),
-		Quaternion.Euler(0f, 135f, 0f),
+		Quaternion.Euler(0f, 45f, 0f),
 		Quaternion.Euler(0f, 90f, 0f),
-		Quaternion.Euler(0f, 45f, 0f)
+		Quaternion.Euler(0f, 135f, 0f),
+		Quaternion.Euler(0f, 180f, 0f),
+		Quaternion.Euler(0f, 225f, 0f),
+		Quaternion.Euler(0f, 270f, 0f),
+		Quaternion.Euler(0f, 315f, 0f)
 	};
 
 	public static float GetAngle (this Direction direction) {

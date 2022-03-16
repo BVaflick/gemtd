@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name1: 
+  scale: 1
   opacityCurve:
     serializedVersion: 2
     m_Curve:

@@ -16,8 +16,6 @@ public class Ice : WarEntity {
     [SerializeField, Range(0f, 10f)]
     float duration = 6f;
 
-    float scale = 1f;
-
     float cooldown = 0f;
 
     MeshRenderer meshRenderer;

@@ -5,14 +5,17 @@ public abstract class WarEntity : GameBehavior {
     WarFactory originFactory;
 
     public string name1;
+    
+    public float scale = 1f;
 
     public float age { get; set; }
 
     protected TargetPoint target;
     
     public void Initialize(TargetPoint target, string name) {
-        this.name1 = name;
+        name1 = name;
         this.target = target;
+        scale = target.Enemy.Scale * 1.5f;
         transform.localPosition = target.Position;
     }
 

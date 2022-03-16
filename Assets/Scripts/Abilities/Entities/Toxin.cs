@@ -13,9 +13,7 @@ public class Toxin : WarEntity {
     AnimationCurve scaleCurve = default;
 
     [SerializeField, Range(0f, 10f)]
-    float duration = 6f;    
-
-    float scale = 1f;
+    float duration = 6f;
 
     float cooldown = 0f;
 

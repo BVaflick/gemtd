@@ -17,8 +17,6 @@ public class Explosion : WarEntity {
 
     float age;
 
-    float scale = 1f;
-
     MeshRenderer meshRenderer;
 
     void Awake() {

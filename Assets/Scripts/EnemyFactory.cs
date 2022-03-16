@@ -8,24 +8,24 @@ public class EnemyFactory : GameObjectFactory {
 
 		public Enemy prefab = default;
 
-		[FloatRangeSlider(0.5f, 2f)]
-		public FloatRange scale = new FloatRange(1f);
+		[FloatRangeSlider(0.1f, 2f)]
+		public FloatRange scale = new FloatRange(0.5f);
 
 		[FloatRangeSlider(0.2f, 5f)]
-		public FloatRange speed = new FloatRange(1f);
+		public FloatRange speed = new FloatRange(2f);
 
 		[FloatRangeSlider(-0.4f, 0.4f)]
 		public FloatRange pathOffset = new FloatRange(0f);
 
 		[FloatRangeSlider(10f, 1000f)]
-		public FloatRange health = new FloatRange(100f);
+		public FloatRange health = new FloatRange(50f);
 
 		[FloatRangeSlider(0f, 1000f)]
-		public FloatRange armor = new FloatRange(100f);
+		public FloatRange armor = new FloatRange(5f);
 	}
 
 	[SerializeField]
-	EnemyConfig small = default, medium = default, large = default;
+	EnemyConfig small = default, medium = default, large = default, bug = default, chest = default, chomper = default, mushroom = default, orc = default, spitter = default, turtle = default;
 
 	EnemyConfig GetConfig(EnemyType type) {
 		switch (type) {
@@ -35,6 +35,20 @@ public class EnemyFactory : GameObjectFactory {
 				return medium;
 			case EnemyType.Large:
 				return large;
+			case EnemyType.Bug:
+				return bug;
+			case EnemyType.Chest:
+				return chest;
+			case EnemyType.Chomper:
+				return chomper;
+			case EnemyType.Mushroom:
+				return mushroom;
+			case EnemyType.Orc:
+				return orc;
+			case EnemyType.Spitter:
+				return spitter;
+			case EnemyType.Turtle:
+				return turtle;
 		}
 		Debug.Assert(false, "Unsupported enemy type!");
 		return null;

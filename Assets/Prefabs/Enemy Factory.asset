@@ -16,11 +16,11 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 09eb5f41a77a69e478f4d400ba7e6f99,
       type: 3}
     scale:
-      min: 0.5
-      max: 1.2
+      min: 0.35
+      max: 0.5
     speed:
-      min: 3
-      max: 3
+      min: 2
+      max: 2
     pathOffset:
       min: -0.4
       max: 0.4
@@ -34,11 +34,11 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 31d8e6bc670377143a5dccf0d7ab26f4,
       type: 3}
     scale:
-      min: 0.75
-      max: 1.5
+      min: 0.5
+      max: 0.75
     speed:
-      min: 3
-      max: 3
+      min: 2
+      max: 2
     pathOffset:
       min: 0
       max: 0
@@ -52,11 +52,11 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 184b973351dfb284283720fadda64798,
       type: 3}
     scale:
-      min: 1.5
-      max: 2
+      min: 0.5
+      max: 0.75
     speed:
-      min: 4
-      max: 4
+      min: 2
+      max: 2
     pathOffset:
       min: 0
       max: 0
@@ -65,4 +65,130 @@ MonoBehaviour:
       max: 100
     armor:
       min: 5
+      max: 10
+  bug:
+    prefab: {fileID: 7012074777765284301, guid: 5b5e6032e5138d14789c5f49d5bfa84c,
+      type: 3}
+    scale:
+      min: 0.2
+      max: 0.3
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  chest:
+    prefab: {fileID: 7012074777765284301, guid: 0017747afc06be64794c1e1fc016d61b,
+      type: 3}
+    scale:
+      min: 0.4
+      max: 0.7
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  chomper:
+    prefab: {fileID: 7012074777765284301, guid: ca64b6d443ba1d844b85021f52945b1d,
+      type: 3}
+    scale:
+      min: 0.4
+      max: 0.6
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  mushroom:
+    prefab: {fileID: 7012074777765284301, guid: d8dc8f217b9761244aa60226fa169820,
+      type: 3}
+    scale:
+      min: 0.1
+      max: 0.25
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  orc:
+    prefab: {fileID: 7012074777765284301, guid: cac95f5df50b6b9439083d1e5c8d64e9,
+      type: 3}
+    scale:
+      min: 0.7
+      max: 1
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  spitter:
+    prefab: {fileID: 7012074777765284301, guid: 51f2594c381128741a7b33bf8c249945,
+      type: 3}
+    scale:
+      min: 0.4
+      max: 0.6
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 50
+      max: 100
+    armor:
+      min: 5
+      max: 5
+  turtle:
+    prefab: {fileID: 7012074777765284301, guid: a0915adeeee1dec469e7085478e662d4,
+      type: 3}
+    scale:
+      min: 1
+      max: 1
+    speed:
+      min: 2
+      max: 2
+    pathOffset:
+      min: 0
+      max: 0
+    health:
+      min: 5000
+      max: 5000
+    armor:
+      min: 10
       max: 10

@@ -15,6 +15,11 @@ public class Enemy : GameBehavior {
 	[SerializeField]
 	Material material = null;
 	
+	[SerializeField]
+	EnemyAnimationConfig animationConfig = default;
+	
+	EnemyAnimator animator;
+	
 	EnemyFactory originFactory;
 
 	GameTile tileFrom, tileTo;
@@ -58,6 +63,20 @@ public class Enemy : GameBehavior {
 	}
 
 	public override bool GameUpdate() {
+		animator.GameUpdate();
+		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
+			if (!animator.IsDone) {
+				return true;
+			}
+			animator.PlayMove(animationConfig.MoveAnimationSpeed * speed / Scale);
+		}
+		else if (animator.CurrentClip == EnemyAnimator.Clip.Outro) {
+			if (animator.IsDone) {
+				Recycle();
+				return false;
+			}
+			return true;
+		}
 		additionalSpeed = 0f;
 		additionalArmor = 0f;
 		Effects.GameUpdate();
@@ -76,8 +95,8 @@ public class Enemy : GameBehavior {
 		while (progress >= 1f) {
 			if (tileTo == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
-				Recycle();
-				return false;
+				animator.PlayOutro();
+				return true;
 			}
 			progress = (progress - 1f) / progressFactor;
 			PrepareNextState();
@@ -99,10 +118,19 @@ public class Enemy : GameBehavior {
 		Health = health;
 		Effects = new GameBehaviorCollection();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
+		animator.PlayIntro();
 		// Health = 20f * scale;
+	}
+	
+	void Awake () {
+		animator.Configure(
+			model.GetChild(0).gameObject.AddComponent<Animator>(),
+			animationConfig
+		);
 	}
 
 	public override void Recycle() {
+		animator.Stop();
 		OriginFactory.Reclaim(this);
 	}
 
@@ -191,6 +219,7 @@ public class Enemy : GameBehavior {
 
 	void PrepareIntro() {
 		positionFrom = tileFrom.transform.localPosition;
+		transform.localPosition = positionFrom;
 		positionTo = tileTo.transform.localPosition;
 		direction = tileFrom.PathDirection[num];
 		directionChange = DirectionChange.None;
