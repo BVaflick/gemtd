@@ -70,8 +70,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 5b5e6032e5138d14789c5f49d5bfa84c,
       type: 3}
     scale:
-      min: 0.2
-      max: 0.3
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -88,8 +88,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 0017747afc06be64794c1e1fc016d61b,
       type: 3}
     scale:
-      min: 0.35
-      max: 0.65
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -106,8 +106,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: ca64b6d443ba1d844b85021f52945b1d,
       type: 3}
     scale:
-      min: 0.35
-      max: 0.65
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -124,8 +124,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: d8dc8f217b9761244aa60226fa169820,
       type: 3}
     scale:
-      min: 0.1
-      max: 0.3
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -142,8 +142,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: cac95f5df50b6b9439083d1e5c8d64e9,
       type: 3}
     scale:
-      min: 0.6
-      max: 0.8
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -160,8 +160,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: 51f2594c381128741a7b33bf8c249945,
       type: 3}
     scale:
-      min: 0.35
-      max: 0.65
+      min: 0.5
+      max: 0.5
     speed:
       min: 2
       max: 2
@@ -178,8 +178,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: a0915adeeee1dec469e7085478e662d4,
       type: 3}
     scale:
-      min: 0.9
-      max: 0.9
+      min: 1
+      max: 1
     speed:
       min: 2
       max: 2
