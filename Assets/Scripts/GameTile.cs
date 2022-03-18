@@ -26,15 +26,13 @@ public class GameTile : MonoBehaviour {
 
     private GameTile north, northEast, east, southEast, south, southWest, west, northWest;
 
-    GameTile[] nextOnPath = new GameTile[6];
+    GameTile nextOnPath = null;
 
-    int[] distances;
+    int distance;
 
     GameTileContent content;
 
-    public Vector3[] exitPoint = new Vector3[6];
-
-    public Direction[] PathDirection = new Direction[6];
+    public Direction PathDirection = new Direction();
 
 
     public GameTileContent Content {
@@ -52,43 +50,39 @@ public class GameTile : MonoBehaviour {
 
     public bool IsAlternative { get; set; }
 
-    public bool HasPath(int num) => distances[num] != int.MaxValue;
+    public bool HasPath() => distance != int.MaxValue;
 
-    public bool IsDestination(int num) => distances[num] == 0;
+    public bool IsDestination() => distance == 0;
 
-    public GameTile NextTileOnPath(int num) => nextOnPath[num];
+    public GameTile NextTileOnPath() => nextOnPath;
 
     public void BecomeDestination(int num) {
-        distances[num] = 0;
-        nextOnPath[num] = null;
-        exitPoint[num] = transform.localPosition;
+        distance = 0;
+        nextOnPath = null;
     }
 
     public void ClearPath() {
-        distances = new int[] {int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue};
-        nextOnPath = new GameTile[] {null, null, null, null, null, null};
-        exitPoint = new Vector3[]
-            {new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3()};
-        PathDirection = new Direction[]
-            {new Direction(), new Direction(), new Direction(), new Direction(), new Direction(), new Direction()};
+        distance = int.MaxValue;
+        nextOnPath = null;
+        PathDirection = new Direction();
     }
 
-    public GameTile GrowPathNorth(int num) => GrowPathTo(num, north, Direction.South);
-    public GameTile GrowPathNorthEast(int num) => GrowPathTo(num, northEast, Direction.SouthWest);
+    public GameTile GrowPathNorth(int num) => GrowPathTo(north, Direction.South);
+    public GameTile GrowPathNorthEast(int num) => GrowPathTo(northEast, Direction.SouthWest);
 
-    public GameTile GrowPathEast(int num) => GrowPathTo(num, east, Direction.West);
-    public GameTile GrowPathSouthEast(int num) => GrowPathTo(num, southEast, Direction.NorthWest);
+    public GameTile GrowPathEast(int num) => GrowPathTo(east, Direction.West);
+    public GameTile GrowPathSouthEast(int num) => GrowPathTo(southEast, Direction.NorthWest);
 
-    public GameTile GrowPathSouth(int num) => GrowPathTo(num, south, Direction.North);
-    public GameTile GrowPathSouthWest(int num) => GrowPathTo(num, southWest, Direction.NorthEast);
+    public GameTile GrowPathSouth(int num) => GrowPathTo(south, Direction.North);
+    public GameTile GrowPathSouthWest(int num) => GrowPathTo(southWest, Direction.NorthEast);
 
-    public GameTile GrowPathWest(int num) => GrowPathTo(num, west, Direction.East);
-    public GameTile GrowPathNorthWest(int num) => GrowPathTo(num, northWest, Direction.SouthEast);
+    public GameTile GrowPathWest(int num) => GrowPathTo(west, Direction.East);
+    public GameTile GrowPathNorthWest(int num) => GrowPathTo(northWest, Direction.SouthEast);
 
-    GameTile GrowPathTo(int num, GameTile neighbor, Direction direction) {
-        Debug.Assert(HasPath(num), "No path!");
+    GameTile GrowPathTo(GameTile neighbor, Direction direction) {
+        Debug.Assert(HasPath(), "No path!");
         if (neighbor == null || 
-            neighbor.HasPath(num) ||
+            neighbor.HasPath() ||
             direction == Direction.NorthEast && south.Content.BlocksPath && west.Content.BlocksPath || 
             direction == Direction.NorthWest && south.Content.BlocksPath && east.Content.BlocksPath ||
             direction == Direction.SouthEast && north.Content.BlocksPath && west.Content.BlocksPath ||
@@ -96,10 +90,9 @@ public class GameTile : MonoBehaviour {
             return null;
         }
 
-        neighbor.distances[num] = distances[num] + 1;
-        neighbor.nextOnPath[num] = this;
-        // neighbor.exitPoint[num] = neighbor.transform.localPosition + direction.GetHalfVector();
-        neighbor.PathDirection[num] = direction;
+        neighbor.distance = distance + 1;
+        neighbor.nextOnPath = this;
+        neighbor.PathDirection = direction;
         
         return neighbor.Content.BlocksPath ? null : neighbor;
     }
@@ -108,33 +101,9 @@ public class GameTile : MonoBehaviour {
         arrow.gameObject.SetActive(false);
     }
 
-    public void ShowPath(int num) {
-        if (distances[num] == 0) {
-            arrow.gameObject.SetActive(false);
-            return;
-        }
-
+    public void ShowPath() {
         arrow.gameObject.SetActive(true);
-        arrow.localRotation =
-            nextOnPath[num] == north ? northRotation :
-            nextOnPath[num] == northEast ? northEastRotation :
-            nextOnPath[num] == east ? eastRotation :
-            nextOnPath[num] == southEast ? southEastRotation :
-            nextOnPath[num] == south ? southRotation :
-            nextOnPath[num] == southWest ? southWestRotation :
-            nextOnPath[num] == northWest ? northWestRotation :
-            westRotation;
     }
-
-    static Quaternion
-        northRotation = Quaternion.Euler(0f, 0f, 0f),
-        northEastRotation = Quaternion.Euler(0f, 0f, 315f),
-        eastRotation = Quaternion.Euler(0f, 0f, 270f),
-        southEastRotation = Quaternion.Euler(0f, 0f, 225f),
-        southRotation = Quaternion.Euler(0f, 0f, 180f),
-        southWestRotation = Quaternion.Euler(0f, 0f, 135f),
-        westRotation = Quaternion.Euler(0f, 0f, 90f),
-        northWestRotation = Quaternion.Euler(0f, 0f, 45f);
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
         Debug.Assert(

@@ -46,6 +46,10 @@ public class Game : MonoBehaviour {
 
 	private bool isBuilding = false;
 
+	private bool giftAvailable = false;
+
+	private GameTile giftTile;
+
 	List<GameTile> newTowers = new List<GameTile>();
 
 	static Game instance;
@@ -106,6 +110,7 @@ public class Game : MonoBehaviour {
 			if (!isBuildPhase) {
 				isBuildPhase = true;
 				availableBuilds = 5;
+				if(giftAvailable) board.ToggleGift(giftTile);
 			}
 		}
 
@@ -151,15 +156,7 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.P)) {
-			if (board.ShowPath == 9) {
-				board.ShowPath = 0;
-			}
-			else if (board.ShowPath == 5) {
-				board.ShowPath = 9;
-			}
-			else {
-				board.ShowPath++;
-			}
+			board.ShowPath = !board.ShowPath;
 		}
 
 		if (Input.GetKeyDown(KeyCode.Space)) {
@@ -170,7 +167,7 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.G)) {
-			board.ShowGrid = !board.ShowGrid;
+			SpawnGift();
 		}
 
 		if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
@@ -440,10 +437,20 @@ public class Game : MonoBehaviour {
 		}
 	}
 
+	void SpawnGift() {
+		GameTile tile = board.GetTile(TouchRay);
+		giftAvailable = true;
+		giftTile = tile;
+		board.ToggleGift(tile);
+	}
+
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
-		GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
+		// GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
 		Enemy enemy = factory.Get(type);
-		enemy.SpawnOn(spawnPoint);
+		if(type == EnemyType.Medium)
+			enemy.Spawn(instance.board.FlyingPath, instance.board.FlyingPathDirections);
+		else 
+			enemy.Spawn(instance.board.GroundPath, instance.board.GroundPathDirections);
 		instance.enemies.Add(enemy);
 	}
 

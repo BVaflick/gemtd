@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name1: 
+  scale: 1
   blastPatricals: {fileID: 0}
 --- !u!1 &5934646437656870590
 GameObject:
@@ -238,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b67f92050f9c0448fcf6e3fe05a18b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 4
+  type: 5
   targetingRange: 2.36
   towerType: 2
   combo: 

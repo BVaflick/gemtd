@@ -6,6 +6,9 @@ public class GameTileContentFactory : GameObjectFactory {
 
 	[SerializeField]
 	GameTileContent destinationPrefab = default;
+	
+	[SerializeField]
+	GameTileContent giftboxPrefab = default;
 
 	[SerializeField]
 	GameTileContent emptyPrefab = default;
@@ -26,6 +29,7 @@ public class GameTileContentFactory : GameObjectFactory {
 	public GameTileContent Get (GameTileContentType type) {
 		switch (type) {
 			case GameTileContentType.Destination: return Get(destinationPrefab);
+			case GameTileContentType.Gift: return Get(giftboxPrefab);
 			case GameTileContentType.Empty: return Get(emptyPrefab);
 			case GameTileContentType.Wall: return Get(wallPrefab);
 			case GameTileContentType.SpawnPoint: return Get(spawnPointPrefab);

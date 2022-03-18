@@ -28,7 +28,8 @@ public class Enemy : GameBehavior {
 	DirectionChange directionChange;
 	float directionAngleFrom, directionAngleTo;
 	float progress, progressFactor;
-	float pathOffset;
+	List<GameTile> path;
+	List<Direction> directions;
 	public float armor { get; set; }
 	public float additionalArmor { get; set; }
 	public float speed { get; set; }
@@ -93,13 +94,13 @@ public class Enemy : GameBehavior {
 		    direction == Direction.SouthWest) progress += Time.deltaTime * (progressFactor / Mathf.Sqrt(2));
 		else progress += Time.deltaTime * progressFactor;
 		while (progress >= 1f) {
+			progress = (progress - 1f) / progressFactor;
+			PrepareNextState();
 			if (tileTo == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
 				animator.PlayOutro();
 				return true;
 			}
-			progress = (progress - 1f) / progressFactor;
-			PrepareNextState();
 			progress *= progressFactor;
 		}
 		if (directionChange != DirectionChange.None && progress * 3 < 1) {
@@ -143,29 +144,34 @@ public class Enemy : GameBehavior {
 		Health -= damage * modifier;
 	}
 
-	public void SpawnOn(GameTile tile) {
-		tileFrom = tile;
-		tileTo = tile.NextTileOnPath(num);
+	public void Spawn(List<GameTile> path, List<Direction> directions) {
+		this.path = path;
+		this.directions = directions;
+		tileFrom = path[num];
+		direction = directions[num];
+		tileTo = path[++num];
 		progress = 0f;
 		PrepareIntro();
 	}
 
 	void PrepareNextState() {
 		tileFrom = tileTo;
-		tileTo = tileTo.NextTileOnPath(num);
+		directionChange = direction.GetDirectionChangeTo(directions[num]);
+		direction = directions[num];
+		tileTo = ++num == path.Count ? null : path[num];
 		positionFrom = positionTo;
 		if (tileTo == null) {
-			if (num >= 5) {
-				PrepareOutro();
-				return;
-			} else {
-				num += 1;
-				tileTo = tileFrom.NextTileOnPath(num);
-			}
+			num = 0;
+			PrepareOutro();
+			return;
 		}
-		positionTo = tileTo.transform.localPosition;
-		directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection[num]);
-		direction = tileFrom.PathDirection[num];
+		
+		
+		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
+		
+		
+		
+		
 		directionAngleFrom = directionAngleTo;
 		switch (directionChange) {
 			case DirectionChange.None: PrepareForward(); break;
@@ -219,9 +225,8 @@ public class Enemy : GameBehavior {
 
 	void PrepareIntro() {
 		positionFrom = tileFrom.transform.localPosition;
-		transform.localPosition = positionFrom;
-		positionTo = tileTo.transform.localPosition;
-		direction = tileFrom.PathDirection[num];
+		transform.localPosition = new Vector3(positionFrom.x, transform.localPosition.y, positionFrom.z);
+		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
 		directionChange = DirectionChange.None;
 		directionAngleFrom = directionAngleTo = direction.GetAngle();
 		transform.localRotation = direction.GetRotation();

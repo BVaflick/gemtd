@@ -24,6 +24,12 @@ public class GameBoard : MonoBehaviour {
 	List<GameTile> spawnPoints = new List<GameTile>();
 
 	List<GameTile> checkpoints = new List<GameTile>();
+	
+	List<Direction> groundPathDirections = new List<Direction>();
+	List<GameTile> groundPath = new List<GameTile>();
+	
+	List<GameTile> flyingPath = new List<GameTile>();
+	List<Direction> flyingPathDirections = new List<Direction>();
 
 	List<Queue<GameTile>> searchFrontiers = new List<Queue<GameTile>>();
 
@@ -33,7 +39,7 @@ public class GameBoard : MonoBehaviour {
 
 	bool showGrid;
 
-	int showPath = 9;
+	bool showPath = false;
 
 	public bool ShowGrid {
 		get => showGrid;
@@ -48,27 +54,26 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 	}
-
-	public int ShowPath {
+	public bool ShowPath {
 		get => showPath;
 		set {
 			showPath = value;
 			foreach (GameTile t in tiles) {
 				t.HidePath();
 			}
-			if (showPath != 9) {
-				for (int i = 0; i <= 5; i++) {
-					GameTile tile = i == 0 ? spawnPoints[0] : checkpoints[i - 1].NextTileOnPath(i);
-					while (!tile.IsDestination(i)) {
-						tile.ShowPath(i);
-						tile = tile.NextTileOnPath(i);
-					}
+			if (showPath) {
+				foreach (var tile in groundPath) {
+					tile.ShowPath();
 				}
 			}
 		}
 	}
 
 	public int  SpawnPointCount => spawnPoints.Count;
+	public List<GameTile> GroundPath => groundPath;
+	public List<Direction> GroundPathDirections => groundPathDirections;
+	public List<GameTile> FlyingPath => flyingPath;
+	public List<Direction> FlyingPathDirections => flyingPathDirections;
 
 	public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
 		this.size = size;
@@ -192,11 +197,11 @@ public class GameBoard : MonoBehaviour {
 				FindPaths();
 			}
 			return true;
-		} else if (tile.Content.Type == GameTileContentType.Wall) {
+		} if (tile.Content.Type == GameTileContentType.Wall) {
 			tile.Content = contentFactory.Get(towerType);
 			updatingContent.Add(tile.Content);
 			return true;
-		} else if (tile.Content.Type == GameTileContentType.Tower) {
+		} if (tile.Content.Type == GameTileContentType.Tower) {
 			updatingContent.Remove(tile.Content);
 			tile.Content = contentFactory.Get(towerType);
 			updatingContent.Add(tile.Content);
@@ -215,6 +220,25 @@ public class GameBoard : MonoBehaviour {
 			tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
 			tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
 			spawnPoints.Add(tile);
+		}
+	}
+
+	public void ToggleGift(GameTile tile) {
+		if (tile.Content.Type == GameTileContentType.Gift) {
+			tile.Content = contentFactory.Get(GameTileContentType.Empty);
+			FlyingPath.RemoveAt(1);
+			checkpoints.RemoveAt(0);
+			FindPaths();
+		} else if (tile.Content.Type == GameTileContentType.Empty) {
+			tile.Content = contentFactory.Get(GameTileContentType.Gift);
+			FlyingPath.Insert(1, tile);
+			checkpoints.Insert(0, tile);
+			if (!FindPaths()) {
+				tile.Content = contentFactory.Get(GameTileContentType.Empty);
+				FlyingPath.RemoveAt(1);
+				checkpoints.RemoveAt(0);
+				FindPaths();
+			}
 		}
 	}
 
@@ -244,61 +268,66 @@ public class GameBoard : MonoBehaviour {
 	}
 
 	bool FindPaths() {
-		foreach (GameTile tile in tiles) {
-			tile.ClearPath();
-		}
+		groundPath = new List<GameTile>();
+		groundPathDirections = new List<Direction>();
 		for (int i = 0; i < checkpoints.Count; i++) {
+			foreach (GameTile tile in tiles) {
+				tile.ClearPath();
+			}
 			GameTile checkpoint = checkpoints[i];
 			checkpoint.BecomeDestination(i);
 			Queue<GameTile> searchFrontier = new Queue<GameTile>();
 			searchFrontier.Enqueue(checkpoint);
 			while (searchFrontier.Count > 0) {
 				GameTile tile = searchFrontier.Dequeue();
+				if (i == 0 && spawnPoints[0] == tile || i != 0 && checkpoints[i - 1] == tile) 
+					break;
 				if (tile != null) {
-					if (tile.IsAlternative) {
-						searchFrontier.Enqueue(tile.GrowPathNorth(i));
-						searchFrontier.Enqueue(tile.GrowPathSouth(i));
-						searchFrontier.Enqueue(tile.GrowPathEast(i));
-						searchFrontier.Enqueue(tile.GrowPathWest(i));
-						searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
-						searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
-					} else {
-						searchFrontier.Enqueue(tile.GrowPathWest(i));
-						searchFrontier.Enqueue(tile.GrowPathEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouth(i));
-						searchFrontier.Enqueue(tile.GrowPathNorth(i));
-						searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
-						searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
-						searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
-					}
+					searchFrontier.Enqueue(tile.GrowPathNorth(i));
+					searchFrontier.Enqueue(tile.GrowPathSouth(i));
+					searchFrontier.Enqueue(tile.GrowPathEast(i));
+					searchFrontier.Enqueue(tile.GrowPathWest(i));
+					searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
+					searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
+					searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
+					searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
 				}
 			}
-			if ((i == 0 && !spawnPoints[0].HasPath(i)) || (i != 0 && !checkpoints[i - 1].HasPath(i))) {
+			if ((i == 0 && !spawnPoints[0].HasPath()) || (i != 0 && !checkpoints[i - 1].HasPath())) {
 				return false;
+			}
+
+			GameTile t = i == 0 ? spawnPoints[0] : checkpoints[i - 1];
+			while (!t.IsDestination()) {
+				groundPath.Add(t);
+				groundPathDirections.Add(t.PathDirection);
+				t = t.NextTileOnPath();
 			}
 		}
 
+		groundPath.Add(checkpoints[checkpoints.Count - 1]);
+		groundPathDirections.Add(groundPathDirections[groundPathDirections.Count - 1]);
+		if (flyingPath.Count == 0) {
+			flyingPath = groundPath;
+			flyingPathDirections = groundPathDirections;
+		}
 		ShowPath = showPath;
 		return true;
 	}
 
 	private void OnDrawGizmos() {
-		if (GizmoExtensions.showPath) {
-			for (int i = 0; i <= 5; i++) {
-				GameTile tile = i == 0 ? spawnPoints[0] : checkpoints[i - 1];
-				Handles.color = new Color(1, 1, 1, 0.075f);
-				Handles.DrawSolidDisc(tile.transform.position, transform.up, (float) 0.0375f);
-				while (!tile.IsDestination(i)) {
-					if (tile.PathDirection[i].GetDirectionChangeTo(tile.NextTileOnPath(i).PathDirection[i]) !=
-					    DirectionChange.None)
-						Handles.DrawSolidDisc(tile.NextTileOnPath(i).transform.position, transform.up, (float) 0.0375f);
-					Handles.DrawDottedLine(tile.transform.position, tile.NextTileOnPath(i).transform.position, 4f);
-					tile = tile.NextTileOnPath(i);
-				}
-			}
-		}
+		// if (GizmoExtensions.showPath) {
+		// 	for (int i = 0; i <= 5; i++) {
+		// 		GameTile tile = i == 0 ? spawnPoints[0] : checkpoints[i - 1];
+		// 		Handles.color = new Color(1, 1, 1, 0.075f);
+		// 		Handles.DrawSolidDisc(tile.transform.position, transform.up, (float) 0.0375f);
+		// 		while (!tile.IsDestination()) {
+		// 			if (tile.PathDirection.GetDirectionChangeTo(tile.NextTileOnPath().PathDirection) != DirectionChange.None)
+		// 				Handles.DrawSolidDisc(tile.NextTileOnPath().transform.position, transform.up, (float) 0.0375f);
+		// 			Handles.DrawDottedLine(tile.transform.position, tile.NextTileOnPath().transform.position, 4f);
+		// 			tile = tile.NextTileOnPath();
+		// 		}
+		// 	}
+		// }
 	}
 }
