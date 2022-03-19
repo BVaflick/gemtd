@@ -106,6 +106,9 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 		prepareCheckPoints();
+		flyingPath.Add(spawnPoints[0]);
+		flyingPath.AddRange(checkpoints);
+		flyingPathDirections = new List<Direction>{Direction.South, Direction.East, Direction.North, Direction.West, Direction.South, Direction.East, Direction.East};
 	}
 
 	void prepareCheckPoints() {
@@ -307,10 +310,6 @@ public class GameBoard : MonoBehaviour {
 
 		groundPath.Add(checkpoints[checkpoints.Count - 1]);
 		groundPathDirections.Add(groundPathDirections[groundPathDirections.Count - 1]);
-		if (flyingPath.Count == 0) {
-			flyingPath = groundPath;
-			flyingPathDirections = groundPathDirections;
-		}
 		ShowPath = showPath;
 		return true;
 	}

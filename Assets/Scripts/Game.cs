@@ -447,7 +447,7 @@ public class Game : MonoBehaviour {
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
 		// GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
 		Enemy enemy = factory.Get(type);
-		if(type == EnemyType.Medium)
+		if(type == EnemyType.Bee)
 			enemy.Spawn(instance.board.FlyingPath, instance.board.FlyingPathDirections);
 		else 
 			enemy.Spawn(instance.board.GroundPath, instance.board.GroundPathDirections);

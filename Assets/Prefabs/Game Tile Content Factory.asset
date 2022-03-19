@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destinationPrefab: {fileID: 4362224071537235649, guid: f48cc6f7f36f66e4fa53977f4f7244e3,
     type: 3}
-  giftboxPrefab: {fileID: 3847411095615874281, guid: 2231a09320de9f441a5cd8d2dc277560,
+  giftboxPrefab: {fileID: 629718647651993770, guid: d7327edcef5998447881afbf00d6db7e,
     type: 3}
   emptyPrefab: {fileID: 6774367682587871147, guid: 959e46ab7efa86f4680932f0a82982f2,
     type: 3}

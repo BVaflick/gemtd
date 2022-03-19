@@ -90,11 +90,14 @@ public class Enemy : GameBehavior {
 			return false;
 		}
 
-		if (direction == Direction.NorthEast || direction == Direction.NorthWest || direction == Direction.SouthEast ||
-		    direction == Direction.SouthWest) progress += Time.deltaTime * (progressFactor / Mathf.Sqrt(2));
-		else progress += Time.deltaTime * progressFactor;
+		progressFactor = speed + additionalSpeed;
+		progress += Time.deltaTime * (progressFactor / Vector3.Distance(positionFrom, positionTo));
+		// if (direction == Direction.NorthEast || direction == Direction.NorthWest || direction == Direction.SouthEast ||
+		    // direction == Direction.SouthWest) progress += Time.deltaTime * (progressFactor / Mathf.Sqrt(2));
+		// else progress += Time.deltaTime * progressFactor;
 		while (progress >= 1f) {
 			progress = (progress - 1f) / progressFactor;
+			progress = 0;
 			PrepareNextState();
 			if (tileTo == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
@@ -103,8 +106,8 @@ public class Enemy : GameBehavior {
 			}
 			progress *= progressFactor;
 		}
-		if (directionChange != DirectionChange.None && progress * 3 < 1) {
-			float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress * 3);
+		if (progress * 3 / (progressFactor / Vector3.Distance(positionFrom, positionTo)) < 1) {
+			float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress * 3 / (progressFactor / Vector3.Distance(positionFrom, positionTo)));
 			transform.localRotation = Quaternion.Euler(0f, angle, 0f);
 		}
 		transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
@@ -166,6 +169,8 @@ public class Enemy : GameBehavior {
 			return;
 		}
 		
+		// transform.LookAt(tileTo.transform);
+		
 		
 		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
 		
@@ -186,7 +191,8 @@ public class Enemy : GameBehavior {
 	}
 
 	void PrepareForward() {
-		transform.localRotation = direction.GetRotation();
+		// transform.localRotation = direction.GetRotation();
+		transform.LookAt(tileTo.transform);
 		directionAngleTo = direction.GetAngle();
 		progressFactor = speed + additionalSpeed;
 	}
@@ -229,7 +235,9 @@ public class Enemy : GameBehavior {
 		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
 		directionChange = DirectionChange.None;
 		directionAngleFrom = directionAngleTo = direction.GetAngle();
-		transform.localRotation = direction.GetRotation();
+		// transform.localRotation = direction.GetRotation();
+		Quaternion rotation = Quaternion.LookRotation(positionTo);
+		transform.LookAt(tileTo.transform);
 		progressFactor = (speed + additionalSpeed);
 	}
 

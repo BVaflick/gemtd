@@ -7,7 +7,7 @@ public class EnemySpawnSequence {
 	EnemyFactory factory = default;
 
 	[SerializeField]
-	EnemyType type = EnemyType.Medium;
+	EnemyType type = EnemyType.Bee;
 
 	[SerializeField, Range(1, 100)]
 	int amount = 1;

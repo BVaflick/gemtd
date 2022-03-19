@@ -25,14 +25,14 @@ public class EnemyFactory : GameObjectFactory {
 	}
 
 	[SerializeField]
-	EnemyConfig small = default, medium = default, large = default, bug = default, chest = default, chomper = default, mushroom = default, orc = default, spitter = default, turtle = default;
+	EnemyConfig knight = default, bee = default, large = default, bug = default, chest = default, chomper = default, mushroom = default, orc = default, spitter = default, turtle = default;
 
 	EnemyConfig GetConfig(EnemyType type) {
 		switch (type) {
-			case EnemyType.Small:
-				return small;
-			case EnemyType.Medium:
-				return medium;
+			case EnemyType.Knight:
+				return knight;
+			case EnemyType.Bee:
+				return bee;
 			case EnemyType.Large:
 				return large;
 			case EnemyType.Bug:
@@ -54,7 +54,7 @@ public class EnemyFactory : GameObjectFactory {
 		return null;
 	}
 
-	public Enemy Get(EnemyType type = EnemyType.Medium) {
+	public Enemy Get(EnemyType type = EnemyType.Bee) {
 		EnemyConfig config = GetConfig(type);
 		Enemy instance = CreateGameObjectInstance(config.prefab);
 		instance.OriginFactory = this;
