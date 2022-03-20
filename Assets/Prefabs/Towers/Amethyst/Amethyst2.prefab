@@ -142,13 +142,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  targetingRange: 2.82
+  targetingRange: 3
   towerType: 1
   combo: 0000000000000000
   damage: 10
   turret: {fileID: 224102258314045308}
   launchSpeed: 30
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 28bf7252cfc8af54a9a99334ca07dd0d, type: 2}
   auras: []
 --- !u!1 &6787000539347584138
 GameObject:

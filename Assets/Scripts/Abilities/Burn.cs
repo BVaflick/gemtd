@@ -10,7 +10,6 @@ public class Burn : Buff {
 			localTarget.Enemy.ApplyDamage(40f, false);
 			Explosion explosion = Game.SpawnExplosion(true);
 			explosion.Initialize(localTarget, this.GetType().Name + level);
-			// localTarget.Enemy.Effects.Add(explosion);
 		}
 	}
 }

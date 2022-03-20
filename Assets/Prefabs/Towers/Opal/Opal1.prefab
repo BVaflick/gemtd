@@ -147,7 +147,8 @@ MonoBehaviour:
   damage: 10
   turret: {fileID: 224102258314045308}
   launchSpeed: 30
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 786d0bdd1a5537f4ebacb69de0a78822, type: 2}
   auras: []
 --- !u!1 &6787000539347584138
 GameObject:

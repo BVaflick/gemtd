@@ -51,6 +51,7 @@ public class Game : MonoBehaviour {
 	private GameTile giftTile;
 
 	List<GameTile> newTowers = new List<GameTile>();
+	List<GameTile> builtTowers = new List<GameTile>();
 
 	static Game instance;
 
@@ -188,6 +189,7 @@ public class Game : MonoBehaviour {
 
 	void BeginNewGame() {
 		newTowers.Clear();
+		builtTowers.Clear();
 		availableBuilds = 5;
 		scenarioIsInProgress = false;
 		playerHealth = 100;
@@ -379,6 +381,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void chooseTower(GameTile tile) {
+		builtTowers.Add(tile);
 		newTowers.Remove(tile);
 		if (!scenarioIsInProgress) {
 			activeScenario = scenario.Begin();
@@ -401,21 +404,38 @@ public class Game : MonoBehaviour {
 	}
 
 	void CombineOneshot() {
-		GameTile tile = board.GetTile(TouchRay);
-		Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
-		if (tower && availableBuilds == 0) {
-			int type = (int) findCombos(tower, tileContentFactory.TowerPrefabs.ToList(), newTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
-			board.ToggleTower(tile, (TowerType) type);
-			chooseTower(tile);
+		if (isBuildPhase) {
+			GameTile tile = board.GetTile(TouchRay);
+			Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
+			if (tower && availableBuilds == 0) {
+				Tower combined = findCombos(tower, tileContentFactory.TowerPrefabs.ToList(),
+					newTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
+				board.ToggleTower(tile, combined.TowerType);
+				chooseTower(tile);
+			}
+		}
+		else {
+			GameTile tile = board.GetTile(TouchRay);
+			GameTileContent content = tile.Content;
+			if (content.Type == GameTileContentType.Tower) {
+				Tower tower = (Tower) content;
+				Tower combined = findCombos(tower, tileContentFactory.TowerPrefabs.ToList(), builtTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
+				combined.Combo.ToList().ForEach(t => {
+					if (t != tower.TowerType) {
+						GameTile t2 = builtTowers.Find(tile => ((Tower) tile.Content).TowerType == t);
+						board.ToggleWall(t2);
+						builtTowers.Remove(t2);
+					}
+				});
+				board.ToggleTower(tile, combined.TowerType);
+			}
 		}
 	}	
 	
-	static List<TowerType> findCombos(Tower tower, List<Tower> availableTowers, List<Tower> towers, bool oneshot) {
-		List<TowerType> combosTypes = availableTowers.FindAll(t => t.Combo != null &&
-		                                                           t.Combo.Contains(tower.TowerType) &&
-		                                                           t.Combo.All(value =>
-			                                                           towers.Select(x => x.TowerType).Contains(value)))
-			.Select(x => x.TowerType).ToList();
+	static List<Tower> findCombos(Tower tower, List<Tower> availableTowers, List<Tower> towers, bool oneshot) {
+		List<Tower> combosTypes = availableTowers.FindAll(t => t.Combo != null && 
+																		  t.Combo.Contains(tower.TowerType) &&
+																		  t.Combo.All(value => towers.Select(x => x.TowerType).Contains(value))).ToList();
 		// if (oneshot) {
 		// 	combosTypes.AddRange(availableTowers.FindAll(t => t.oneshotCombo != null &&
 		// 	                                                  t.oneshotCombo.Contains(tower.type) &&
