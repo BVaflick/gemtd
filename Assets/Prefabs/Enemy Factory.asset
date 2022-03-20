@@ -12,29 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 492aef34ad40bf54187c228bcae53904, type: 3}
   m_Name: Enemy Factory
   m_EditorClassIdentifier: 
-  small:
+  knight:
     prefab: {fileID: 7012074777765284301, guid: 1d2597342a4b99f42a7c84a02b33cb6a,
       type: 3}
     scale:
-      min: 0.35
+      min: 0.3
       max: 0.5
     speed:
       min: 2
       max: 2
     pathOffset:
-      min: -0.4
-      max: 0.4
-    health:
-      min: 15
-      max: 20
-    armor:
       min: 0
       max: 0
-  medium:
+    health:
+      min: 15
+      max: 25
+    armor:
+      min: 2
+      max: 2
+  bee:
     prefab: {fileID: 7012074777765284301, guid: 21771f8c07d513040b1396ab0eb876c8,
       type: 3}
     scale:
-      min: 0.8
+      min: 0.75
       max: 1
     speed:
       min: 2
@@ -43,10 +43,10 @@ MonoBehaviour:
       min: 0
       max: 0
     health:
-      min: 25
-      max: 50
+      min: 20
+      max: 25
     armor:
-      min: 1
+      min: 5
       max: 5
   large:
     prefab: {fileID: 7012074777765284301, guid: 184b973351dfb284283720fadda64798,
@@ -142,8 +142,8 @@ MonoBehaviour:
     prefab: {fileID: 7012074777765284301, guid: cac95f5df50b6b9439083d1e5c8d64e9,
       type: 3}
     scale:
-      min: 0.6
-      max: 0.75
+      min: 0.55
+      max: 0.7
     speed:
       min: 2
       max: 2
@@ -151,11 +151,11 @@ MonoBehaviour:
       min: 0
       max: 0
     health:
-      min: 50
-      max: 50
+      min: 12
+      max: 15
     armor:
-      min: 5
-      max: 5
+      min: 0
+      max: 0
   spitter:
     prefab: {fileID: 7012074777765284301, guid: 51f2594c381128741a7b33bf8c249945,
       type: 3}

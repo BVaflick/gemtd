@@ -22,14 +22,12 @@ public class Enemy : GameBehavior {
 	
 	EnemyFactory originFactory;
 
-	GameTile tileFrom, tileTo;
-	Vector3 positionFrom, positionTo;
-	Direction direction;
-	DirectionChange directionChange;
-	float directionAngleFrom, directionAngleTo;
-	float progress, progressFactor;
+	GameTile currentTile, nextTile;
+	Vector3 positionFrom, positionTo, positionPrev;
+	private Quaternion direction;
+	private bool directionChanged;
+	float progress, rotationProgress, progressFactor;
 	List<GameTile> path;
-	List<Direction> directions;
 	public float armor { get; set; }
 	public float additionalArmor { get; set; }
 	public float speed { get; set; }
@@ -47,22 +45,6 @@ public class Enemy : GameBehavior {
 			originFactory = value;
 		}
 	}
-
-	void OnDrawGizmos() {
-		GUIStyle style = new GUIStyle();
-		style.normal.textColor = Color.white;
-		Handles.color = Color.red;
-		Vector3 position = transform.localPosition;
-		Handles.Label(position, "HP: " + Mathf.Ceil(Health), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "SP: " + speed + (additionalSpeed != 0 ? "" + additionalSpeed : ""), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "Armor: " + armor + (additionalArmor != 0 ? "" + additionalArmor : ""), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "Effects: " + Effects.Count, style);
-
-	}
-
 	public override bool GameUpdate() {
 		animator.GameUpdate();
 		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
@@ -92,25 +74,21 @@ public class Enemy : GameBehavior {
 
 		progressFactor = speed + additionalSpeed;
 		progress += Time.deltaTime * (progressFactor / Vector3.Distance(positionFrom, positionTo));
-		// if (direction == Direction.NorthEast || direction == Direction.NorthWest || direction == Direction.SouthEast ||
-		    // direction == Direction.SouthWest) progress += Time.deltaTime * (progressFactor / Mathf.Sqrt(2));
-		// else progress += Time.deltaTime * progressFactor;
+
 		while (progress >= 1f) {
 			progress = (progress - 1f) / progressFactor;
 			progress = 0;
 			PrepareNextState();
-			if (tileTo == null) {
+			if (nextTile == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
 				animator.PlayOutro();
 				return true;
 			}
-			progress *= progressFactor;
 		}
-		if (progress * 3 / (progressFactor / Vector3.Distance(positionFrom, positionTo)) < 1) {
-			float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress * 3 / (progressFactor / Vector3.Distance(positionFrom, positionTo)));
-			transform.localRotation = Quaternion.Euler(0f, angle, 0f);
-		}
+		if(directionChanged)
+			transform.rotation = Quaternion.Slerp(transform.rotation, direction, progress);
 		transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
+
 		return true;
 	}
 
@@ -147,105 +125,55 @@ public class Enemy : GameBehavior {
 		Health -= damage * modifier;
 	}
 
-	public void Spawn(List<GameTile> path, List<Direction> directions) {
+	public void Spawn(List<GameTile> path) {
 		this.path = path;
-		this.directions = directions;
-		tileFrom = path[num];
-		direction = directions[num];
-		tileTo = path[++num];
+		currentTile = path[num];
+		nextTile = path[++num];
 		progress = 0f;
+		rotationProgress = 0f;
+		directionChanged = false;
 		PrepareIntro();
 	}
 
 	void PrepareNextState() {
-		tileFrom = tileTo;
-		directionChange = direction.GetDirectionChangeTo(directions[num]);
-		direction = directions[num];
-		tileTo = ++num == path.Count ? null : path[num];
+		currentTile = nextTile;
+		nextTile = ++num == path.Count ? null : path[num];
+		positionPrev = positionFrom;
 		positionFrom = positionTo;
-		if (tileTo == null) {
+		if (nextTile == null) {
 			num = 0;
 			PrepareOutro();
 			return;
 		}
-		
-		// transform.LookAt(tileTo.transform);
-		
-		
-		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
-		
-		
-		
-		
-		directionAngleFrom = directionAngleTo;
-		switch (directionChange) {
-			case DirectionChange.None: PrepareForward(); break;
-			case DirectionChange.TurnRight45: PrepareTurnRight45(); break;
-			case DirectionChange.TurnRight90: PrepareTurnRight90(); break;
-			case DirectionChange.TurnRight135: PrepareTurnRight135(); break;
-			case DirectionChange.TurnLeft45: PrepareTurnLeft45(); break;
-			case DirectionChange.TurnLeft90: PrepareTurnLeft90(); break;
-			case DirectionChange.TurnLeft135: PrepareTurnLeft135(); break;
-			default: PrepareTurnAround(); break;
-		}
+		positionTo = new Vector3(nextTile.transform.localPosition.x, transform.localPosition.y, nextTile.transform.localPosition.z);
+		Quaternion currentRotation = Quaternion.LookRotation(positionFrom - positionPrev);
+		Quaternion nextRotation = Quaternion.LookRotation(positionTo - positionFrom);
+		directionChanged = currentRotation != nextRotation;
+		if (directionChanged) direction = nextRotation;
 	}
-
-	void PrepareForward() {
-		// transform.localRotation = direction.GetRotation();
-		transform.LookAt(tileTo.transform);
-		directionAngleTo = direction.GetAngle();
-		progressFactor = speed + additionalSpeed;
-	}
-
-	void PrepareTurnRight45() {
-		directionAngleTo = directionAngleFrom + 45f;
-		progressFactor = (speed + additionalSpeed);
-	}
-	void PrepareTurnRight90() {
-		directionAngleTo = directionAngleFrom + 90f;
-		progressFactor = (speed + additionalSpeed);
-	}
-	void PrepareTurnRight135() {
-		directionAngleTo = directionAngleFrom + 135f;
-		progressFactor = (speed + additionalSpeed);
-	}
-
-	void PrepareTurnLeft45() {
-		directionAngleTo = directionAngleFrom - 45f;
-		progressFactor = (speed + additionalSpeed);
-	}
-	void PrepareTurnLeft90() {
-		directionAngleTo = directionAngleFrom - 90f;
-		progressFactor = (speed + additionalSpeed);
-	}
-	void PrepareTurnLeft135() {
-		directionAngleTo = directionAngleFrom - 135f;
-		progressFactor = (speed + additionalSpeed);
-	}
-
-	void PrepareTurnAround() {
-		directionAngleTo = directionAngleFrom + 180f;
-		transform.localPosition = positionFrom;
-		progressFactor = (speed + additionalSpeed);
-	}
-
+	
 	void PrepareIntro() {
-		positionFrom = tileFrom.transform.localPosition;
+		positionFrom = currentTile.transform.localPosition;
 		transform.localPosition = new Vector3(positionFrom.x, transform.localPosition.y, positionFrom.z);
-		positionTo = new Vector3(tileTo.transform.localPosition.x, transform.localPosition.y, tileTo.transform.localPosition.z);
-		directionChange = DirectionChange.None;
-		directionAngleFrom = directionAngleTo = direction.GetAngle();
-		// transform.localRotation = direction.GetRotation();
-		Quaternion rotation = Quaternion.LookRotation(positionTo);
-		transform.LookAt(tileTo.transform);
-		progressFactor = (speed + additionalSpeed);
+		positionTo = new Vector3(nextTile.transform.localPosition.x, transform.localPosition.y, nextTile.transform.localPosition.z);
+		transform.LookAt(nextTile.transform);
 	}
 
 	void PrepareOutro() {
-		positionTo = tileFrom.transform.localPosition;
-		directionChange = DirectionChange.None;
-		directionAngleTo = direction.GetAngle();
-		transform.localRotation = direction.GetRotation();
-		progressFactor = (speed + additionalSpeed);
+		positionTo = currentTile.transform.localPosition;
+	}
+	
+	void OnDrawGizmos() {
+		GUIStyle style = new GUIStyle();
+		style.normal.textColor = Color.white;
+		Handles.color = Color.red;
+		Vector3 position = transform.localPosition;
+		Handles.Label(position, "HP: " + Mathf.Ceil(Health), style);
+		position.z -= 0.3f;
+		Handles.Label(position, "SP: " + speed + (additionalSpeed != 0 ? "" + additionalSpeed : ""), style);
+		position.z -= 0.3f;
+		Handles.Label(position, "Armor: " + armor + (additionalArmor != 0 ? "" + additionalArmor : ""), style);
+		position.z -= 0.3f;
+		Handles.Label(position, "Effects: " + Effects.Count, style);
 	}
 }

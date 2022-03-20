@@ -134,7 +134,8 @@ public class Game : MonoBehaviour {
 			BuildTower();
 		}
 		else if (Input.GetKeyDown(KeyCode.W)) {
-			RemoveWall();
+			// RemoveWall();
+			board.ToggleWall(board.GetTile(TouchRay));
 		}
 
 		if (Input.GetKeyDown(KeyCode.E)) {
@@ -180,6 +181,8 @@ public class Game : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.N)) {
 			BeginNewGame();
+		}
+		if (Input.GetKeyDown(KeyCode.Keypad9)) {
 		}
 	}
 
@@ -448,9 +451,9 @@ public class Game : MonoBehaviour {
 		// GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
 		Enemy enemy = factory.Get(type);
 		if(type == EnemyType.Bee)
-			enemy.Spawn(instance.board.FlyingPath, instance.board.FlyingPathDirections);
+			enemy.Spawn(instance.board.FlyingPath);
 		else 
-			enemy.Spawn(instance.board.GroundPath, instance.board.GroundPathDirections);
+			enemy.Spawn(instance.board.GroundPath);
 		instance.enemies.Add(enemy);
 	}
 

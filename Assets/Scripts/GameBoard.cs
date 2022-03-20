@@ -25,11 +25,9 @@ public class GameBoard : MonoBehaviour {
 
 	List<GameTile> checkpoints = new List<GameTile>();
 	
-	List<Direction> groundPathDirections = new List<Direction>();
 	List<GameTile> groundPath = new List<GameTile>();
 	
 	List<GameTile> flyingPath = new List<GameTile>();
-	List<Direction> flyingPathDirections = new List<Direction>();
 
 	List<Queue<GameTile>> searchFrontiers = new List<Queue<GameTile>>();
 
@@ -71,9 +69,7 @@ public class GameBoard : MonoBehaviour {
 
 	public int  SpawnPointCount => spawnPoints.Count;
 	public List<GameTile> GroundPath => groundPath;
-	public List<Direction> GroundPathDirections => groundPathDirections;
 	public List<GameTile> FlyingPath => flyingPath;
-	public List<Direction> FlyingPathDirections => flyingPathDirections;
 
 	public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
 		this.size = size;
@@ -108,7 +104,6 @@ public class GameBoard : MonoBehaviour {
 		prepareCheckPoints();
 		flyingPath.Add(spawnPoints[0]);
 		flyingPath.AddRange(checkpoints);
-		flyingPathDirections = new List<Direction>{Direction.South, Direction.East, Direction.North, Direction.West, Direction.South, Direction.East, Direction.East};
 	}
 
 	void prepareCheckPoints() {
@@ -272,7 +267,6 @@ public class GameBoard : MonoBehaviour {
 
 	bool FindPaths() {
 		groundPath = new List<GameTile>();
-		groundPathDirections = new List<Direction>();
 		for (int i = 0; i < checkpoints.Count; i++) {
 			foreach (GameTile tile in tiles) {
 				tile.ClearPath();
@@ -286,14 +280,14 @@ public class GameBoard : MonoBehaviour {
 				if (i == 0 && spawnPoints[0] == tile || i != 0 && checkpoints[i - 1] == tile) 
 					break;
 				if (tile != null) {
-					searchFrontier.Enqueue(tile.GrowPathNorth(i));
-					searchFrontier.Enqueue(tile.GrowPathSouth(i));
-					searchFrontier.Enqueue(tile.GrowPathEast(i));
-					searchFrontier.Enqueue(tile.GrowPathWest(i));
-					searchFrontier.Enqueue(tile.GrowPathNorthEast(i));
-					searchFrontier.Enqueue(tile.GrowPathSouthEast(i));
-					searchFrontier.Enqueue(tile.GrowPathSouthWest(i));
-					searchFrontier.Enqueue(tile.GrowPathNorthWest(i));
+					searchFrontier.Enqueue(tile.GrowPathNorth());
+					searchFrontier.Enqueue(tile.GrowPathSouth());
+					searchFrontier.Enqueue(tile.GrowPathEast());
+					searchFrontier.Enqueue(tile.GrowPathWest());
+					searchFrontier.Enqueue(tile.GrowPathNorthEast());
+					searchFrontier.Enqueue(tile.GrowPathSouthEast());
+					searchFrontier.Enqueue(tile.GrowPathSouthWest());
+					searchFrontier.Enqueue(tile.GrowPathNorthWest());
 				}
 			}
 			if ((i == 0 && !spawnPoints[0].HasPath()) || (i != 0 && !checkpoints[i - 1].HasPath())) {
@@ -303,13 +297,11 @@ public class GameBoard : MonoBehaviour {
 			GameTile t = i == 0 ? spawnPoints[0] : checkpoints[i - 1];
 			while (!t.IsDestination()) {
 				groundPath.Add(t);
-				groundPathDirections.Add(t.PathDirection);
 				t = t.NextTileOnPath();
 			}
 		}
 
 		groundPath.Add(checkpoints[checkpoints.Count - 1]);
-		groundPathDirections.Add(groundPathDirections[groundPathDirections.Count - 1]);
 		ShowPath = showPath;
 		return true;
 	}
