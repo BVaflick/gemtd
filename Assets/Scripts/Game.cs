@@ -157,6 +157,36 @@ public class Game : MonoBehaviour {
 			HandleAlternativeTouch();
 		}
 
+		float a = Input.mouseScrollDelta.y;
+		if (a > 0) {
+			Vector3 pos = Camera.main.transform.position;
+			Vector3 rot = Camera.main.transform.eulerAngles;
+			if (pos.y > 5) {
+				pos.y -= a;
+				if (pos.y < 8) {
+					rot.x -= 10f;
+					pos.z -= 1.25f;
+					Camera.main.transform.eulerAngles = rot;
+				}
+			}
+			Camera.main.transform.position = pos;
+			print(pos + " " + rot);
+		}
+		else if (a < 0) {
+			Vector3 pos = Camera.main.transform.position;
+			Vector3 rot = Camera.main.transform.eulerAngles;
+			if (pos.y < 18) {
+				pos.y -= a;
+				if (pos.y <= 8) {
+					rot.x += 10f;
+					pos.z += 1.25f;
+					Camera.main.transform.eulerAngles = rot;
+				}
+			}
+			Camera.main.transform.position = pos;
+			print(pos + " " + rot);
+		}
+
 		if (Input.GetKeyDown(KeyCode.P)) {
 			board.ShowPath = !board.ShowPath;
 		}
@@ -183,8 +213,20 @@ public class Game : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.N)) {
 			BeginNewGame();
 		}
-		if (Input.GetKeyDown(KeyCode.Keypad9)) {
+		Vector3 pos1 = Camera.main.transform.position;
+		if (Input.GetKey(KeyCode.UpArrow) || Input.mousePosition.y >= Screen.height - 10) {
+			if(pos1.z < 5) pos1.z += 20f * Time.deltaTime;
 		}
+		if (Input.GetKey(KeyCode.DownArrow) || Input.mousePosition.y <= 10) {
+			if(pos1.z > -10) pos1.z -= 20f * Time.deltaTime;
+		}
+		if (Input.GetKey(KeyCode.LeftArrow) || Input.mousePosition.x <= 10) {
+			if(pos1.x > -5) pos1.x -= 20f * Time.deltaTime;
+		}
+		if (Input.GetKey(KeyCode.RightArrow) || Input.mousePosition.x >= Screen.width - 10) {
+			if(pos1.x < 5) pos1.x += 20f * Time.deltaTime;
+		}
+		Camera.main.transform.position = pos1;
 	}
 
 	void BeginNewGame() {
