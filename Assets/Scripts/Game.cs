@@ -52,6 +52,7 @@ public class Game : MonoBehaviour {
 
 	List<GameTile> newTowers = new List<GameTile>();
 	List<GameTile> builtTowers = new List<GameTile>();
+	private GameTile hoveredTile = null;
 
 	static Game instance;
 
@@ -118,11 +119,21 @@ public class Game : MonoBehaviour {
 		if (isBuilding && availableBuilds > 0) {
 			GameTile tile = board.GetTile(TouchRay);
 			if (tile != null) {
+				if (hoveredTile != null && hoveredTile != tile) hoveredTile.Dehover();
 				flyingTower.gameObject.SetActive(true);
 				flyingTower.transform.position = tile.transform.position;
-			} else flyingTower.gameObject.SetActive(false);
+				tile.Hover();
+				hoveredTile = tile;
+			}
+			else {
+				flyingTower.gameObject.SetActive(false);
+				if (hoveredTile != null) hoveredTile.Dehover();
+			}
 		}
-		else flyingTower.gameObject.SetActive(false);
+		else {
+			flyingTower.gameObject.SetActive(false);
+			if (hoveredTile != null) hoveredTile.Dehover();
+		}
 
 		nonEnemies.GameUpdate();
 		enemies.GameUpdate();
@@ -234,6 +245,8 @@ public class Game : MonoBehaviour {
 		builtTowers.Clear();
 		availableBuilds = 5;
 		scenarioIsInProgress = false;
+		isBuilding = false;
+		isBuildPhase = true;
 		playerHealth = 100;
 		enemies.Clear();
 		nonEnemies.Clear();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 public class GameBoard : MonoBehaviour {
 	
@@ -74,6 +74,7 @@ public class GameBoard : MonoBehaviour {
 	public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
 		this.size = size;
 		this.contentFactory = contentFactory;
+		var random = new Random();
 		// ground.localScale = new Vector3(size.x, size.y, 1f);
 
 		Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
@@ -81,10 +82,7 @@ public class GameBoard : MonoBehaviour {
 		for (int i = 0, y = 0; y < size.y; y++) {
 			for (int x = 0; x < size.x; x++, i++) {
 				GameTile tile = tiles[i] = Instantiate(tilePrefab);
-				tile.transform.SetParent(transform, false);
-				tile.transform.GetComponent<MeshRenderer>().material = i % 2 == 0 ? greenGround : darkGreenGround;
-				tile.Material = i % 2 == 0 ? greenGround : darkGreenGround;
-				tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
+				tile.Initialize(transform, i % 2 == 0 ? greenGround : darkGreenGround, new Vector3(x - offset.x, 0f, y - offset.y), 90 * random.Next(0,4),180 * random.Next(0,2), random.Next(0,2));
 				if (x > 0) {
 					GameTile.MakeEastWestNeighbors(tile, tiles[i - 1]);
 				}
@@ -148,15 +146,17 @@ public class GameBoard : MonoBehaviour {
 	}
 
 	public void ToggleDestination(GameTile tile) {
-		if (tile.Content.Type == GameTileContentType.Destination) {
+		if (tile.Content.Type == GameTileContentType.Flag) {
 			if (checkpoints.Count > 1) {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 				checkpoints.Remove(tile);
 				// FindPaths();
 			}
 		} else if (tile.Content.Type == GameTileContentType.Empty) {
-			tile.Content = contentFactory.Get(GameTileContentType.Destination);
-			tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
+			if (checkpoints.Count == 5) {
+				tile.Content = contentFactory.Get(GameTileContentType.Destination);
+				tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
+			} else tile.Content = contentFactory.Get(GameTileContentType.Flag);
 			checkpoints.Add(tile);
 			// FindPaths();
 		}

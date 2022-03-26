@@ -1,16 +1,16 @@
 ﻿using System;
 using UnityEngine;
+using Random = System.Random;
 
 public class GameTile : MonoBehaviour {
     [SerializeField]
     Transform arrow = default;
     
-    [SerializeField]
     Transform grass = default;
-
+    
     [SerializeField]
-    public Material[] Materials;
-
+    Transform[] grassPrefabs = default;
+    
     [SerializeField]
     Material hoverMaterial = default;
 
@@ -52,6 +52,23 @@ public class GameTile : MonoBehaviour {
     public bool IsDestination() => distance == 0;
 
     public GameTile NextTileOnPath() => nextOnPath;
+
+    public void Initialize(Transform parent, Material material, Vector3 position, int angleY, int angleX, int prefabIndex) {
+        transform.SetParent(parent, false);
+        grass = grassPrefabs[prefabIndex];
+        grass.gameObject.SetActive(true);
+        Vector3 rot = grass.transform.eulerAngles;
+        rot.y = angleY;
+        rot.x = angleX;
+        if (angleX == 180) {
+            Vector3 grassPosition = grass.transform.position;
+            grassPosition.y = -1.1f;
+            grass.transform.position = grassPosition;
+        }
+        grass.transform.eulerAngles = rot;
+        Material = material;
+        transform.localPosition = position;
+    }
 
     public void BecomeDestination(int num) {
         distance = 0;
@@ -132,11 +149,11 @@ public class GameTile : MonoBehaviour {
         northWest.southEast = southEast;
     }
 
-    private void OnMouseEnter() {
+    public void Hover() {
         grass.transform.GetComponent<MeshRenderer>().material = hoverMaterial;
     }
 
-    private void OnMouseExit() {
+    public void Dehover() {
         grass.transform.GetComponent<MeshRenderer>().material = Material;
     }
 }
