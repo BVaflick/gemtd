@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  targetingRange: 1.5
+  targetingRange: 3
   towerType: 18
   combo: 
   damage: 7
