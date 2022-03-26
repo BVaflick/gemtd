@@ -47,7 +47,7 @@ MonoBehaviour:
   model: {fileID: 6203277498881417615}
   blastPatricals: {fileID: 2046620288238143109, guid: 3beed3d597dd5fc4e82057c2f51d98cd,
     type: 3}
-  material: {fileID: 2100000, guid: 5ca81ab82544d654682cd74a57d788eb, type: 2}
+  material: {fileID: 2100000, guid: 6698c6422bbe6f24391ed406ac227712, type: 2}
   animationConfig: {fileID: 11400000, guid: a2bfd896ec38c9743ab2cf2505e9306b, type: 2}
 --- !u!1 &8000448914809957397
 GameObject:

@@ -56,6 +56,7 @@ MonoBehaviour:
   - {fileID: 2498044035098148098}
   - {fileID: 3297686904820585463}
   hoverMaterial: {fileID: 2100000, guid: 82d80d7a0a152de40a8c12d40c8ea783, type: 2}
+  pathMaterial: {fileID: 2100000, guid: 940589b17db38594abfd62d58c297c28, type: 2}
 --- !u!64 &7780755091336640665
 MeshCollider:
   m_ObjectHideFlags: 0

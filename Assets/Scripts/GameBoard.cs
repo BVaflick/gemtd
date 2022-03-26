@@ -57,11 +57,11 @@ public class GameBoard : MonoBehaviour {
 		set {
 			showPath = value;
 			foreach (GameTile t in tiles) {
-				t.HidePath();
+				t.Dehover();
 			}
 			if (showPath) {
-				foreach (var tile in groundPath) {
-					tile.ShowPath();
+				for (int i = 1; i < groundPath.Count - 1; i++) {
+					groundPath[i].ShowPath();
 				}
 			}
 		}

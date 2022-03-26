@@ -47,7 +47,7 @@ MonoBehaviour:
   model: {fileID: 6203277498881417615}
   blastPatricals: {fileID: 2046620288238143109, guid: 3beed3d597dd5fc4e82057c2f51d98cd,
     type: 3}
-  material: {fileID: 2100000, guid: 5ca81ab82544d654682cd74a57d788eb, type: 2}
+  material: {fileID: 2100000, guid: 239362636c71f3743b656d468627099f, type: 2}
   animationConfig: {fileID: 11400000, guid: b65d04075e5a83e4baee99e7fe8df7ad, type: 2}
 --- !u!1 &8000448914809957397
 GameObject:
@@ -591,6 +591,31 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 7963418468816379038}
   m_PrefabAsset: {fileID: 0}
+--- !u!135 &8501960526389564239
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962484105662397206}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Center: {x: 0, y: 0.05, z: 0}
+--- !u!114 &7804481701825431289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962484105662397206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &3636731784244815690
 Animator:
   serializedVersion: 3
@@ -610,28 +635,3 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &7804481701825431289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7962484105662397206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!135 &8501960526389564239
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7962484105662397206}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.05
-  m_Center: {x: 0, y: 0.05, z: 0}

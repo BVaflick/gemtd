@@ -12,6 +12,9 @@ public class GameTileContentFactory : GameObjectFactory {
 	
 	[SerializeField]
 	GameTileContent flagPrefab = default;
+	
+	[SerializeField]
+	GameTileContent gatePrefab = default;
 
 	[SerializeField]
 	GameTileContent emptyPrefab = default;
@@ -37,6 +40,7 @@ public class GameTileContentFactory : GameObjectFactory {
 			case GameTileContentType.Empty: return Get(emptyPrefab);
 			case GameTileContentType.Wall: return Get(wallPrefab);
 			case GameTileContentType.SpawnPoint: return Get(spawnPointPrefab);
+			case GameTileContentType.Gate: return Get(gatePrefab);
 		}
 		Debug.Assert(false, "Unsupported non-tower type: " + type);
 		return null;

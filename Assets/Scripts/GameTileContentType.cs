@@ -1,3 +1,3 @@
 ﻿public enum GameTileContentType {
-	Empty, Destination, Gift, Wall, SpawnPoint, Tower, Flag
+	Empty, Destination, Gift, Wall, SpawnPoint, Tower, Flag, Gate
 }

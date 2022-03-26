@@ -13,6 +13,10 @@ public class GameTile : MonoBehaviour {
     
     [SerializeField]
     Material hoverMaterial = default;
+    
+    [SerializeField]
+    Material pathMaterial = default;
+
 
     private Material material = default;
 
@@ -109,12 +113,9 @@ public class GameTile : MonoBehaviour {
         return neighbor.Content.BlocksPath ? null : neighbor;
     }
 
-    public void HidePath() {
-        arrow.gameObject.SetActive(false);
-    }
-
     public void ShowPath() {
-        arrow.gameObject.SetActive(true);
+        // arrow.gameObject.SetActive(true);
+        grass.transform.GetComponent<MeshRenderer>().material = pathMaterial;
     }
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
