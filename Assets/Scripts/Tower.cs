@@ -28,6 +28,8 @@ public class Tower : GameTileContent {
 
 	[SerializeField]
 	Transform turret = default;
+	[SerializeField]
+	Transform selection = default;
 	
 	[SerializeField]
 	float launchSpeed = 30f;
@@ -103,7 +105,10 @@ public class Tower : GameTileContent {
 		abilities.ForEach(ability => ability.Modify(this));
 		statusEffects.FindAll(statusEffect => statusEffect is TowerBuff).ForEach(statusEffect => ((TowerBuff) statusEffect).Modify(this));
 		if (TrackTarget(ref targets) || AcquireTarget(ref targets)) {
+			Vector3 rot = turret.transform.eulerAngles;
 			turret.LookAt(targets[0].Position);
+			Vector3 rot2 = turret.transform.eulerAngles;
+			turret.eulerAngles = new Vector3(rot.x, rot2.y, rot.z);
 			launchProgress += (attackSpeed + additionalAttackSpeed) * Time.deltaTime;
 			if (launchProgress >= 1f) {
 				Buff burn = statusEffects.Find(statusEffect => statusEffect is Burn);
@@ -141,6 +146,10 @@ public class Tower : GameTileContent {
 		}
 	}
 
+	public void swithSelection() {
+		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
+	}
+	
 	// void OnDrawGizmosSelected() {
 	void OnDrawGizmos() {
 		if (GizmoExtensions.showTowerRange && TowerType != TowerType.FlyingTower) {

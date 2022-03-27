@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -13,6 +14,10 @@ public class Game : MonoBehaviour {
 	public const int towerLayerMask = 1 << 10;
 
 	[SerializeField] GameBoard board = default;
+	[SerializeField] GameObject mainPanel = default;
+	[SerializeField] GameObject towerPanel = default;
+	[SerializeField] GameObject wallPanel = default;
+	
 
 	int playerHealth = 100;
 
@@ -53,6 +58,7 @@ public class Game : MonoBehaviour {
 	List<GameTile> newTowers = new List<GameTile>();
 	List<GameTile> builtTowers = new List<GameTile>();
 	private GameTile hoveredTile = null;
+	private GameTile selectedTile = null;
 
 	static Game instance;
 
@@ -143,7 +149,8 @@ public class Game : MonoBehaviour {
 
 	void handleInput() {
 		if (Input.GetKeyDown(KeyCode.Q)) {
-			BuildTower();
+			GameTile tile = board.GetTile(TouchRay);
+			BuildTower(tile);
 		}
 		else if (Input.GetKeyDown(KeyCode.W)) {
 			// RemoveWall();
@@ -151,12 +158,13 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.E)) {
+			GameTile tile = board.GetTile(TouchRay);
 			if (Input.GetKey(KeyCode.LeftShift)) {
-				CombineSame(false);
+				CombineSame(tile, false);
 			} else if (Input.GetKey(KeyCode.LeftControl)) {
-				CombineOneshot();
+				CombineOneshot(tile);
 			} else {
-				CombineSame(true);
+				CombineSame(tile, true);
 			}
 			
 		}
@@ -212,6 +220,18 @@ public class Game : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.G)) {
 			SpawnGift();
 		}
+		
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			if (selectedTile != null) {
+				towerPanel.SetActive(false);
+				wallPanel.SetActive(false);
+				mainPanel.SetActive(true);
+				if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
+					((Tower) selectedTile.Content).swithSelection();
+				}
+				selectedTile = null;
+			}
+		}
 
 		if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
 			level++;
@@ -257,27 +277,108 @@ public class Game : MonoBehaviour {
 		instance.playerHealth -= damage;
 	}
 
-	void HandleAlternativeTouch() {
-		GameTile tile = board.GetTile(TouchRay);
-		if (tile != null) {
-			if (Input.GetKey(KeyCode.LeftShift)) {
-				board.ToggleDestination(tile);
+	public void startBuilding() {
+		if(availableBuilds > 0) isBuilding = true;
+	}
+	
+	public void buildSelected() {
+		if (isBuildPhase && availableBuilds == 0 && selectedTile != null) {
+			chooseTower(selectedTile);
+			towerPanel.SetActive(false);
+			wallPanel.SetActive(false);
+			mainPanel.SetActive(true);
+			if (selectedTile.Content.Type == GameTileContentType.Tower) {
+				((Tower) selectedTile.Content).swithSelection();
 			}
-			else {
-				board.ToggleSpawnPoint(tile);
-			}
+			selectedTile = null;
+		}
+	}
+	
+	public void combineSelected(bool two) {
+		if (isBuildPhase && availableBuilds == 0 && selectedTile != null) {
+			CombineSame(selectedTile, two);
+			towerPanel.SetActive(false);
+			wallPanel.SetActive(false);
+			mainPanel.SetActive(true);
+			selectedTile = null;
+		}
+	}
+	
+	public void combineOneshotSelected() {
+		if (availableBuilds == 0 && selectedTile != null) {
+			CombineOneshot(selectedTile);
+			towerPanel.SetActive(false);
+			wallPanel.SetActive(false);
+			mainPanel.SetActive(true);
+			selectedTile = null;
 		}
 	}
 
+	public void removeSelectedWall() {
+		if (availableBuilds > 0 && selectedTile.Content.Type == GameTileContentType.Wall) {
+			RemoveWall(selectedTile);
+			wallPanel.SetActive(false);
+			towerPanel.SetActive(false);
+			mainPanel.SetActive(true);
+			selectedTile = null;
+		}
+	}
+
+	void HandleAlternativeTouch() {
+		if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
+			
+		}
+		// GameTile tile = board.GetTile(TouchRay);
+		// if (tile != null) {
+		// 	if (Input.GetKey(KeyCode.LeftShift)) {
+		// 		board.ToggleDestination(tile);
+		// 	}
+		// 	else {
+		// 		board.ToggleSpawnPoint(tile);
+		// 	}
+		// }
+	}
+
 	void HandleTouch() {
+		if (EventSystem.current.IsPointerOverGameObject()) {
+			return;
+		}
+		GameTile tile = board.GetTile(TouchRay);
 		if (isBuilding) {
-			BuildTower();
+			BuildTower(tile);
+			isBuilding = false;
 		}
 		else {
-			GameTile tile = board.GetTile(TouchRay);
 			if (tile != null) {
-				GameObject obj = tile.Content.gameObject;
-				Selection.activeGameObject = obj;
+				if (tile.Content.Type == GameTileContentType.Tower) {
+					Tower tower = (Tower) tile.Content;
+					tower.swithSelection();
+					if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
+						((Tower) selectedTile.Content).swithSelection();
+					}
+					selectedTile = tile;
+					towerPanel.SetActive(true);
+					wallPanel.SetActive(false);
+					mainPanel.SetActive(false);
+				} else if (tile.Content.Type == GameTileContentType.Wall) {
+					GameObject obj = tile.Content.gameObject;
+					if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
+						((Tower) selectedTile.Content).swithSelection();
+					}
+					selectedTile = tile;
+					towerPanel.SetActive(false);
+					wallPanel.SetActive(true);
+					mainPanel.SetActive(false);
+				}
+				else {
+					towerPanel.SetActive(false);
+					wallPanel.SetActive(false);
+					mainPanel.SetActive(true);
+					if (selectedTile!= null && selectedTile.Content.Type == GameTileContentType.Tower) {
+						((Tower) selectedTile.Content).swithSelection();
+					}
+					selectedTile = null;
+				}
 			}
 		}
 	}
@@ -368,8 +469,7 @@ public class Game : MonoBehaviour {
 		}
 	}
 
-	void RemoveWall() {
-		GameTile tile = board.GetTile(TouchRay);
+	void RemoveWall(GameTile tile) {
 		// bool isTower = newTowers.Find(t => t == tile);
 		// if (tile != null && !isTower && availableBuilds > 0) {
 		if (tile != null && availableBuilds > 0) {
@@ -377,8 +477,7 @@ public class Game : MonoBehaviour {
 		}
 	}
 
-	void BuildTower() {
-		GameTile tile = board.GetTile(TouchRay);
+	void BuildTower(GameTile tile) {
 		bool isTower = newTowers.Find(t => t == tile);
 		if (tile != null && !isTower && availableBuilds > 0) {
 			TowerType type;
@@ -458,9 +557,8 @@ public class Game : MonoBehaviour {
 		newTowers.Clear();
 	}
 
-	void CombineOneshot() {
+	void CombineOneshot(GameTile tile) {
 		if (isBuildPhase) {
-			GameTile tile = board.GetTile(TouchRay);
 			Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 			if (tower && availableBuilds == 0) {
 				Tower combined = findCombos(tower, tileContentFactory.TowerPrefabs.ToList(),
@@ -470,7 +568,6 @@ public class Game : MonoBehaviour {
 			}
 		}
 		else {
-			GameTile tile = board.GetTile(TouchRay);
 			GameTileContent content = tile.Content;
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
@@ -502,8 +599,7 @@ public class Game : MonoBehaviour {
 		return combosTypes;
 	}
 	
-	void CombineSame(bool two) {
-		GameTile tile = board.GetTile(TouchRay);
+	void CombineSame(GameTile tile, bool two) {
 		Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 		if (tower && 
 		    availableBuilds == 0 &&
