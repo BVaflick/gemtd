@@ -94,7 +94,8 @@ public class Enemy : GameBehavior {
 
 	public void Initialize(float scale, float speed, float pathOffset, float health, float armor) {
 		Scale = scale;
-		model.localScale = new Vector3(scale, scale, scale);
+		Vector3 s = model.localScale;
+		model.localScale = new Vector3(scale * s.x, scale * s.y, scale * s.z);
 		this.speed = speed;
 		this.armor = armor;
 		Health = health;

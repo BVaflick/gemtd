@@ -54,45 +54,45 @@
   <ItemGroup>
      <Compile Include="Assets\gametile.cs" />
      <Compile Include="Assets\Scripts\GameTileContentFactory.cs" />
+     <Compile Include="Assets\Scripts\EnemyAnimator.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
+     <Compile Include="Assets\Scripts\GameTileContentType.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Explosion.cs" />
      <Compile Include="Assets\Scripts\EmenySpawnSequence.cs" />
+     <Compile Include="Assets\Scripts\FloatRangeSliderAttribute.cs" />
+     <Compile Include="Assets\Scripts\GameBehavior.cs" />
      <Compile Include="Assets\Scripts\MortarTower.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Poison.cs" />
      <Compile Include="Assets\Scripts\Abilities\Buff.cs" />
      <Compile Include="Assets\Scripts\GizmoExtensions.cs" />
      <Compile Include="Assets\Scripts\GameTile.cs" />
      <Compile Include="Assets\Scripts\TargetPoint.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Entities\Ice.cs" />
+     <Compile Include="Assets\Scripts\GameBehaviorCollection.cs" />
+     <Compile Include="Assets\Scripts\GameTileContent.cs" />
      <Compile Include="Assets\Scripts\TowerType.cs" />
+     <Compile Include="Assets\Scripts\WarFactory.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Damage.cs" />
+     <Compile Include="Assets\Scripts\GameBoard.cs" />
+     <Compile Include="Assets\Scripts\Abilities\EnemyBuff.cs" />
      <Compile Include="Assets\Scripts\LaserTower.cs" />
+     <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemyType.cs" />
      <Compile Include="Assets\Scripts\Shell.cs" />
+     <Compile Include="Assets\Scripts\EnemyAnimationConfig.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Slow.cs" />
      <Compile Include="Assets\Scripts\GameObjectFactory.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splash.cs" />
      <Compile Include="Assets\Scripts\Abilities\TowerBuff.cs" />
      <Compile Include="Assets\Scripts\Abilities\MinusArmor.cs" />
+     <Compile Include="Assets\Scripts\GameScenario.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Toxin.cs" />
      <Compile Include="Assets\Scripts\Abilities\Burn.cs" />
      <Compile Include="Assets\Scripts\Tower.cs" />
-     <Compile Include="Assets\Scripts\FloatRange.cs" />
-     <Compile Include="Assets\Scripts\EnemyAnimator.cs" />
-     <Compile Include="Assets\Scripts\GameTileContentType.cs" />
-     <Compile Include="Assets\Scripts\FloatRangeSliderAttribute.cs" />
-     <Compile Include="Assets\Scripts\GameBehavior.cs" />
-     <Compile Include="Assets\Scripts\Abilities\Poison.cs" />
-     <Compile Include="Assets\Scripts\Abilities\Entities\Ice.cs" />
-     <Compile Include="Assets\Scripts\GameBehaviorCollection.cs" />
-     <Compile Include="Assets\Scripts\GameTileContent.cs" />
-     <Compile Include="Assets\Scripts\WarFactory.cs" />
-     <Compile Include="Assets\Scripts\GameBoard.cs" />
-     <Compile Include="Assets\Scripts\Abilities\Damage.cs" />
-     <Compile Include="Assets\Scripts\Abilities\EnemyBuff.cs" />
-     <Compile Include="Assets\Scripts\Enemy.cs" />
-     <Compile Include="Assets\Scripts\EnemyAnimationConfig.cs" />
-     <Compile Include="Assets\Scripts\Abilities\Slow.cs" />
-     <Compile Include="Assets\Scripts\GameScenario.cs" />
      <Compile Include="Assets\Scripts\WarEntity.cs" />
      <Compile Include="Assets\Scripts\EnemyFactory.cs" />
      <Compile Include="Assets\Scripts\Abilities\Aura.cs" />
+     <Compile Include="Assets\Scripts\FloatRange.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Corrosion.cs" />
      <Compile Include="Assets\Scripts\Abilities\Ability.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splitshot.cs" />
@@ -680,14 +680,14 @@
  <Reference Include="Unity.2D.Tilemap.Editor">
  <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
  </Reference>
+ <Reference Include="com.unity.multiplayer-hlapi.Editor">
+ <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.XR.LegacyInputHelpers">
  <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VisualStudio.Editor">
  <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
- </Reference>
- <Reference Include="com.unity.multiplayer-hlapi.Editor">
- <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Workspace/gemtd/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

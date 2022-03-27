@@ -18,8 +18,7 @@ MonoBehaviour:
     type: 3}
   flagPrefab: {fileID: 8949540839279421896, guid: a2b52aa1ff90af443b72d3b7e3fefb34,
     type: 3}
-  gatePrefab: {fileID: 6876685935587662005, guid: a4f5d4b2af55e4e4d8637b2a8848162f,
-    type: 3}
+  gatePrefab: {fileID: 0}
   emptyPrefab: {fileID: 6774367682587871147, guid: 959e46ab7efa86f4680932f0a82982f2,
     type: 3}
   wallPrefab: {fileID: 271599445675624756, guid: 5bf2d13d17ea4a742b204934224e38e0,

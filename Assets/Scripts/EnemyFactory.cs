@@ -9,7 +9,7 @@ public class EnemyFactory : GameObjectFactory {
 		public Enemy prefab = default;
 
 		[FloatRangeSlider(0.1f, 2f)]
-		public FloatRange scale = new FloatRange(0.5f);
+		public FloatRange scale = new FloatRange(0.4f, 0.6f);
 
 		[FloatRangeSlider(0.2f, 5f)]
 		public FloatRange speed = new FloatRange(2f);
