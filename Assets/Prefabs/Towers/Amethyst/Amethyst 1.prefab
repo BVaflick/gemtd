@@ -462,6 +462,7 @@ MonoBehaviour:
   damage: 10
   turret: {fileID: 2918400420497168791}
   selection: {fileID: 5256942968824755098}
+  UIPanel: {fileID: 0}
   launchSpeed: 30
   abilities:
   - {fileID: 11400000, guid: 28bf7252cfc8af54a9a99334ca07dd0d, type: 2}

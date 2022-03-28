@@ -17,6 +17,9 @@ public class Enemy : GameBehavior {
 	
 	[SerializeField]
 	EnemyAnimationConfig animationConfig = default;
+
+	[SerializeField]
+	HealthBar healthBar = default;
 	
 	EnemyAnimator animator;
 	
@@ -47,6 +50,7 @@ public class Enemy : GameBehavior {
 	}
 	public override bool GameUpdate() {
 		animator.GameUpdate();
+		healthBar.transform.LookAt(transform.position + Camera.main.transform.forward);
 		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
 			if (!animator.IsDone) {
 				return true;
@@ -102,6 +106,7 @@ public class Enemy : GameBehavior {
 		Effects = new GameBehaviorCollection();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
+		healthBar.setMaxValue((int) health);
 		// Health = 20f * scale;
 	}
 	
@@ -124,6 +129,7 @@ public class Enemy : GameBehavior {
 			modifier = 1f - ((0.052f * (armor + additionalArmor)) / (0.9f + (0.048f * Math.Abs(armor + additionalArmor))));
 		}
 		Health -= damage * modifier;
+		healthBar.setValue((int) Health);
 	}
 
 	public void Spawn(List<GameTile> path) {

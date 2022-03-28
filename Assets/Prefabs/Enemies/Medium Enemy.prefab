@@ -49,6 +49,7 @@ MonoBehaviour:
     type: 3}
   material: {fileID: 2100000, guid: 0dc04e55fab5f0643a983532556e12a4, type: 2}
   animationConfig: {fileID: 11400000, guid: b65d04075e5a83e4baee99e7fe8df7ad, type: 2}
+  healthBar: {fileID: 0}
 --- !u!1 &5705819550884722837
 GameObject:
   m_ObjectHideFlags: 0

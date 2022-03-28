@@ -97,6 +97,7 @@
      <Compile Include="Assets\Scripts\Abilities\Ability.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splitshot.cs" />
      <Compile Include="Assets\Scripts\Abilities\SpeedUp.cs" />
+     <Compile Include="Assets\Scripts\HealthBar.cs" />
      <None Include="Assets\TowerDefence_Vsquad\INFO\Info.txt" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeLash.shader" />
