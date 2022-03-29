@@ -91,13 +91,13 @@
      <Compile Include="Assets\Scripts\Tower.cs" />
      <Compile Include="Assets\Scripts\WarEntity.cs" />
      <Compile Include="Assets\Scripts\EnemyFactory.cs" />
+     <Compile Include="Assets\Scripts\HealthBar.cs" />
      <Compile Include="Assets\Scripts\Abilities\Aura.cs" />
      <Compile Include="Assets\Scripts\FloatRange.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Corrosion.cs" />
      <Compile Include="Assets\Scripts\Abilities\Ability.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splitshot.cs" />
      <Compile Include="Assets\Scripts\Abilities\SpeedUp.cs" />
-     <Compile Include="Assets\Scripts\HealthBar.cs" />
      <None Include="Assets\TowerDefence_Vsquad\INFO\Info.txt" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeLash.shader" />
