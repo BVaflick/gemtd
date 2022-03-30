@@ -125,6 +125,10 @@ public class Game : MonoBehaviour {
 			}
 		}
 
+		if (towerPanel.activeSelf) {
+			towerPanel.transform.position = Camera.main.WorldToScreenPoint(selectedTile.transform.position);
+		}
+
 		if (isBuilding && availableBuilds > 0) {
 			GameTile tile = board.GetTile(TouchRay);
 			if (tile != null) {
@@ -336,6 +340,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void HandleAlternativeTouch() {
+		if (isBuilding) isBuilding = !isBuilding;
 		if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
 			
 		}
@@ -371,8 +376,8 @@ public class Game : MonoBehaviour {
 					towerPanel.SetActive(true);
 					Vector3 pos = tile.transform.position;
 					pos.y += 1f;
-					towerPanel.transform.position = pos;
-					towerPanel.transform.LookAt(tile.transform.position + Camera.main.transform.forward);
+					towerPanel.transform.position = Camera.main.WorldToScreenPoint(pos);
+					// towerPanel.transform.LookAt(tile.transform.position + Camera.main.transform.forward);
 					wallPanel.SetActive(false);
 					mainPanel.SetActive(false);
 				} else if (tile.Content.Type == GameTileContentType.Wall) {
