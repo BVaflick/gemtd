@@ -24,6 +24,8 @@ public class Game : MonoBehaviour {
 
 	int level = 1;
 
+	private bool quickCast = false;
+
 	private int temp = 0;
 
 	float[][] towerLevelProbability = {
@@ -150,8 +152,14 @@ public class Game : MonoBehaviour {
 
 	void handleInput() {
 		if (Input.GetKeyDown(KeyCode.Q)) {
-			GameTile tile = board.GetTile(TouchRay);
-			BuildTower(tile);
+			if (quickCast) {
+				GameTile tile = board.GetTile(TouchRay);
+				BuildTower(tile);
+			}
+			else {
+				if(availableBuilds > 0) isBuilding = true;
+			}
+			
 		}
 		else if (Input.GetKeyDown(KeyCode.W)) {
 			// RemoveWall();
@@ -232,6 +240,8 @@ public class Game : MonoBehaviour {
 				}
 				selectedTile = null;
 			}
+
+			if (isBuilding) isBuilding = !isBuilding;
 		}
 
 		if (Input.GetKeyDown(KeyCode.KeypadPlus)) {

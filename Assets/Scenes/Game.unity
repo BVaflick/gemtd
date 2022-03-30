@@ -4795,7 +4795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c273b3db43e59054990d4830eb135b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 17, y: 17}
+  boardSize: {x: 37, y: 37}
   board: {fileID: 495667348}
   mainPanel: {fileID: 1371346472}
   towerPanel: {fileID: 1183999707}
