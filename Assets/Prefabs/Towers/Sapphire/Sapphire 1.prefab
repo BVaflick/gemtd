@@ -465,6 +465,7 @@ MonoBehaviour:
   launchSpeed: 30
   abilities:
   - {fileID: 11400000, guid: 85c0e7fe4bdba2949961cecce23c0a5d, type: 2}
+  - {fileID: 11400000, guid: 6777b3e83bfec6142a65fbfdee1addc4, type: 2}
   auras: []
 --- !u!1 &2155434565367927646
 GameObject:

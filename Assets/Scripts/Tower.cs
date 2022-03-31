@@ -7,7 +7,7 @@ using UnityEngine;
 public class Tower : GameTileContent {
 
 	[SerializeField, Range(1.5f, 10.5f)]
-	protected float targetingRange = 1.5f;
+	float targetingRange = 1.5f;
 
 	protected int targetNumber = 1;
 
@@ -54,10 +54,13 @@ public class Tower : GameTileContent {
 
 	public int TargetNumber { get => additionalTargets; set => additionalTargets = value; }
 
+	public float Dmg { get => damage;}
 	public float Damage { get => additionalDamage; set => additionalDamage = value; }
+	public float Range { get => targetingRange; set => targetingRange = value; }
 
 	public TowerType TowerType => towerType;
 	public TowerType[] Combo => combo;
+	public float AS { get => attackSpeed;}
 	public float AttackSpeed { get => additionalAttackSpeed; set => additionalAttackSpeed = value; }
 
 	protected bool AcquireTarget(ref List<TargetPoint> targets) {

@@ -16,10 +16,10 @@ public class Game : MonoBehaviour {
 	[SerializeField] GameBoard board = default;
 	[SerializeField] GameObject mainPanel = default;
 	[SerializeField] GameObject towerPanel = default;
+	[SerializeField] GameObject towerDescription = default;
 	[SerializeField] GameObject wallPanel = default;
 	[SerializeField] GameObject hud = default;
 	
-
 	int playerHealth = 100;
 
 	int level = 1;
@@ -126,7 +126,24 @@ public class Game : MonoBehaviour {
 		}
 
 		if (towerPanel.activeSelf) {
-			towerPanel.transform.position = Camera.main.WorldToScreenPoint(selectedTile.transform.position);
+			Camera camera = Camera.main;
+			towerPanel.transform.position = camera.WorldToScreenPoint(selectedTile.transform.position);
+			float scale = 1 + (19 - camera.transform.position.y) / 20;
+			towerPanel.transform.localScale = new Vector3(scale,scale,scale);
+			if (camera.transform.position.y < 8) {
+				foreach (Transform child in towerPanel.transform) {
+					child.localScale = new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
+				}
+			}
+			else {
+				foreach (Transform child in towerPanel.transform) {
+					child.localScale = new Vector3(1, 1, 1);
+				}
+			}
+		} else if (wallPanel.activeSelf) {
+			Vector3 pos = selectedTile.transform.position;
+			pos.z += 1f;
+			wallPanel.transform.position = Camera.main.WorldToScreenPoint(pos);
 		}
 
 		if (isBuilding && availableBuilds > 0) {
@@ -237,6 +254,7 @@ public class Game : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			if (selectedTile != null) {
 				towerPanel.SetActive(false);
+				towerDescription.SetActive(false);
 				wallPanel.SetActive(false);
 				mainPanel.SetActive(true);
 				if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
@@ -300,6 +318,7 @@ public class Game : MonoBehaviour {
 		if (isBuildPhase && availableBuilds == 0 && selectedTile != null) {
 			chooseTower(selectedTile);
 			towerPanel.SetActive(false);
+			towerDescription.SetActive(false);
 			wallPanel.SetActive(false);
 			mainPanel.SetActive(true);
 			if (selectedTile.Content.Type == GameTileContentType.Tower) {
@@ -313,6 +332,7 @@ public class Game : MonoBehaviour {
 		if (isBuildPhase && availableBuilds == 0 && selectedTile != null) {
 			CombineSame(selectedTile, two);
 			towerPanel.SetActive(false);
+			towerDescription.SetActive(false);
 			wallPanel.SetActive(false);
 			mainPanel.SetActive(true);
 			selectedTile = null;
@@ -323,6 +343,7 @@ public class Game : MonoBehaviour {
 		if (availableBuilds == 0 && selectedTile != null) {
 			CombineOneshot(selectedTile);
 			towerPanel.SetActive(false);
+			towerDescription.SetActive(false);
 			wallPanel.SetActive(false);
 			mainPanel.SetActive(true);
 			selectedTile = null;
@@ -330,9 +351,10 @@ public class Game : MonoBehaviour {
 	}
 
 	public void removeSelectedWall() {
-		if (availableBuilds > 0 && selectedTile.Content.Type == GameTileContentType.Wall) {
+		if (isBuildPhase && selectedTile.Content.Type == GameTileContentType.Wall) {
 			RemoveWall(selectedTile);
 			wallPanel.SetActive(false);
+			towerDescription.SetActive(false);
 			towerPanel.SetActive(false);
 			mainPanel.SetActive(true);
 			selectedTile = null;
@@ -373,11 +395,8 @@ public class Game : MonoBehaviour {
 						((Tower) selectedTile.Content).swithSelection();
 					}
 					selectedTile = tile;
-					towerPanel.SetActive(true);
-					Vector3 pos = tile.transform.position;
-					pos.y += 1f;
-					towerPanel.transform.position = Camera.main.WorldToScreenPoint(pos);
-					// towerPanel.transform.LookAt(tile.transform.position + Camera.main.transform.forward);
+					showTowerConstructionPanel();
+					showTowerDescription();
 					wallPanel.SetActive(false);
 					mainPanel.SetActive(false);
 				} else if (tile.Content.Type == GameTileContentType.Wall) {
@@ -387,17 +406,57 @@ public class Game : MonoBehaviour {
 					}
 					selectedTile = tile;
 					towerPanel.SetActive(false);
+					towerDescription.SetActive(false);
 					wallPanel.SetActive(true);
 					mainPanel.SetActive(false);
 				}
 				else {
 					towerPanel.SetActive(false);
+					towerDescription.SetActive(false);
 					wallPanel.SetActive(false);
 					mainPanel.SetActive(true);
 					if (selectedTile!= null && selectedTile.Content.Type == GameTileContentType.Tower) {
 						((Tower) selectedTile.Content).swithSelection();
 					}
 					selectedTile = null;
+				}
+			}
+		}
+	}
+
+	void showTowerConstructionPanel() {
+		towerPanel.SetActive(true);
+		Tower selectedTower = selectedTile.Content as Tower;
+	}
+
+	void showTowerDescription() {
+		towerDescription.SetActive(true);
+		Tower selectedTower = selectedTile.Content as Tower;
+		foreach (Transform child in towerDescription.transform) {
+			if (child.name == "Label") {
+				child.GetComponent<Text>().text = selectedTower.name.Replace("(Clone)", "");
+			} else if (child.name == "TowerParams") {
+				RectTransform panel = child.GetComponent<RectTransform>();
+				foreach (Transform towerParam in panel.transform) {
+					switch (towerParam.name) {
+						case "Damage Value":
+							towerParam.GetComponent<Text>().text = selectedTower.Dmg + (selectedTower.Damage != 0 ? "+" + selectedTower.Damage : "");
+							break;
+						case "Attackspeed Value":
+							towerParam.GetComponent<Text>().text = selectedTower.AS + (selectedTower.AttackSpeed != 0 ? "+" + selectedTower.AttackSpeed : "");
+							break;
+						case "Range Value":
+							towerParam.GetComponent<Text>().text = selectedTower.Range + "";
+							break;
+					}
+				}
+			} else if (child.name == "TowerAbilities") {
+				RectTransform panel = child.GetComponent<RectTransform>();
+				foreach (Transform image in panel) image.GetComponent<Image>().gameObject.SetActive(false);
+				for (var i = 0; i < selectedTower.StatusEffects.Count; i++) {
+					Image icon = panel.GetChild(i).GetComponent<Image>();
+					icon.sprite = selectedTower.StatusEffects[i].icon;
+					icon.gameObject.SetActive(true);
 				}
 			}
 		}

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 1
   buff: {fileID: 11400000, guid: 320daedb153592340a2bdd6aa933ff2e, type: 2}
+  icon: {fileID: 21300000, guid: 0179797402ce3834fb46b12a3be82a89, type: 3}

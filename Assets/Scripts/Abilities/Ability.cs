@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu]
 public class Ability : ScriptableObject {
@@ -8,9 +9,13 @@ public class Ability : ScriptableObject {
 
     [SerializeField]
     protected Buff buff = default;
+    
+    [SerializeField]
+    public Sprite icon = default;
 
     public void Modify(Tower tower) {
         buff.level = level;
+        buff.icon = icon;
         tower.StatusEffects.Add(buff);
     }
 }
