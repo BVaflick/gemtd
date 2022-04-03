@@ -11,12 +11,14 @@ public class Game : MonoBehaviour {
 	[SerializeField] Vector2Int boardSize = new Vector2Int(11, 11);
 
 	public const int enemyLayerMask = 1 << 9;
+	public const int uiLayerMask = 1 << 5;
 	public const int towerLayerMask = 1 << 10;
 
 	[SerializeField] GameBoard board = default;
 	[SerializeField] GameObject mainPanel = default;
 	[SerializeField] GameObject towerPanel = default;
 	[SerializeField] GameObject towerDescription = default;
+	[SerializeField] GameObject enemyDescription = default;
 	[SerializeField] GameObject wallPanel = default;
 	[SerializeField] GameObject hud = default;
 	
@@ -62,6 +64,7 @@ public class Game : MonoBehaviour {
 	List<GameTile> builtTowers = new List<GameTile>();
 	private GameTile hoveredTile = null;
 	private GameTile selectedTile = null;
+	private Enemy selectedEnemy = null;
 
 	static Game instance;
 
@@ -169,6 +172,9 @@ public class Game : MonoBehaviour {
 		enemies.GameUpdate();
 		Physics.SyncTransforms();
 		board.GameUpdate();
+		if (selectedEnemy != null) {
+			showEnemyDescription();
+		}
 	}
 
 	void handleInput() {
@@ -258,7 +264,7 @@ public class Game : MonoBehaviour {
 				wallPanel.SetActive(false);
 				mainPanel.SetActive(true);
 				if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
-					((Tower) selectedTile.Content).swithSelection();
+					((Tower) selectedTile.Content).switchSelection();
 				}
 				selectedTile = null;
 			}
@@ -317,12 +323,13 @@ public class Game : MonoBehaviour {
 	public void buildSelected() {
 		if (isBuildPhase && availableBuilds == 0 && selectedTile != null) {
 			chooseTower(selectedTile);
+			(selectedTile.Content as Tower).switchNewTowerCircle();
 			towerPanel.SetActive(false);
 			towerDescription.SetActive(false);
 			wallPanel.SetActive(false);
 			mainPanel.SetActive(true);
 			if (selectedTile.Content.Type == GameTileContentType.Tower) {
-				((Tower) selectedTile.Content).swithSelection();
+				((Tower) selectedTile.Content).switchSelection();
 			}
 			selectedTile = null;
 		}
@@ -363,8 +370,10 @@ public class Game : MonoBehaviour {
 
 	void HandleAlternativeTouch() {
 		if (isBuilding) isBuilding = !isBuilding;
-		if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
-			
+		if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower && Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
+			Tower selectedTower = selectedTile.Content as Tower;
+			selectedTower.aimTarget(hit.collider.GetComponent<TargetPoint>());
+			hit.transform.root.gameObject.GetComponent<Enemy>().showAim();
 		}
 		// GameTile tile = board.GetTile(TouchRay);
 		// if (tile != null) {
@@ -379,8 +388,27 @@ public class Game : MonoBehaviour {
 
 	void HandleTouch() {
 		if (EventSystem.current.IsPointerOverGameObject()) {
+			return;	
+		}
+
+		if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
+			Enemy enemy = hit.transform.root.GetComponent<Enemy>();
+			if(selectedEnemy == enemy) return;
+			if (selectedEnemy != null) selectedEnemy.swithSelection();
+			selectedEnemy = enemy;
+			enemy.swithSelection();
+			showEnemyDescription();
+			towerPanel.SetActive(false);
+			towerDescription.SetActive(false);
+			wallPanel.SetActive(false);
+			mainPanel.SetActive(true);
+			if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
+				((Tower) selectedTile.Content).switchSelection();
+				selectedTile = null;
+			}
 			return;
 		}
+
 		GameTile tile = board.GetTile(TouchRay);
 		if (isBuilding) {
 			BuildTower(tile);
@@ -389,20 +417,31 @@ public class Game : MonoBehaviour {
 		else {
 			if (tile != null) {
 				if (tile.Content.Type == GameTileContentType.Tower) {
+					if(selectedTile == tile) return;
 					Tower tower = (Tower) tile.Content;
-					tower.swithSelection();
+					tower.switchSelection();
 					if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
-						((Tower) selectedTile.Content).swithSelection();
+						((Tower) selectedTile.Content).switchSelection();
+					}
+					if (selectedEnemy != null) {
+						selectedEnemy.swithSelection();
+						selectedEnemy = null;
 					}
 					selectedTile = tile;
-					showTowerConstructionPanel();
+					if(isBuildPhase && availableBuilds == 0 && newTowers.IndexOf(selectedTile) != -1) showTowerConstructionPanel();
 					showTowerDescription();
+					enemyDescription.SetActive(false);
 					wallPanel.SetActive(false);
 					mainPanel.SetActive(false);
 				} else if (tile.Content.Type == GameTileContentType.Wall) {
 					GameObject obj = tile.Content.gameObject;
 					if (selectedTile != null && selectedTile.Content.Type == GameTileContentType.Tower) {
-						((Tower) selectedTile.Content).swithSelection();
+						((Tower) selectedTile.Content).switchSelection();
+					}
+					if (selectedEnemy != null) {
+						selectedEnemy.swithSelection();
+						selectedEnemy = null;
+						enemyDescription.SetActive(false);
 					}
 					selectedTile = tile;
 					towerPanel.SetActive(false);
@@ -414,11 +453,17 @@ public class Game : MonoBehaviour {
 					towerPanel.SetActive(false);
 					towerDescription.SetActive(false);
 					wallPanel.SetActive(false);
+					enemyDescription.SetActive(false);
 					mainPanel.SetActive(true);
 					if (selectedTile!= null && selectedTile.Content.Type == GameTileContentType.Tower) {
-						((Tower) selectedTile.Content).swithSelection();
+						((Tower) selectedTile.Content).switchSelection();
+						selectedTile = null;
 					}
-					selectedTile = null;
+					if (selectedEnemy != null) {
+						selectedEnemy.swithSelection();
+						selectedEnemy = null;
+						enemyDescription.SetActive(false);
+					}
 				}
 			}
 		}
@@ -427,6 +472,58 @@ public class Game : MonoBehaviour {
 	void showTowerConstructionPanel() {
 		towerPanel.SetActive(true);
 		Tower selectedTower = selectedTile.Content as Tower;
+		foreach (Transform child in towerPanel.transform) {
+			switch (child.name) {
+				case "Upgrade1":
+					child.gameObject.SetActive(newTowers.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2);
+					break;
+				case "Upgrade2":
+					child.gameObject.SetActive(newTowers.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4);
+					break;
+				case "Combine":
+					child.gameObject.SetActive(findCombos(selectedTower, newTowers.Select(x => (Tower) x.Content).ToList()).Count > 0);
+					break;
+			}
+		}
+	}
+
+	void showEnemyDescription() {
+		enemyDescription.SetActive(true);
+		foreach (Transform child in enemyDescription.transform) {
+			if (child.name == "Label") {
+				child.GetComponent<Text>().text = selectedEnemy.name.Replace("(Clone)", "");
+			} else if (child.name == "EnemyParams") {
+				RectTransform panel = child.GetComponent<RectTransform>();
+				foreach (Transform towerParam in panel.transform) {
+					switch (towerParam.name) {
+						case "Damage Value":
+							towerParam.GetComponent<Text>().text = selectedEnemy.Health + "";// + (selectedTower.Damage != 0 ? "<color=green>+" + selectedTower.Damage + "</color>" : "");
+							break;
+						case "Speed Value":
+							towerParam.GetComponent<Text>().text = selectedEnemy.speed + getColoredAdditionalParam(selectedEnemy.additionalSpeed);
+							break;
+						case "Armor Value":
+							towerParam.GetComponent<Text>().text = selectedEnemy.armor + getColoredAdditionalParam(selectedEnemy.additionalArmor);
+							break;
+					}
+				}
+			} else if (child.name == "HealthBar") {
+				child.GetComponent<Slider>().value = selectedEnemy.Health / selectedEnemy.FullHealth;
+			} else if (child.name == "HP") {
+				child.GetComponent<Text>().text = Math.Ceiling(selectedEnemy.Health) + "/" + selectedEnemy.FullHealth;
+			}
+			// else if (child.name == "TowerAbilities") {
+			// 	RectTransform panel = child.GetComponent<RectTransform>();
+			// 	foreach (Transform image in panel) {
+			// 		image.GetComponent<Image>().gameObject.SetActive(false);
+			// 	}
+			// 	for (var i = 0; i < selectedTower.StatusEffects.Count; i++) {
+			// 		Image icon = panel.GetChild(i).GetComponent<Image>();
+			// 		icon.sprite = selectedTower.StatusEffects[i].icon;
+			// 		icon.gameObject.SetActive(true);
+			// 	}
+			// }
+		}
 	}
 
 	void showTowerDescription() {
@@ -440,10 +537,10 @@ public class Game : MonoBehaviour {
 				foreach (Transform towerParam in panel.transform) {
 					switch (towerParam.name) {
 						case "Damage Value":
-							towerParam.GetComponent<Text>().text = selectedTower.Dmg + (selectedTower.Damage != 0 ? "+" + selectedTower.Damage : "");
+							towerParam.GetComponent<Text>().text = selectedTower.Dmg + getColoredAdditionalParam(selectedTower.Damage);
 							break;
 						case "Attackspeed Value":
-							towerParam.GetComponent<Text>().text = selectedTower.AS + (selectedTower.AttackSpeed != 0 ? "+" + selectedTower.AttackSpeed : "");
+							towerParam.GetComponent<Text>().text = selectedTower.AS + getColoredAdditionalParam(selectedTower.AttackSpeed);
 							break;
 						case "Range Value":
 							towerParam.GetComponent<Text>().text = selectedTower.Range + "";
@@ -452,7 +549,9 @@ public class Game : MonoBehaviour {
 				}
 			} else if (child.name == "TowerAbilities") {
 				RectTransform panel = child.GetComponent<RectTransform>();
-				foreach (Transform image in panel) image.GetComponent<Image>().gameObject.SetActive(false);
+				foreach (Transform image in panel) {
+					image.GetComponent<Image>().gameObject.SetActive(false);
+				}
 				for (var i = 0; i < selectedTower.StatusEffects.Count; i++) {
 					Image icon = panel.GetChild(i).GetComponent<Image>();
 					icon.sprite = selectedTower.StatusEffects[i].icon;
@@ -460,6 +559,12 @@ public class Game : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	String getColoredAdditionalParam(float additionalParam) {
+		return additionalParam == 0 ? "" :
+			additionalParam > 0 ? "<color=green>+" + additionalParam + "</color>" :
+			"<color=red>" + additionalParam + "</color>";
 	}
 
 	void OnDrawGizmos() {
@@ -582,6 +687,7 @@ public class Game : MonoBehaviour {
 			// if (temp == 5) temp = 0;
 			if (built) {
 				newTowers.Add(tile);
+				(tile.Content as Tower).switchNewTowerCircle();
 				availableBuilds--;
 			}
 		}
@@ -640,8 +746,7 @@ public class Game : MonoBehaviour {
 		if (isBuildPhase) {
 			Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 			if (tower && availableBuilds == 0) {
-				Tower combined = findCombos(tower, tileContentFactory.TowerPrefabs.ToList(),
-					newTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
+				Tower combined = findCombos(tower, newTowers.Select(x => (Tower) x.Content).ToList())[0];
 				board.ToggleTower(tile, combined.TowerType);
 				chooseTower(tile);
 			}
@@ -650,7 +755,7 @@ public class Game : MonoBehaviour {
 			GameTileContent content = tile.Content;
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
-				Tower combined = findCombos(tower, tileContentFactory.TowerPrefabs.ToList(), builtTowers.Select(x => (Tower) x.Content).ToList(), false)[0];
+				Tower combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
 				combined.Combo.ToList().ForEach(t => {
 					if (t != tower.TowerType) {
 						GameTile t2 = builtTowers.Find(tile => ((Tower) tile.Content).TowerType == t);
@@ -663,8 +768,8 @@ public class Game : MonoBehaviour {
 		}
 	}	
 	
-	static List<Tower> findCombos(Tower tower, List<Tower> availableTowers, List<Tower> towers, bool oneshot) {
-		List<Tower> combosTypes = availableTowers.FindAll(t => t.Combo != null && 
+	List<Tower> findCombos(Tower tower, List<Tower> towers) {
+		List<Tower> combosTypes = tileContentFactory.TowerPrefabs.ToList().FindAll(t => t.Combo != null && 
 																		  t.Combo.Contains(tower.TowerType) &&
 																		  t.Combo.All(value => towers.Select(x => x.TowerType).Contains(value))).ToList();
 		// if (oneshot) {

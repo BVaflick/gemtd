@@ -108,6 +108,7 @@
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\SculptedHair.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\ToonSkin.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Dissolve.shader" />
+     <None Include="Assets\Shaders\OutlineShader.shader" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.30f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

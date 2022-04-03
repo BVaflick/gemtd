@@ -20,6 +20,11 @@ public class Enemy : GameBehavior {
 
 	[SerializeField]
 	HealthBar healthBar = default;
+	[SerializeField]
+	Transform selection = default;
+	[SerializeField]
+	Transform aim = default;
+	float aimAge = 0;
 	
 	EnemyAnimator animator;
 	
@@ -37,6 +42,8 @@ public class Enemy : GameBehavior {
 	public float additionalSpeed { get; set; }
 	float originalSpeed;
 	int num = 0;
+	
+	public float FullHealth { get; set; }
 	public float Health { get; set; }
 	public float Scale { get; private set; }
 	public GameBehaviorCollection Effects { get; set; }
@@ -63,6 +70,18 @@ public class Enemy : GameBehavior {
 				return false;
 			}
 			return true;
+		}
+
+		if (aim.gameObject.activeSelf) {
+			aimAge += Time.deltaTime;
+			float aimScale = 2f / Scale;
+			aim.localScale = Vector3.LerpUnclamped(new Vector3(aimScale,aimScale,aimScale), new Vector3(0,0,0), aimAge);
+			aim.eulerAngles = Vector3.LerpUnclamped(new Vector3(90,0,0), new Vector3(90,360,0), aimAge);
+			
+			if (aimAge >= 1f) {
+				aim.gameObject.SetActive(false);
+				aimAge = 0;
+			}
 		}
 		additionalSpeed = 0f;
 		additionalArmor = 0f;
@@ -103,6 +122,7 @@ public class Enemy : GameBehavior {
 		this.speed = speed;
 		this.armor = armor;
 		Health = health;
+		FullHealth = health;
 		Effects = new GameBehaviorCollection();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
@@ -129,6 +149,7 @@ public class Enemy : GameBehavior {
 			modifier = 1f - ((0.052f * (armor + additionalArmor)) / (0.9f + (0.048f * Math.Abs(armor + additionalArmor))));
 		}
 		Health -= damage * modifier;
+		if (Health < 0) Health = 0;
 		healthBar.setValue((int) Health);
 	}
 
@@ -170,6 +191,15 @@ public class Enemy : GameBehavior {
 		positionTo = currentTile.transform.localPosition;
 	}
 	
+	public void swithSelection() {
+		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
+	}
+	
+	public void showAim() {
+		aimAge = 0f;
+		aim.gameObject.SetActive(true);
+	}
+	
 	void OnDrawGizmos() {
 		GUIStyle style = new GUIStyle();
 		style.normal.textColor = Color.white;
@@ -181,6 +211,6 @@ public class Enemy : GameBehavior {
 		position.z -= 0.3f;
 		Handles.Label(position, "Armor: " + armor + (additionalArmor != 0 ? "" + additionalArmor : ""), style);
 		position.z -= 0.3f;
-		Handles.Label(position, "Effects: " + Effects.Count, style);
+		// Handles.Label(position, "Effects: " + Effects.Count, style);
 	}
 }

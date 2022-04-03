@@ -30,6 +30,8 @@ public class Tower : GameTileContent {
 	Transform turret = default;
 	[SerializeField]
 	Transform selection = default;
+	[SerializeField]
+	Transform newTowerCircle = default;
 	
 	[SerializeField]
 	float launchSpeed = 30f;
@@ -63,8 +65,17 @@ public class Tower : GameTileContent {
 	public float AS { get => attackSpeed;}
 	public float AttackSpeed { get => additionalAttackSpeed; set => additionalAttackSpeed = value; }
 
-	protected bool AcquireTarget(ref List<TargetPoint> targets) {
+
+	public bool aimTarget(TargetPoint preferredTarget) {
+		return AcquireTarget(ref targets, preferredTarget);
+	}
+	
+	protected bool AcquireTarget(ref List<TargetPoint> targets, TargetPoint preferredTarget) {
 		if (TargetPoint.FillBuffer(transform.localPosition, targetingRange, Game.enemyLayerMask)) {
+			if (preferredTarget != null) {
+				targets.Clear();
+				targets.Add(preferredTarget);
+			}
 			TargetPoint.RandomBuffered(ref targets, targetNumber + additionalTargets);
 			return true;
 		}
@@ -107,7 +118,7 @@ public class Tower : GameTileContent {
 		additionalDamage = 0f;
 		abilities.ForEach(ability => ability.Modify(this));
 		statusEffects.FindAll(statusEffect => statusEffect is TowerBuff).ForEach(statusEffect => ((TowerBuff) statusEffect).Modify(this));
-		if (TrackTarget(ref targets) || AcquireTarget(ref targets)) {
+		if (TrackTarget(ref targets) || AcquireTarget(ref targets, null)) {
 			Vector3 rot = turret.transform.eulerAngles;
 			turret.LookAt(targets[0].Position);
 			Vector3 rot2 = turret.transform.eulerAngles;
@@ -149,8 +160,12 @@ public class Tower : GameTileContent {
 		}
 	}
 
-	public void swithSelection() {
+	public void switchSelection() {
 		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
+	}
+	
+	public void switchNewTowerCircle() {
+		newTowerCircle.gameObject.SetActive(!newTowerCircle.gameObject.activeSelf);
 	}
 	
 	// void OnDrawGizmosSelected() {
@@ -158,7 +173,6 @@ public class Tower : GameTileContent {
 		if (GizmoExtensions.showTowerRange && TowerType != TowerType.FlyingTower) {
 			GUIStyle style = new GUIStyle();
 			style.normal.textColor = Color.white;
-			Gizmos.color = Color.yellow;
 			Vector3 position = transform.localPosition;
 			position.y += 0.01f;
 			Handles.color = new Color(1, 1, 1, 0.05f);
@@ -173,9 +187,10 @@ public class Tower : GameTileContent {
 					statusEffects.Select(statusEffect => $"{statusEffect.name.Split('(')[0]}")), style);
 			// Gizmos.DrawWireSphere(position, targetingRange);
 			if (targets.Count != 0) {
-				foreach (var target in targets) {
-					if (target != null) {
-						Gizmos.DrawLine(turret.transform.position, target.Position);
+				for (var i = 0; i < targets.Count; i++) {
+					if (targets[i] != null) {
+						Gizmos.color = i == 0 ? Color.red : Color.yellow;
+						Gizmos.DrawLine(turret.transform.position, targets[i].Position);
 					}
 				}
 			}
