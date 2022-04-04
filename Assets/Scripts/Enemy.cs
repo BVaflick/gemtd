@@ -75,10 +75,10 @@ public class Enemy : GameBehavior {
 		if (aim.gameObject.activeSelf) {
 			aimAge += Time.deltaTime;
 			float aimScale = 2f / Scale;
-			aim.localScale = Vector3.LerpUnclamped(new Vector3(aimScale,aimScale,aimScale), new Vector3(0,0,0), aimAge);
-			aim.eulerAngles = Vector3.LerpUnclamped(new Vector3(90,0,0), new Vector3(90,360,0), aimAge);
+			aim.localScale = Vector3.LerpUnclamped(new Vector3(aimScale,aimScale,aimScale), new Vector3(0,0,0), aimAge * 2);
+			aim.eulerAngles = Vector3.LerpUnclamped(new Vector3(90,0,0), new Vector3(90,360,0), aimAge * 2);
 			
-			if (aimAge >= 1f) {
+			if (aimAge >= .5f) {
 				aim.gameObject.SetActive(false);
 				aimAge = 0;
 			}

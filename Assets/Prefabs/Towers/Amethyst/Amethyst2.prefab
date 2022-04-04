@@ -144,12 +144,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  selection: {fileID: 5419597804624829202}
   targetingRange: 3
   towerType: 1
-  combo: 0000000000000000
+  combo: 
   damage: 10
   turret: {fileID: 224102258314045308}
-  selection: {fileID: 5419597804624829202}
   newTowerCircle: {fileID: 2801196178359091111}
   launchSpeed: 30
   abilities:

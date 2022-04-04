@@ -29,8 +29,6 @@ public class Tower : GameTileContent {
 	[SerializeField]
 	Transform turret = default;
 	[SerializeField]
-	Transform selection = default;
-	[SerializeField]
 	Transform newTowerCircle = default;
 	
 	[SerializeField]
@@ -158,10 +156,6 @@ public class Tower : GameTileContent {
 		foreach (var target in targets) {
 			Game.SpawnShell().Initialize(launchPoint, target, damage + additionalDamage, launchSpeed, debuffs);
 		}
-	}
-
-	public void switchSelection() {
-		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
 	}
 	
 	public void switchNewTowerCircle() {

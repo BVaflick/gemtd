@@ -4,6 +4,8 @@ public class GameTileContent : MonoBehaviour {
 
 	[SerializeField]
 	GameTileContentType type = default;
+	[SerializeField]
+	Transform selection = default;
 
 	GameTileContentFactory originFactory;
 
@@ -24,4 +26,8 @@ public class GameTileContent : MonoBehaviour {
 	public void Recycle () {
 		originFactory.Reclaim(this);
 	}	
+	
+	public void switchSelection() {
+		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
+	}
 }

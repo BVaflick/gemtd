@@ -7349,13 +7349,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 17, y: 17}
+  camera: {fileID: 1918931694}
   board: {fileID: 495667348}
-  mainPanel: {fileID: 1371346472}
-  towerPanel: {fileID: 589545217}
-  towerDescription: {fileID: 1627248603}
-  enemyDescription: {fileID: 1117542278}
-  wallPanel: {fileID: 413805768}
-  hud: {fileID: 0}
+  mainPanel: {fileID: 1371346473}
+  wallConstructionPanel: {fileID: 413805771}
+  towerConstructionPanel: {fileID: 589545218}
+  towerDescriptionPanel: {fileID: 1627248604}
+  enemyDescriptionPanel: {fileID: 1117542279}
   tileContentFactory: {fileID: 11400000, guid: c32a5bc6e40adb94c83f737ffdd679bb, type: 2}
   warFactory: {fileID: 11400000, guid: cc4ae3791562d054397b5b079992ebe4, type: 2}
   scenario: {fileID: 11400000, guid: 77984653207800d4ab44f41420ca3637, type: 2}
