@@ -21,6 +21,7 @@ public class Game : MonoBehaviour {
 	[SerializeField] RectTransform towerConstructionPanel = default;
 	[SerializeField] RectTransform towerDescriptionPanel = default;
 	[SerializeField] RectTransform enemyDescriptionPanel = default;
+	[SerializeField] RectTransform selectionBox = default;
 	
 	int playerHealth = 100;
 
@@ -64,9 +65,13 @@ public class Game : MonoBehaviour {
 	List<GameTile> builtTowers = new List<GameTile>();
 	private GameTile hoveredTile = null;
 	// private GameTile selectedTile = null;
-	
+
 	private Enemy selectedEnemy = null;
 	private List<GameTileContent> selectedStructures = new List<GameTileContent>();
+	private bool isDragSelection;
+	Rect selectionRect = new Rect();
+	private Vector2 dragStartPosition = Vector2.zero;
+	private Vector2 dragEndPosition = Vector2.zero;
 
 	static Game instance;
 
@@ -207,7 +212,32 @@ public class Game : MonoBehaviour {
 			
 		}
 		if (Input.GetMouseButtonDown(0)) {
-			HandleTouch();
+			dragStartPosition = Input.mousePosition;
+		} else if (Input.GetMouseButton(0)) {
+			dragEndPosition = Input.mousePosition;
+			if (!isDragSelection && (Mathf.Abs(dragStartPosition.x - dragEndPosition.x) > 5 ||
+			    Mathf.Abs(dragStartPosition.y - dragEndPosition.y) > 5)) {
+				isDragSelection = true;
+			}
+			if(isDragSelection) showSelectionBox();
+		} else if (Input.GetMouseButtonUp(0)) {
+			if (isDragSelection) {
+				selectStructureWithDrag();
+				dragStartPosition = Vector2.zero;
+				dragEndPosition = Vector2.zero;
+				showSelectionBox();
+				isDragSelection = false;
+			}
+			else {
+				if (Input.GetKey(KeyCode.LeftControl)) {
+					deselectAndClose();
+					builtTowers.ForEach(towerTile => {
+						towerTile.Content.switchSelection();
+						selectedStructures.Add(towerTile.Content);
+					});
+					if(selectedStructures.Count > 0) showTowerDescription();
+				} else HandleTouch();
+			}
 		}
 
 		if (Input.GetMouseButtonDown(1)) {
@@ -302,6 +332,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void BeginNewGame() {
+		deselectAndClose();
 		newTowers.Clear();
 		builtTowers.Clear();
 		availableBuilds = 5;
@@ -399,6 +430,27 @@ public class Game : MonoBehaviour {
 		selectedEnemy = enemy;
 		enemy.swithSelection();
 		showEnemyDescription();
+	}
+	
+	void showSelectionBox() {
+		Vector2 boxPosition = (dragStartPosition + dragEndPosition) / 2;
+		selectionBox.position = boxPosition;
+		Vector2 boxSize = new Vector2(Mathf.Abs(dragStartPosition.x - dragEndPosition.x), Mathf.Abs(dragStartPosition.y - dragEndPosition.y));
+		Vector2 extents = boxSize / 2.0f; 
+		selectionBox.sizeDelta = boxSize;
+		selectionRect.min = boxPosition - extents;
+		selectionRect.max = boxPosition + extents;
+	}
+
+	void selectStructureWithDrag() {
+		if(!Input.GetKey(KeyCode.LeftShift) || selectedEnemy != null) deselectAndClose(); 
+		newTowers.ForEach(newTower => {
+			if (selectionRect.Contains(camera.WorldToScreenPoint(newTower.transform.position)) && !selectedStructures.Contains(newTower.Content)) {
+				selectedStructures.Insert(0, newTower.Content);
+				newTower.Content.switchSelection();
+			}
+		});
+		if(selectedStructures.Count > 0) showTowerDescription();
 	}
 
 	void selectStructure(GameTileContent structure) {
@@ -546,6 +598,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void OnDrawGizmos() {
+		
 		GUIStyle style = new GUIStyle();
 		style.normal.textColor = Color.white;
 		Vector3 position = new Vector3(-15f, 0f, 8f);
@@ -571,6 +624,16 @@ public class Game : MonoBehaviour {
 	}
 
 	void OnGUI() {
+
+		// if (isDragSelection) {
+		if (selectedStructures.Count > 0) {
+			Vector3 position = selectedStructures[0].transform.position;
+			position.y += 0.01f;
+			Handles.color = new Color(1, 1, 1, 0.05f);
+			Handles.DrawSolidDisc(position, transform.up, (float) 2);
+		}
+		// }
+		
 		GizmoExtensions.showPath = GUI.Toggle(new Rect(220, 805, 100, 20), GizmoExtensions.showPath, "Show paths");
 		GizmoExtensions.showTowerRange = GUI.Toggle(new Rect(220, 825, 150, 20), GizmoExtensions.showTowerRange, "Show attack range");
 		if (GUI.Button(new Rect(220, 785, 100, 20), GizmoExtensions.buildButtonText))
@@ -726,6 +789,7 @@ public class Game : MonoBehaviour {
 			if (tower && availableBuilds == 0) {
 				Tower combined = findCombos(tower, newTowers.Select(x => (Tower) x.Content).ToList())[0];
 				board.ToggleTower(tile, combined.TowerType);
+				deselectAndClose();
 				chooseTower(tile);
 			}
 		}
@@ -742,6 +806,7 @@ public class Game : MonoBehaviour {
 					}
 				});
 				board.ToggleTower(tile, combined.TowerType);
+				deselectAndClose();
 			}
 		}
 	}	
@@ -769,6 +834,7 @@ public class Game : MonoBehaviour {
 		    newTowers.FindAll(towerTile => ((Tower) towerTile.Content).TowerType == tower.TowerType).Count > (two ? 1 : 3)) {
 			int type = (int) tower.TowerType;
 			board.ToggleTower(tile, (TowerType) type + (two ? 1 : 2));
+			deselectAndClose();
 			chooseTower(tile);
 		}
 	}
