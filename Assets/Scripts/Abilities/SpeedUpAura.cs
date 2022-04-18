@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEditor;
 
 [CreateAssetMenu]
-public class SpeedUp : TowerBuff {
+public class SpeedUpAura : TowerBuff {
 
    public override void Modify(Tower tower) {
-      tower.AttackSpeed += 3f;
+      tower.AttackSpeed += 1f;
    }
 }

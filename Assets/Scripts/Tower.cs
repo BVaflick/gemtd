@@ -49,6 +49,8 @@ public class Tower : GameTileContent {
 	List<Aura> auras = new List<Aura>();
 
 	public List<Buff> StatusEffects => statusEffects;
+	
+	public List<Ability> Abilities => abilities;
 
 	public List<Aura> Auras => auras;
 
@@ -168,9 +170,9 @@ public class Tower : GameTileContent {
 			GUIStyle style = new GUIStyle();
 			style.normal.textColor = Color.white;
 			Vector3 position = transform.localPosition;
-			position.y += 0.01f;
-			Handles.color = new Color(1, 1, 1, 0.05f);
-			Handles.DrawSolidDisc(position, transform.up, (float) targetingRange);
+			// position.y += 0.01f;
+			// Handles.color = new Color(1, 1, 1, 0.05f);
+			// Handles.DrawSolidDisc(position, transform.up, (float) targetingRange);
 			Handles.Label(position, TowerType.ToString(), style);
 			position.z -= 0.3f;
 			Handles.Label(position,

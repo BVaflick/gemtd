@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 using System.Linq;
 
 [CreateAssetMenu]
@@ -8,10 +9,14 @@ public class Aura : ScriptableObject {
     protected int level;
 
     [SerializeField]
-    protected Buff buff = default;
-
+    public Buff buff = default;
+        
+    [SerializeField]
+    public Sprite icon = default;
+    
     public void Modify(Tower tower) {
         buff.level = level;
+        buff.icon = icon;
         buff.name1 = buff.GetType().Name + level;
         TargetPoint.FillBuffer(tower.transform.localPosition, 3.5f, Game.towerLayerMask);
         Debug.Log(TargetPoint.BufferedCount);

@@ -9,11 +9,14 @@ public abstract class WarEntity : GameBehavior {
     public float scale = 1f;
 
     public float age { get; set; }
+    
+    public Sprite icon { get; set; }
 
     protected TargetPoint target;
     
-    public void Initialize(TargetPoint target, string name) {
+    public void Initialize(TargetPoint target, string name, Sprite icon) {
         name1 = name;
+        this.icon = icon;
         this.target = target;
         scale = target.Enemy.Scale * 1.5f;
         transform.localPosition = target.Position;

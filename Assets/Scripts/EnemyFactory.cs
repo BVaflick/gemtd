@@ -70,7 +70,7 @@ public class EnemyFactory : GameObjectFactory {
 
 	public void Reclaim(Enemy enemy) {
 		Debug.Assert(enemy.OriginFactory == this, "Wrong factory reclaimed!");
-		enemy.Effects.Clear();
+		enemy.VisualEffects.Clear();
 		Destroy(enemy.gameObject);
 	}
 }

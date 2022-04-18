@@ -174,12 +174,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  selection: {fileID: 3697427620772933338}
   targetingRange: 3
   towerType: 13
   combo: 
   damage: 50
   turret: {fileID: 5441879686828577471}
-  selection: {fileID: 3697427620772933338}
   newTowerCircle: {fileID: 0}
   launchSpeed: 30
   abilities: []
@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 2811753287568169993}
   - component: {fileID: 5547197606679923904}
   - component: {fileID: 3517585313952711411}
+  - component: {fileID: 2480466291713961290}
   m_Layer: 10
   m_Name: Base
   m_TagString: Untagged
@@ -279,6 +280,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2480466291713961290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6787000539347584138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8239956501433722482
 GameObject:
   m_ObjectHideFlags: 0

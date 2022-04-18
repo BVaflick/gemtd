@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\EmenySpawnSequence.cs" />
      <Compile Include="Assets\Scripts\FloatRangeSliderAttribute.cs" />
      <Compile Include="Assets\Scripts\GameBehavior.cs" />
+     <Compile Include="Assets\Scripts\Abilities\SpeedUpAura.cs" />
      <Compile Include="Assets\Scripts\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Abilities\Poison.cs" />
      <Compile Include="Assets\Scripts\Abilities\Buff.cs" />
@@ -89,6 +90,7 @@
      <Compile Include="Assets\Scripts\Abilities\Entities\Toxin.cs" />
      <Compile Include="Assets\Scripts\Abilities\Burn.cs" />
      <Compile Include="Assets\Scripts\Tower.cs" />
+     <Compile Include="Assets\Scripts\UIManager.cs" />
      <Compile Include="Assets\Scripts\WarEntity.cs" />
      <Compile Include="Assets\Scripts\EnemyFactory.cs" />
      <Compile Include="Assets\Scripts\HealthBar.cs" />

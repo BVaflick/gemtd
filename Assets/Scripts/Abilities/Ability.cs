@@ -8,7 +8,7 @@ public class Ability : ScriptableObject {
     protected int level;
 
     [SerializeField]
-    protected Buff buff = default;
+    public Buff buff = default;
     
     [SerializeField]
     public Sprite icon = default;

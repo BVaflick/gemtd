@@ -46,7 +46,8 @@ public class Enemy : GameBehavior {
 	public float FullHealth { get; set; }
 	public float Health { get; set; }
 	public float Scale { get; private set; }
-	public GameBehaviorCollection Effects { get; set; }
+	public GameBehaviorCollection VisualEffects { get; set; }
+	public bool untouchable = true;
 
 	public EnemyFactory OriginFactory {
 		get => originFactory;
@@ -85,7 +86,7 @@ public class Enemy : GameBehavior {
 		}
 		additionalSpeed = 0f;
 		additionalArmor = 0f;
-		Effects.GameUpdate();
+		VisualEffects.GameUpdate();
 		if (Health <= 0f) {
 			Vector3 position = transform.position;
 			position.y += 0.5f;
@@ -123,7 +124,7 @@ public class Enemy : GameBehavior {
 		this.armor = armor;
 		Health = health;
 		FullHealth = health;
-		Effects = new GameBehaviorCollection();
+		VisualEffects = new GameBehaviorCollection();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
 		healthBar.setMaxValue((int) health);

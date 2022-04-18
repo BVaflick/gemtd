@@ -12,8 +12,8 @@ public class Splash : EnemyBuff {
          if (localTarget != enemy) {
             localTarget.Enemy.ApplyDamage(damage / 2f, false);
             Explosion explosion = Game.SpawnExplosion(false);         
-            explosion.Initialize(localTarget, this.GetType().Name + level);         
-            localTarget.Enemy.Effects.Add(explosion);
+            explosion.Initialize(localTarget, this.GetType().Name + level, icon);         
+            localTarget.Enemy.VisualEffects.Add(explosion);
          }
       }
    }

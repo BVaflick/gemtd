@@ -9,7 +9,7 @@ public class Burn : Buff {
 			TargetPoint localTarget = TargetPoint.GetBuffered(i);
 			localTarget.Enemy.ApplyDamage(40f, false);
 			Explosion explosion = Game.SpawnExplosion(true);
-			explosion.Initialize(localTarget, this.GetType().Name + level);
+			explosion.Initialize(localTarget, this.GetType().Name + level, icon);
 		}
 	}
 }
