@@ -22,9 +22,7 @@ public class Aura : ScriptableObject {
         Debug.Log(TargetPoint.BufferedCount);
         for (int i = 0; i < TargetPoint.BufferedCount; i++) {
             TargetPoint localTarget = TargetPoint.GetBuffered(i);
-            Debug.Log("LT: " + localTarget);
-            Debug.Log("Tower: " + localTarget.Tower);
-            if(localTarget != null && !localTarget.Tower.StatusEffects.Any(effect => effect.name1 == buff.name1)) {                
+            if(localTarget != null && localTarget.Tower.StatusEffects.All(effect => effect.name1 != buff.name1)) {                
                 localTarget.Tower.StatusEffects.Add(buff);
             }
         }
