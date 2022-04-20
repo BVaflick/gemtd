@@ -20,6 +20,9 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	GameBoard board = default;
+	
+	[SerializeField]
+	UIManager uiManager = default;
 
 	[SerializeField]
 	RectTransform mainPanel = default;
@@ -35,6 +38,9 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	RectTransform enemyDescriptionPanel = default;
+	
+	[SerializeField]
+	RectTransform statusEffectPrefab = default;
 
 	[SerializeField]
 	RectTransform selectionBox = default;
@@ -67,6 +73,9 @@ public class Game : MonoBehaviour {
 	WarFactory warFactory = default;
 
 	[SerializeField]
+	private PlayerAbility[] playerAbilities = default;
+
+	[SerializeField]
 	GameScenario scenario = default;
 
 	GameScenario.State activeScenario;
@@ -76,6 +85,7 @@ public class Game : MonoBehaviour {
 	bool isBuildPhase = true;
 
 	private bool isBuilding = false;
+	private bool isSpawningGift = false;
 
 	private bool giftAvailable = false;
 
@@ -123,6 +133,7 @@ public class Game : MonoBehaviour {
 		board.ShowGrid = true;
 		flyingTower = Instantiate(flyingTower);
 		flyingTower.gameObject.SetActive(false);
+		// uiManager.showPlayerAbilities(playerAbilities);
 	}
 
 	void OnEnable() {
@@ -388,6 +399,10 @@ public class Game : MonoBehaviour {
 	public void startBuilding() {
 		if (availableBuilds > 0) isBuilding = true;
 	}
+	
+	public void startSpawningGift() {
+		if (isBuildPhase) isSpawningGift = true;
+	}
 
 	public void buildSelected() {
 		if (isBuildPhase && availableBuilds == 0) {
@@ -451,6 +466,11 @@ public class Game : MonoBehaviour {
 			isBuilding = false;
 			return;
 		}
+		if (isSpawningGift) {
+			SpawnGift();
+			isSpawningGift = false;
+			return;
+		}
 
 		if (Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
 			selectEnemy(hit.transform.root.GetComponent<Enemy>());
@@ -486,7 +506,9 @@ public class Game : MonoBehaviour {
 
 	void selectStructureWithDrag() {
 		if (!Input.GetKey(KeyCode.LeftShift) || selectedEnemy != null) deselectAndClose();
-		newTowers.ForEach(newTower => {
+		List<GameTile> allTowers = builtTowers;
+		allTowers.AddRange(newTowers);
+		allTowers.ForEach(newTower => {
 			if (selectionRect.Contains(camera.WorldToScreenPoint(newTower.transform.position)) &&
 			    !selectedStructures.Contains(newTower.Content)) {
 				selectedStructures.Insert(0, newTower.Content);
@@ -600,12 +622,14 @@ public class Game : MonoBehaviour {
 			else if (child.name == "EnemyStatusEffects") {
 				RectTransform panel = child.GetComponent<RectTransform>();
 				foreach (Transform image in panel) {
-					image.GetComponent<Image>().gameObject.SetActive(false);
+					Destroy(image.gameObject);
 				}
 				for (var i = 0; i < selectedEnemy.VisualEffects.Count; i++) {
-					Image icon = panel.GetChild(i).GetComponent<Image>();
+					RectTransform image = Instantiate(statusEffectPrefab);
+					Image icon = image.GetComponent<Image>();
 					icon.sprite = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).icon;
 					icon.gameObject.SetActive(true);
+					icon.transform.parent = panel;
 				}
 			}
 		}
