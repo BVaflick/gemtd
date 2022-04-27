@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 3833609056597290237}
   - component: {fileID: 5229603623047022240}
   - component: {fileID: 3743168922435813002}
+  - component: {fileID: 5158467627108319482}
   m_Layer: 10
   m_Name: Turret
   m_TagString: Untagged
@@ -193,6 +194,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5158467627108319482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793620852136004217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4660965802250335855
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,12 +445,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  selection: {fileID: 1949907216147991960}
   targetingRange: 3
   towerType: 48
   combo: 0c000000240000002a000000
   damage: 50
   turret: {fileID: 224102258314045308}
-  selection: {fileID: 1949907216147991960}
   newTowerCircle: {fileID: 0}
   launchSpeed: 30
   abilities:

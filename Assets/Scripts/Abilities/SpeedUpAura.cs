@@ -7,6 +7,6 @@ using UnityEditor;
 public class SpeedUpAura : TowerBuff {
 
    public override void Modify(Tower tower) {
-      tower.AttackSpeed += 1f;
+      tower.AttackSpeed += 1f * level;
    }
 }

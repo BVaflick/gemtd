@@ -16,6 +16,7 @@ public class Ability : ScriptableObject {
     public void Modify(Tower tower) {
         buff.level = level;
         buff.icon = icon;
+        buff.name1 = buff.GetType().Name + level;
         tower.StatusEffects.Add(buff);
     }
 }

@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9090f8c8f024fe143986b93fc8f2375b, type: 3}
-  m_Name: SpeedAura
+  m_Script: {fileID: 11500000, guid: 265256b0d5bf4725ad11cb8a67ea351d, type: 3}
+  m_Name: New Speed Up Aura
   m_EditorClassIdentifier: 
-  level: 1
-  buff: {fileID: 11400000, guid: e468bee035c79b64398ba4f3c5b98fc1, type: 2}
-  icon: {fileID: 21300000, guid: f374bc5f77cc29d4fa88c0c2a614437d, type: 3}

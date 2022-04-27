@@ -621,15 +621,18 @@ public class Game : MonoBehaviour {
 			}
 			else if (child.name == "EnemyStatusEffects") {
 				RectTransform panel = child.GetComponent<RectTransform>();
-				foreach (Transform image in panel) {
-					Destroy(image.gameObject);
+				if (selectedEnemy.Health > 0) {
+					foreach (Transform image in panel) {
+						Destroy(image.gameObject);
+					}
 				}
 				for (var i = 0; i < selectedEnemy.VisualEffects.Count; i++) {
 					RectTransform image = Instantiate(statusEffectPrefab);
+					image.GetComponent<Tooltip>().tip = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).name1;
 					Image icon = image.GetComponent<Image>();
 					icon.sprite = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).icon;
 					icon.gameObject.SetActive(true);
-					icon.transform.parent = panel;
+					icon.transform.SetParent(panel);
 				}
 			}
 		}
@@ -644,6 +647,9 @@ public class Game : MonoBehaviour {
 			}
 			else if (child.name == "TowerParams") {
 				RectTransform panel = child.GetComponent<RectTransform>();
+				panel.GetComponent<Tooltip>().tip = "привет";
+				panel.GetComponent<Tooltip>().range = selectedTower.Range;
+				panel.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
 				foreach (Transform towerParam in panel.transform) {
 					switch (towerParam.name) {
 						case "Damage Value":
@@ -669,14 +675,18 @@ public class Game : MonoBehaviour {
 				for (var i = 0; i < selectedTower.Abilities.Count; i++) {
 					Image icon = panel.GetChild(i).GetComponent<Image>();
 					icon.sprite = selectedTower.Abilities[i].buff.icon;
+					icon.GetComponent<Tooltip>().tip = selectedTower.Abilities[i].buff.name1;
+					icon.GetComponent<Tooltip>().range = 0f;
 					icon.gameObject.SetActive(true);
 				}
 				for (var i = 0; i < selectedTower.Auras.Count; i++) {
 					Image icon = panel.GetChild(i).GetComponent<Image>();
 					icon.sprite = selectedTower.Auras[i + selectedTower.Abilities.Count].buff.icon;
+					icon.GetComponent<Tooltip>().tip = selectedTower.Auras[i + selectedTower.Abilities.Count].buff.name1;
+					icon.GetComponent<Tooltip>().range = 3.5f;
+					icon.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
 					icon.gameObject.SetActive(true);
 				}
-				
 			}
 			else if (child.name == "TowerStatusEffects") {
 				RectTransform panel = child.GetComponent<RectTransform>();
@@ -687,6 +697,7 @@ public class Game : MonoBehaviour {
 				for (var i = 0; i < thirdPartyStatusEffects.Count; i++) {
 					Image icon = panel.GetChild(i).GetComponent<Image>();
 					icon.sprite = thirdPartyStatusEffects[i].icon;
+					icon.GetComponent<Tooltip>().tip = thirdPartyStatusEffects[i].name1;
 					icon.gameObject.SetActive(true);
 				}
 			}
@@ -739,7 +750,7 @@ public class Game : MonoBehaviour {
 			Vector3 position = selectedStructures[0].transform.position;
 			position.y += 0.01f;
 			Handles.color = new Color(1, 1, 1, 0.05f);
-			Handles.DrawSolidDisc(position, transform.up, (float) 2);
+			Handles.DrawSolidDisc(position, transform.up, 2f);
 		}
 		// }
 
