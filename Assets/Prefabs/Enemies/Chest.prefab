@@ -454,6 +454,7 @@ MonoBehaviour:
   healthBar: {fileID: 7177689062041051501}
   selection: {fileID: 3879436302301401005}
   aim: {fileID: 4104789024212774787}
+  untouchable: 1
 --- !u!1 &5069743101209838233
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +515,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 46d5cd8f9edb8324e9c525838da9e8a5, type: 2}
+  - {fileID: 2100000, guid: 15f9cf319eb2e984d8f1c8d366a2009f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

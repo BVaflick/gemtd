@@ -228,7 +228,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 46d5cd8f9edb8324e9c525838da9e8a5, type: 2}
+  - {fileID: 2100000, guid: 15f9cf319eb2e984d8f1c8d366a2009f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -321,6 +321,7 @@ MonoBehaviour:
   healthBar: {fileID: 8978178902181254481}
   selection: {fileID: 5973164018191117369}
   aim: {fileID: 7006633103882259969}
+  untouchable: 1
 --- !u!1 &5105892694204904185
 GameObject:
   m_ObjectHideFlags: 0
