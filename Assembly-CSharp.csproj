@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\FloatRangeSliderAttribute.cs" />
      <Compile Include="Assets\Scripts\GameBehavior.cs" />
      <Compile Include="Assets\Scripts\Abilities\SpeedUpAura.cs" />
+     <Compile Include="Assets\Scripts\LaserBeam.cs" />
      <Compile Include="Assets\Scripts\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Abilities\Poison.cs" />
      <Compile Include="Assets\Scripts\Abilities\Buff.cs" />

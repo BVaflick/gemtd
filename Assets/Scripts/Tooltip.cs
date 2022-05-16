@@ -9,12 +9,13 @@ public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 	private float timeToWait = 0.2f;
 	
 	public void OnPointerEnter(PointerEventData eventData) {
-		StopAllCoroutines();
-		StartCoroutine(StartTimer());
+		// StopAllCoroutines();
+		// StartCoroutine(StartTimer());
+		showMessage();
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-		StopAllCoroutines();
+		// StopAllCoroutines();
 		TooltipManager.OnMouseDehover();
 	}
 

@@ -30,8 +30,8 @@ public class Game : MonoBehaviour {
 	[SerializeField]
 	RectTransform wallConstructionPanel = default;
 
-	[SerializeField]
-	RectTransform towerConstructionPanel = default;
+	// [SerializeField]
+	// RectTransform towerConstructionPanel = default;
 
 	[SerializeField]
 	RectTransform towerDescriptionPanel = default;
@@ -40,7 +40,22 @@ public class Game : MonoBehaviour {
 	RectTransform enemyDescriptionPanel = default;
 	
 	[SerializeField]
-	RectTransform statusEffectPrefab = default;
+	RectTransform statusEffectIconPrefab = default;
+	
+	[SerializeField]
+	RectTransform AbilityIconPrefab = default;
+	
+	[SerializeField]
+	RectTransform BuildButtonPrefab = default;
+	
+	[SerializeField]
+	RectTransform Upgrade1ButtonPrefab = default;
+	
+	[SerializeField]
+	RectTransform Upgrade2ButtonPrefab = default;
+	
+	[SerializeField]
+	RectTransform CombineButtonPrefab = default;
 
 	[SerializeField]
 	RectTransform selectionBox = default;
@@ -169,21 +184,21 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		if (towerConstructionPanel.gameObject.activeSelf) {
-			towerConstructionPanel.position = camera.WorldToScreenPoint(selectedStructures[0].transform.position);
-			float scale = 1 + (19 - camera.transform.position.y) / 20;
-			towerConstructionPanel.localScale = new Vector3(scale, scale, scale);
-			if (camera.transform.position.y < 8) {
-				foreach (Transform child in towerConstructionPanel) {
-					child.localScale = new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
-				}
-			}
-			else {
-				foreach (Transform child in towerConstructionPanel) {
-					child.localScale = new Vector3(1, 1, 1);
-				}
-			}
-		}
+		// if (towerConstructionPanel.gameObject.activeSelf) {
+		// 	towerConstructionPanel.position = camera.WorldToScreenPoint(selectedStructures[0].transform.position);
+		// 	float scale = 1 + (19 - camera.transform.position.y) / 20;
+		// 	towerConstructionPanel.localScale = new Vector3(scale, scale, scale);
+		// 	if (camera.transform.position.y < 8) {
+		// 		foreach (Transform child in towerConstructionPanel) {
+		// 			child.localScale = new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
+		// 		}
+		// 	}
+		// 	else {
+		// 		foreach (Transform child in towerConstructionPanel) {
+		// 			child.localScale = new Vector3(1, 1, 1);
+		// 		}
+		// 	}
+		// }
 		else if (wallConstructionPanel.gameObject.activeSelf) {
 			Vector3 pos = selectedStructures[0].transform.position;
 			pos.z += 1f;
@@ -240,7 +255,7 @@ public class Game : MonoBehaviour {
 				CombineSame(tile, false);
 			}
 			else if (Input.GetKey(KeyCode.LeftControl)) {
-				CombineOneshot(tile);
+				CombineOneshot(tile, null);
 			}
 			else {
 				CombineSame(tile, true);
@@ -419,11 +434,11 @@ public class Game : MonoBehaviour {
 		}
 	}
 
-	public void combineOneshotSelected() {
-		if (availableBuilds == 0) {
-			CombineOneshot(board.GetTile(selectedStructures[0].transform.localPosition));
-			deselectAndClose();
-		}
+	public void combineOneshotSelected(Tower combo) {
+		// if (availableBuilds == 0) {
+		CombineOneshot(board.GetTile(selectedStructures[0].transform.localPosition), combo);
+		deselectAndClose();
+		// }
 	}
 
 	public void removeSelectedWall() {
@@ -533,8 +548,8 @@ public class Game : MonoBehaviour {
 			selectedStructures.Insert(0, structure);
 		}
 
-		if (isBuildPhase && availableBuilds == 0 && selectedStructures.Count == 1) showTowerConstructionPanel();
-		else towerConstructionPanel.gameObject.SetActive(false);
+		// if (isBuildPhase && availableBuilds == 0 && selectedStructures.Count == 1) showTowerConstructionPanel();
+		// else towerConstructionPanel.gameObject.SetActive(false);
 		structure.switchSelection();
 		showTowerDescription();
 	}
@@ -559,31 +574,31 @@ public class Game : MonoBehaviour {
 	void closeAllPanels() {
 		mainPanel.gameObject.SetActive(false);
 		wallConstructionPanel.gameObject.SetActive(false);
-		towerConstructionPanel.gameObject.SetActive(false);
+		// towerConstructionPanel.gameObject.SetActive(false);
 		towerDescriptionPanel.gameObject.SetActive(false);
 		enemyDescriptionPanel.gameObject.SetActive(false);
 	}
 
-	void showTowerConstructionPanel() {
-		towerConstructionPanel.gameObject.SetActive(true);
-		Tower selectedTower = selectedStructures[0] as Tower;
-		foreach (Transform child in towerConstructionPanel.transform) {
-			switch (child.name) {
-				case "Upgrade1":
-					child.gameObject.SetActive(newTowers
-						.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2);
-					break;
-				case "Upgrade2":
-					child.gameObject.SetActive(newTowers
-						.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4);
-					break;
-				case "Combine":
-					child.gameObject.SetActive(
-						findCombos(selectedTower, newTowers.Select(x => (Tower) x.Content).ToList()).Count > 0);
-					break;
-			}
-		}
-	}
+	// void showTowerConstructionPanel() {
+	// 	towerConstructionPanel.gameObject.SetActive(true);
+	// 	Tower selectedTower = selectedStructures[0] as Tower;
+	// 	foreach (Transform child in towerConstructionPanel.transform) {
+	// 		switch (child.name) {
+	// 			case "Upgrade1":
+	// 				child.gameObject.SetActive(newTowers
+	// 					.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2);
+	// 				break;
+	// 			case "Upgrade2":
+	// 				child.gameObject.SetActive(newTowers
+	// 					.FindAll(tower => (tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4);
+	// 				break;
+	// 			case "Combine":
+	// 				child.gameObject.SetActive(
+	// 					findCombos(selectedTower, newTowers.Select(x => (Tower) x.Content).ToList()).Count > 0);
+	// 				break;
+	// 		}
+	// 	}
+	// }
 
 	void showEnemyDescription() {
 		enemyDescriptionPanel.gameObject.SetActive(true);
@@ -627,11 +642,10 @@ public class Game : MonoBehaviour {
 					}
 				}
 				for (var i = 0; i < selectedEnemy.VisualEffects.Count; i++) {
-					RectTransform image = Instantiate(statusEffectPrefab);
+					RectTransform image = Instantiate(statusEffectIconPrefab);
 					image.GetComponent<Tooltip>().tip = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).name1;
 					Image icon = image.GetComponent<Image>();
 					icon.sprite = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).icon;
-					icon.gameObject.SetActive(true);
 					icon.transform.SetParent(panel);
 				}
 			}
@@ -668,37 +682,68 @@ public class Game : MonoBehaviour {
 			}
 			else if (child.name == "TowerAbilities") {
 				RectTransform panel = child.GetComponent<RectTransform>();
-				foreach (Transform image in panel) {
-					image.GetComponent<Image>().gameObject.SetActive(false);
+				foreach (Transform ability in panel) {
+					Destroy(ability.gameObject);
 				}
-
-				for (var i = 0; i < selectedTower.Abilities.Count; i++) {
-					Image icon = panel.GetChild(i).GetComponent<Image>();
-					icon.sprite = selectedTower.Abilities[i].buff.icon;
-					icon.GetComponent<Tooltip>().tip = selectedTower.Abilities[i].buff.name1;
-					icon.GetComponent<Tooltip>().range = 0f;
-					icon.gameObject.SetActive(true);
+				foreach (Ability ability in selectedTower.Abilities) {
+					RectTransform image = Instantiate(AbilityIconPrefab);
+					Image icon = image.GetComponent<Image>();
+					icon.sprite = ability.buff.icon;
+					image.GetComponent<Tooltip>().tip = ability.buff.name1;
+					image.GetComponent<Tooltip>().range = 0f;
+					image.SetParent(panel);
 				}
-				for (var i = 0; i < selectedTower.Auras.Count; i++) {
-					Image icon = panel.GetChild(i).GetComponent<Image>();
-					icon.sprite = selectedTower.Auras[i + selectedTower.Abilities.Count].buff.icon;
-					icon.GetComponent<Tooltip>().tip = selectedTower.Auras[i + selectedTower.Abilities.Count].buff.name1;
-					icon.GetComponent<Tooltip>().range = 3.5f;
-					icon.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
-					icon.gameObject.SetActive(true);
+				foreach (Aura aura in selectedTower.Auras) {
+					RectTransform image = Instantiate(AbilityIconPrefab, panel, true);
+					Image icon = image.GetComponent<Image>();
+					icon.sprite = aura.buff.icon;
+					image.GetComponent<Tooltip>().tip = aura.buff.name1;
+					image.GetComponent<Tooltip>().range = 3.5f;
+					image.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
+				}
+				if (isBuildPhase && availableBuilds == 0) {
+					RectTransform buildButton = Instantiate(BuildButtonPrefab, panel, true);
+					buildButton.GetComponent<Button>().onClick.AddListener(buildSelected);
+					if (newTowers.FindAll(tower => 
+							(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2) {
+						RectTransform upgrade1Button = Instantiate(Upgrade1ButtonPrefab);
+						upgrade1Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(true));
+						upgrade1Button.SetParent(panel);
+					}
+					if (newTowers.FindAll(tower => 
+						(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4) {
+						RectTransform upgrade2Button = Instantiate(Upgrade2ButtonPrefab, panel, true);
+						upgrade2Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(false));
+					}
+				}
+				if (isBuildPhase && availableBuilds == 0 || !isBuildPhase) {
+					List<GameTile> list;
+					if (isBuildPhase) list = newTowers.FindAll(tile => tile.Content is Tower);
+					else list = builtTowers.FindAll(tile => tile.Content is Tower);
+					List<Tower> combos = findCombos(selectedTower, list.Select(x => (Tower) x.Content).ToList());
+					if (combos.Count > 0) {
+						foreach (Tower combo in combos) {
+							RectTransform combineButton = Instantiate(CombineButtonPrefab, panel, true);
+							Button button = combineButton.GetComponent<Button>();
+							button.onClick.AddListener(() => combineOneshotSelected(combo));
+							combineButton.transform.GetChild(2).GetComponent<Text>().text = combo.TowerType.ToString();
+						}
+					}
 				}
 			}
 			else if (child.name == "TowerStatusEffects") {
 				RectTransform panel = child.GetComponent<RectTransform>();
 				foreach (Transform image in panel) {
-					image.GetComponent<Image>().gameObject.SetActive(false);
+					Destroy(image.gameObject);
 				}
 				List<Buff> thirdPartyStatusEffects = selectedTower.StatusEffects.FindAll(se => !selectedTower.Abilities.Select(a => a.buff).Contains(se));
-				for (var i = 0; i < thirdPartyStatusEffects.Count; i++) {
-					Image icon = panel.GetChild(i).GetComponent<Image>();
-					icon.sprite = thirdPartyStatusEffects[i].icon;
-					icon.GetComponent<Tooltip>().tip = thirdPartyStatusEffects[i].name1;
+				foreach (Buff buff in thirdPartyStatusEffects) {
+					RectTransform image = Instantiate(statusEffectIconPrefab);
+					image.GetComponent<Tooltip>().tip = buff.name1;
+					Image icon = image.GetComponent<Image>();
+					icon.sprite = buff.icon;
 					icon.gameObject.SetActive(true);
+					icon.transform.SetParent(panel);
 				}
 			}
 		}
@@ -906,11 +951,11 @@ public class Game : MonoBehaviour {
 		newTowers.Clear();
 	}
 
-	void CombineOneshot(GameTile tile) {
+	void CombineOneshot(GameTile tile, Tower combined) {
 		if (isBuildPhase) {
 			Tower tower = (Tower) newTowers.Find(t => t == tile).Content;
 			if (tower && availableBuilds == 0) {
-				Tower combined = findCombos(tower, newTowers.Select(x => (Tower) x.Content).ToList())[0];
+				if(combined == null) combined = findCombos(tower, newTowers.Select(x => (Tower) x.Content).ToList())[0];
 				board.ToggleTower(tile, combined.TowerType);
 				deselectAndClose();
 				chooseTower(tile);
@@ -920,7 +965,7 @@ public class Game : MonoBehaviour {
 			GameTileContent content = tile.Content;
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
-				Tower combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
+				if(combined == null) combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
 				combined.Combo.ToList().ForEach(t => {
 					if (t != tower.TowerType) {
 						GameTile t2 = builtTowers.Find(tile => ((Tower) tile.Content).TowerType == t);
