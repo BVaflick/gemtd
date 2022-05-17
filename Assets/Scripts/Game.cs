@@ -1015,6 +1015,10 @@ public class Game : MonoBehaviour {
 		board.ToggleGift(tile);
 	}
 
+	void SwapTowers() {
+		
+	}
+
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
 		// GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
 		Enemy enemy = factory.Get(type);
@@ -1024,6 +1028,7 @@ public class Game : MonoBehaviour {
 			enemy.Spawn(instance.board.GroundPath);
 		instance.enemies.Add(enemy);
 	}
+	
 
 	public static Shell SpawnShell() {
 		Shell shell = instance.warFactory.Shell;
