@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5358727427459033834}
   - component: {fileID: 6837132426055403115}
   - component: {fileID: 4252418202143749027}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl1_cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,9 @@ GameObject:
   - component: {fileID: 4372420427027703991}
   - component: {fileID: 46782502708829589}
   - component: {fileID: 7241394659718084219}
-  m_Layer: 0
+  - component: {fileID: 8836009361972577604}
+  - component: {fileID: 2038232727490783999}
+  m_Layer: 10
   m_Name: t4_lvl1_bot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,6 +262,31 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &8836009361972577604
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5958681765222666528}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0012995178
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2038232727490783999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5958681765222666528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6160676102297866072
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +342,6 @@ MonoBehaviour:
   combo: 060000001200000018000000
   damage: 15
   turret: {fileID: 5724513684150210427}
-  laserBeam: {fileID: 0}
   newTowerCircle: {fileID: 0}
   launchSpeed: 30
   abilities:
@@ -332,7 +358,7 @@ GameObject:
   - component: {fileID: 5724513684150210427}
   - component: {fileID: 2027840428467072945}
   - component: {fileID: 7831984004416931854}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl1_crystal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +439,7 @@ GameObject:
   - component: {fileID: 828075792963998610}
   - component: {fileID: 7744005831845474984}
   - component: {fileID: 3314192647035601417}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl1_spring
   m_TagString: Untagged
   m_Icon: {fileID: 0}

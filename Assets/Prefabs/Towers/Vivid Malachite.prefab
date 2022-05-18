@@ -495,7 +495,6 @@ MonoBehaviour:
   combo: 340000000d0000002c000000
   damage: 50
   turret: {fileID: 6642076713664935208}
-  laserBeam: {fileID: 0}
   newTowerCircle: {fileID: 0}
   launchSpeed: 30
   abilities:
@@ -596,7 +595,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.0012576559
-  m_Center: {x: -3.3244352e-10, y: -0.000041862513, z: 0.00005}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6404041705052062696
 MonoBehaviour:
   m_ObjectHideFlags: 0
