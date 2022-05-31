@@ -91,6 +91,7 @@ public class Enemy : GameBehavior {
 			Vector3 position = transform.position;
 			position.y += 0.5f;
 			GameObject effectInstance = (GameObject) Instantiate(blastPatricals, position, transform.rotation);
+			Game.EnemyDied(5);
 			Destroy(effectInstance, 2f);
 			Recycle();
 			return false;
@@ -143,13 +144,14 @@ public class Enemy : GameBehavior {
 		OriginFactory.Reclaim(this);
 	}
 
-	public void ApplyDamage(float damage, bool isDamagePhysical) {
+	public void ApplyDamage(Tower tower, float damage, bool isDamagePhysical) {
 		Debug.Assert(damage >= 0f, "Negative damage applied.");
 		float modifier = 1f;
 		if (isDamagePhysical) {
 			modifier = 1f - ((0.052f * (armor + additionalArmor)) / (0.9f + (0.048f * Math.Abs(armor + additionalArmor))));
 		}
 		Health -= damage * modifier;
+		Game.RecordDealtDamage(tower, damage * modifier);
 		if (Health < 0) Health = 0;
 		healthBar.setValue((int) Health);
 	}

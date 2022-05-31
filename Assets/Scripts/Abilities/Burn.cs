@@ -7,9 +7,9 @@ public class Burn : Buff {
 		TargetPoint.FillBuffer(tower.transform.localPosition, 3.5f, Game.enemyLayerMask);
 		for (int i = 0; i < TargetPoint.BufferedCount; i++) {
 			TargetPoint localTarget = TargetPoint.GetBuffered(i);
-			localTarget.Enemy.ApplyDamage(40f, false);
+			localTarget.Enemy.ApplyDamage(tower, 40f, false);
 			Explosion explosion = Game.SpawnExplosion(true);
-			explosion.Initialize(localTarget, this.GetType().Name + level, icon);
+			explosion.Initialize(tower, localTarget, this.GetType().Name + level, icon);
 		}
 	}
 }

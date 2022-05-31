@@ -5,6 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public abstract class EnemyBuff : Buff {
 
-    public abstract void Modify(TargetPoint enemy, float damage);
+    public abstract void Modify(Tower tower, TargetPoint enemy, float damage);
  
 }

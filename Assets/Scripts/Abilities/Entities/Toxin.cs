@@ -34,7 +34,7 @@ public class Toxin : WarEntity {
 
         if (cooldown >= 1f) {
             cooldown = 0f;
-            target.Enemy.ApplyDamage(5f, false);
+            target.Enemy.ApplyDamage(tower,5f, false);
         }
 
         if (propertyBlock == null) {

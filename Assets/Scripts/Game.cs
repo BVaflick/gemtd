@@ -64,6 +64,12 @@ public class Game : MonoBehaviour {
 
 	int level = 1;
 
+	private int gold = 0;
+
+	private int experience = 0;
+	
+	private Dictionary<Tower, float> dealtDamage = new Dictionary<Tower, float>();
+
 	private bool quickCast = false;
 
 	private int temp = 0;
@@ -168,6 +174,7 @@ public class Game : MonoBehaviour {
 	void Update() {
 		handleInput();
 		if (playerHealth <= 0) {
+			playerHealth = 0;
 			Debug.Log("Defeat!");
 			BeginNewGame();
 		}
@@ -178,6 +185,7 @@ public class Game : MonoBehaviour {
 		}
 		else if (scenarioIsInProgress && !activeScenario.WaveIsInProgress() && enemies.IsEmpty) {
 			if (!isBuildPhase) {
+				calculateMVP();
 				isBuildPhase = true;
 				availableBuilds = 5;
 				if (giftAvailable) board.ToggleGift(giftTile);
@@ -230,7 +238,16 @@ public class Game : MonoBehaviour {
 		board.GameUpdate();
 		if (selectedEnemy != null) {
 			showEnemyDescription();
+		} else if (selectedStructures.Count != 0) {
+			// showTowerDescription();
+		} else {
+			showMainPanel();
 		}
+	}
+
+	void calculateMVP() {
+		Tower mvp = dealtDamage.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.First();
+		dealtDamage.Clear();
 	}
 
 	void handleInput() {
@@ -410,6 +427,18 @@ public class Game : MonoBehaviour {
 	public static void EnemyReachedDestination(int damage) {
 		instance.playerHealth -= damage;
 	}
+	
+	public static void EnemyDied(int gold) {
+		instance.gold += gold;
+	}
+	
+	public static void RecordDealtDamage(Tower tower, float damage) {
+		Dictionary<Tower, float> dictionary = instance.dealtDamage;
+		if(!dictionary.ContainsKey(tower)) dictionary.Add(tower, damage);
+		else {
+			dictionary[tower] += damage;
+		}
+	}
 
 	public void startBuilding() {
 		if (availableBuilds > 0) isBuilding = true;
@@ -568,7 +597,8 @@ public class Game : MonoBehaviour {
 	void deselectAndClose() {
 		deselectAll();
 		closeAllPanels();
-		mainPanel.gameObject.SetActive(true);
+		// mainPanel.gameObject.SetActive(true);
+		showMainPanel();
 	}
 
 	void closeAllPanels() {
@@ -745,6 +775,33 @@ public class Game : MonoBehaviour {
 					icon.gameObject.SetActive(true);
 					icon.transform.SetParent(panel);
 				}
+			}
+		}
+	}
+
+	void showMainPanel() {
+		mainPanel.gameObject.SetActive(true);
+		foreach (Transform child in mainPanel.transform) {
+			if (child.name == "MainParams") {
+				RectTransform panel = child.GetComponent<RectTransform>();
+				foreach (Transform mainParam in panel.transform) {
+					switch (mainParam.name) {
+						case "Gold Value":
+							mainParam.GetComponent<Text>().text = gold.ToString();
+							break;
+						case "Builds Left Value":
+							mainParam.GetComponent<Text>().text = availableBuilds + "/5";
+							break;
+						case "Level Value":
+							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(0.1f);
+							break;
+					}
+				}
+			}
+			else if (child.name == "HP") {
+				child.GetComponent<Text>().text = playerHealth + "/100";
+			} else if (child.name == "HealthBar") {
+				child.GetComponent<Slider>().value = playerHealth / 100f;
 			}
 		}
 	}

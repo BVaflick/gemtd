@@ -2,7 +2,6 @@
 
 [System.Serializable]
 public class EnemySpawnSequence {
-
 	[SerializeField]
 	EnemyFactory factory = default;
 
@@ -19,7 +18,6 @@ public class EnemySpawnSequence {
 
 	[System.Serializable]
 	public struct State {
-
 		EnemySpawnSequence sequence;
 
 		int count;
@@ -31,18 +29,18 @@ public class EnemySpawnSequence {
 			count = 0;
 			cooldown = sequence.cooldown;
 		}
-		public bool Progress(float deltaTime) {			
-			if (count >= sequence.amount) {
-				return false;
-			} else {
-				cooldown += deltaTime;
-				if (cooldown >= sequence.cooldown) {
-					cooldown -= sequence.cooldown;
-					count += 1;
-					Game.SpawnEnemy(sequence.factory, sequence.type);
-				}
-				return true;
+
+		public bool Progress(float deltaTime) {
+			if (count >= sequence.amount) return false;
+
+			cooldown += deltaTime;
+			if (cooldown >= sequence.cooldown) {
+				cooldown -= sequence.cooldown;
+				count += 1;
+				Game.SpawnEnemy(sequence.factory, sequence.type);
 			}
+
+			return true;
 		}
 	}
 }

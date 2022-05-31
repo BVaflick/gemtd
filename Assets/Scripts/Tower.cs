@@ -156,7 +156,7 @@ public class Tower : GameTileContent {
 		List<EnemyBuff> debuffs = new List<EnemyBuff>();
 		statusEffects.FindAll(statusEffect => statusEffect is EnemyBuff).ForEach(statusEffect => debuffs.Add((EnemyBuff) statusEffect));		
 		foreach (var target in targets) {
-			Game.SpawnShell().Initialize(launchPoint, target, damage + additionalDamage, launchSpeed, debuffs);
+			Game.SpawnShell().Initialize(launchPoint, target, this, damage + additionalDamage, launchSpeed, debuffs);
 		}
 	}
 	

@@ -8,13 +8,16 @@ public class Shell : WarEntity {
 
 	List<EnemyBuff> debuffs = new List<EnemyBuff>();
 
-	Vector3 launchPoint, launchVelocity;	
+	Vector3 launchPoint, launchVelocity;
+
+	private Tower tower;
 
 	float speed, blastRadius = 1f, damage;
 
-	public void Initialize(Vector3 launchPoint, TargetPoint target, float damage, float speed, List<EnemyBuff> debuffs) {
+	public void Initialize(Vector3 launchPoint, TargetPoint target, Tower tower, float damage, float speed, List<EnemyBuff> debuffs) {
 		this.launchPoint = launchPoint;
 		transform.localPosition = launchPoint;
+		this.tower = tower;
 		this.target = target;
 		this.damage = damage;
 		this.debuffs = debuffs;
@@ -28,11 +31,11 @@ public class Shell : WarEntity {
 			float distance = speed * Time.deltaTime;
 			if (launchVelocity.magnitude <= distance) {
 				foreach (var debuff in debuffs) {
-					debuff.Modify(target, damage);
+					debuff.Modify(tower, target, damage);
 				}	
 				GameObject effectInstance = (GameObject) Instantiate(blastPatricals, transform.position, transform.rotation);
 				Destroy(effectInstance, 2f);
-				target.Enemy.ApplyDamage(damage, true);
+				target.Enemy.ApplyDamage(tower, damage, true);
 				OriginFactory.Reclaim(this);
 				return false;
 			}
