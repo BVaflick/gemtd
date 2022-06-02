@@ -10115,6 +10115,9 @@ MonoBehaviour:
   boardSize: {x: 17, y: 17}
   camera: {fileID: 1918931694}
   board: {fileID: 495667348}
+  MVPAbility: {fileID: 11400000, guid: bcbab4aafbb52bf4ca0b5b4432a34a9d, type: 2}
+  MVPIcon: {fileID: 0}
+  MVPAura: {fileID: 11400000, guid: ac208fd271fe7144b8233be25166a484, type: 2}
   uiManager: {fileID: 1440505071}
   mainPanel: {fileID: 1371346473}
   wallConstructionPanel: {fileID: 413805771}

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9090f8c8f024fe143986b93fc8f2375b, type: 3}
   m_Name: MVP Aura
   m_EditorClassIdentifier: 
-  level: 0
-  buff: {fileID: 0}
-  icon: {fileID: 0}
+  level: 1
+  buff: {fileID: 11400000, guid: c4c9654244941d7419632fc11072dca5, type: 2}
+  icon: {fileID: 21300000, guid: 6d606ea72afefe3439c3d8be2a8080a0, type: 3}
