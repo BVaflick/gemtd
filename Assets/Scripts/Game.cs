@@ -22,6 +22,17 @@ public class Game : MonoBehaviour {
 	GameBoard board = default;
 	
 	[SerializeField]
+	Ability MVPAbility = default;
+	
+	[SerializeField]
+	Sprite MVPIcon = default;
+	
+	[SerializeField]
+	Aura MVPAura = default;
+
+	private int MVPMaxLevel = 3;
+	
+	[SerializeField]
 	UIManager uiManager = default;
 
 	[SerializeField]
@@ -246,7 +257,20 @@ public class Game : MonoBehaviour {
 	}
 
 	void calculateMVP() {
-		Tower mvp = dealtDamage.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Keys.First();
+		var sortedMVPs = dealtDamage.Where(x => !x.Key.Auras.Contains(MVPAura)).OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+		dealtDamage.Clear();
+		if (sortedMVPs.Count == 0) return;
+		Tower mvp = sortedMVPs.Keys.First();
+		Ability mvpAbility = mvp.Abilities.Find(x => x.buff.name1.Contains("MVP"));
+		if (mvpAbility == null) {
+			mvp.Abilities.Add(Instantiate(MVPAbility));
+			return;
+		}
+		if (++mvpAbility.level >= MVPMaxLevel) {
+			mvp.Abilities.Remove(mvpAbility);
+			Destroy(mvpAbility);
+			mvp.Auras.Add(MVPAura);
+		}
 		dealtDamage.Clear();
 	}
 
@@ -1023,14 +1047,24 @@ public class Game : MonoBehaviour {
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
 				if(combined == null) combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
+				int comboMVP = 0;
 				combined.Combo.ToList().ForEach(t => {
 					if (t != tower.TowerType) {
 						GameTile t2 = builtTowers.Find(tile => ((Tower) tile.Content).TowerType == t);
+						calculateMVPCombo(ref comboMVP, t2.Content as Tower);
 						board.ToggleWall(t2);
 						builtTowers.Remove(t2);
 					}
 				});
 				board.ToggleTower(tile, combined.TowerType);
+				Tower combinedTower = tile.Content as Tower;
+				if (comboMVP != 0 && comboMVP < MVPMaxLevel) {
+					Ability mvp = Instantiate(MVPAbility);
+					mvp.level = comboMVP;
+					combinedTower.Abilities.Add(mvp);
+				} else if (comboMVP >= MVPMaxLevel) {
+					combinedTower.Auras.Add(MVPAura);
+				}
 				deselectAndClose();
 			}
 		}
@@ -1049,6 +1083,18 @@ public class Game : MonoBehaviour {
 		// }
 
 		return combosTypes;
+	}
+
+	void calculateMVPCombo(ref int mvpLevel, Tower tower) {
+		if (tower.Auras.Find(aura => aura.buff is MVPAura)) {
+			mvpLevel = MVPMaxLevel;
+			return;
+		}
+
+		Ability mvp = tower.Abilities.Find(ability => ability.buff is MVPAbility);
+		if (mvp) {
+			mvpLevel += mvp.level;
+		}
 	}
 
 	void CombineSame(GameTile tile, bool two) {

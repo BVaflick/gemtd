@@ -19,7 +19,6 @@ public class Aura : ScriptableObject {
         buff.icon = icon;
         buff.name1 = buff.GetType().Name + level;
         TargetPoint.FillBuffer(tower.transform.localPosition, 3.5f, Game.towerLayerMask);
-        Debug.Log(TargetPoint.BufferedCount);
         for (int i = 0; i < TargetPoint.BufferedCount; i++) {
             TargetPoint localTarget = TargetPoint.GetBuffered(i);
             if(localTarget != null && localTarget.Tower.StatusEffects.All(effect => effect.name1 != buff.name1)) {                

@@ -10,8 +10,6 @@ public class Shell : WarEntity {
 
 	Vector3 launchPoint, launchVelocity;
 
-	private Tower tower;
-
 	float speed, blastRadius = 1f, damage;
 
 	public void Initialize(Vector3 launchPoint, TargetPoint target, Tower tower, float damage, float speed, List<EnemyBuff> debuffs) {
@@ -24,6 +22,7 @@ public class Shell : WarEntity {
 		this.speed = speed;
 	}
 
+	
 	public override bool GameUpdate() {
 		if (target != null) {
 			transform.LookAt(target.Position);
