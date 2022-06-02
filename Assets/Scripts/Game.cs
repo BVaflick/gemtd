@@ -1047,7 +1047,8 @@ public class Game : MonoBehaviour {
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
 				if(combined == null) combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
-				int comboMVP = 0;
+				Ability currentMvp = tower.Abilities.Find(ability => ability.buff is MVPAbility);
+				int comboMVP = currentMvp ? currentMvp.level : 0;
 				combined.Combo.ToList().ForEach(t => {
 					if (t != tower.TowerType) {
 						GameTile t2 = builtTowers.Find(tile => ((Tower) tile.Content).TowerType == t);
