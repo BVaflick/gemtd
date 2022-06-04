@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: YSSlow
   m_EditorClassIdentifier: 
   level: 1
-  buff: {fileID: 0}
+  buff: {fileID: 11400000, guid: 59017928d9ec07643b5230466934e48a, type: 2}
   icon: {fileID: 21300000, guid: 7016448bfac3f0c4ebda52cc6e205842, type: 3}
