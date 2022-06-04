@@ -16,6 +16,8 @@ MonoBehaviour:
     type: 3}
   explosionPrefab: {fileID: 3225790992336973164, guid: 6360f082c8d49e146b256c4952dc9f88,
     type: 3}
+  firePrefab: {fileID: 5459393549896202702, guid: 52f0e1e2570e25643a8d2307ff51b8be,
+    type: 3}
   toxinPrefab: {fileID: 6921666494744857033, guid: 5f47b8c15d9661748871b7361f823dca,
     type: 3}
   icePrefab: {fileID: 5450329733256625055, guid: 5d7a4e846da3f92419845ef358a5b753,

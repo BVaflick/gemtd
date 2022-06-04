@@ -118,6 +118,14 @@ public class Tower : GameTileContent {
 		additionalDamage = 0f;
 		abilities.ForEach(ability => ability.Modify(this));
 		statusEffects.FindAll(statusEffect => statusEffect is TowerBuff).ForEach(statusEffect => ((TowerBuff) statusEffect).Modify(this));
+		// Buff burn = statusEffects.Find(statusEffect => statusEffect is Burn);
+		// if (burn) {
+		// 	launchProgress += (attackSpeed + additionalAttackSpeed) * Time.deltaTime;
+		// 	if (launchProgress >= 1f) {
+		// 		((Burn) burn).Modify(this, damage);
+		// 		launchProgress -= 1f;
+		// 	}
+		// }
 		if (TrackTarget(ref targets) || AcquireTarget(ref targets, null)) {
 			Vector3 rot = turret.transform.eulerAngles;
 			turret.LookAt(targets[0].Position);
@@ -125,11 +133,6 @@ public class Tower : GameTileContent {
 			turret.eulerAngles = new Vector3(rot.x, rot2.y, rot.z);
 			launchProgress += (attackSpeed + additionalAttackSpeed) * Time.deltaTime;
 			if (launchProgress >= 1f) {
-				Buff burn = statusEffects.Find(statusEffect => statusEffect is Burn);
-				if (burn) {
-					((Burn) burn).Modify(this, damage);
-				}
-				// Shoot();
 				Launch(targets);
 				launchProgress -= 1f;
 			}

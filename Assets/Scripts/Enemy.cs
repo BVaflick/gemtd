@@ -7,7 +7,10 @@ using UnityEngine;
 public class Enemy : GameBehavior {
 
 	[SerializeField]
-	Transform model = default;
+	public Transform model = default;
+	
+	[SerializeField]
+	public Material modelMaterial = default;
 
 	[SerializeField]
 	GameObject blastPatricals = null;
@@ -19,12 +22,15 @@ public class Enemy : GameBehavior {
 	EnemyAnimationConfig animationConfig = default;
 
 	[SerializeField]
-	HealthBar healthBar = default;
+	public HealthBar healthBar = default;
 	[SerializeField]
 	Transform selection = default;
 	[SerializeField]
 	Transform aim = default;
 	float aimAge = 0;
+	
+	[SerializeField]
+	bool isInvisible = false;
 	
 	EnemyAnimator animator;
 	
@@ -47,7 +53,8 @@ public class Enemy : GameBehavior {
 	public float Health { get; set; }
 	public float Scale { get; private set; }
 	public GameBehaviorCollection VisualEffects { get; set; }
-	public bool untouchable = true;
+	
+	public List<Buff> StatusEffects { get; set; }
 
 	public EnemyFactory OriginFactory {
 		get => originFactory;
@@ -86,7 +93,13 @@ public class Enemy : GameBehavior {
 		}
 		additionalSpeed = 0f;
 		additionalArmor = 0f;
+		bool shouldDisappear = isInvisible && !StatusEffects.Exists(statusEffect => statusEffect is Observe);
+		if (shouldDisappear) {
+			disappear();
+		}
 		VisualEffects.GameUpdate();
+		StatusEffects.FindAll(statusEffect => statusEffect is EnemyAuraBuff).ForEach(statusEffect => (statusEffect as EnemyAuraBuff).Modify(this));
+		StatusEffects.Clear();
 		if (Health <= 0f) {
 			Vector3 position = transform.position;
 			position.y += 0.5f;
@@ -126,6 +139,7 @@ public class Enemy : GameBehavior {
 		Health = health;
 		FullHealth = health;
 		VisualEffects = new GameBehaviorCollection();
+		StatusEffects = new List<Buff>();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
 		healthBar.setMaxValue((int) health);
@@ -144,6 +158,13 @@ public class Enemy : GameBehavior {
 		OriginFactory.Reclaim(this);
 	}
 
+	public void disappear() {
+		Color c = modelMaterial.color;
+		c.a = 0f;
+		modelMaterial.color = c;
+		healthBar.gameObject.SetActive(false);
+	}
+	
 	public void ApplyDamage(Tower tower, float damage, bool isDamagePhysical) {
 		Debug.Assert(damage >= 0f, "Negative damage applied.");
 		float modifier = 1f;

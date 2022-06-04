@@ -445,6 +445,7 @@ MonoBehaviour:
   abilities: []
   auras:
   - {fileID: 11400000, guid: 2878104e5b3bff140be7100c5a887f75, type: 2}
+  - {fileID: 11400000, guid: 2fe02e795dabf33499aaea3be90fea4a, type: 2}
 --- !u!1 &6626532600280887641
 GameObject:
   m_ObjectHideFlags: 0

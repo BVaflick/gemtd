@@ -240,17 +240,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  selection: {fileID: 4894290087317464149}
   targetingRange: 1.5
   towerType: 56
   combo: 1e0000001f00000000000000
   damage: 0
   turret: {fileID: 224102258314045308}
-  selection: {fileID: 4894290087317464149}
   newTowerCircle: {fileID: 0}
   launchSpeed: 30
-  abilities:
-  - {fileID: 11400000, guid: 600df6b844d6cbc41a675cbb73321b61, type: 2}
-  auras: []
+  abilities: []
+  auras:
+  - {fileID: 11400000, guid: 15172d1c069cd304d9452dbf869fd70f, type: 2}
 --- !u!1 &6787000539347584138
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,9 @@ public class WarFactory : GameObjectFactory {
 
 	[SerializeField]
 	Explosion explosionPrefab = default;
+	
+	[SerializeField]
+	Fire firePrefab = default;
 
 	[SerializeField]
 	Toxin toxinPrefab = default;
@@ -19,6 +22,8 @@ public class WarFactory : GameObjectFactory {
 	Corrosion corrosionPrefab = default;
 
 	public Explosion Explosion => Get(explosionPrefab);
+	
+	public Fire Fire => Get(firePrefab);
 
 	public Ice Ice => Get(icePrefab);
 

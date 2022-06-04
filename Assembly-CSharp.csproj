@@ -66,15 +66,19 @@
      <Compile Include="Assets\Scripts\LaserBeam.cs" />
      <Compile Include="Assets\Scripts\MortarTower.cs" />
      <Compile Include="Assets\Scripts\Abilities\Poison.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Observe.cs" />
      <Compile Include="Assets\Scripts\Abilities\Buff.cs" />
      <Compile Include="Assets\Scripts\GizmoExtensions.cs" />
      <Compile Include="Assets\Scripts\GameTile.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Entities\Fire.cs" />
      <Compile Include="Assets\Scripts\TargetPoint.cs" />
+     <Compile Include="Assets\Scripts\Abilities\EnemyAuraBuff.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Ice.cs" />
      <Compile Include="Assets\Scripts\GameBehaviorCollection.cs" />
      <Compile Include="Assets\Scripts\GameTileContent.cs" />
      <Compile Include="Assets\Scripts\TowerType.cs" />
      <Compile Include="Assets\Scripts\WarFactory.cs" />
+     <Compile Include="Assets\Scripts\Abilities\AuraWithEnemyDebuff.cs" />
      <Compile Include="Assets\Scripts\Abilities\Damage.cs" />
      <Compile Include="Assets\Scripts\GameBoard.cs" />
      <Compile Include="Assets\Scripts\Abilities\EnemyBuff.cs" />
@@ -90,6 +94,7 @@
      <Compile Include="Assets\Scripts\GameObjectFactory.cs" />
      <Compile Include="Assets\Scripts\Abilities\Splash.cs" />
      <Compile Include="Assets\Scripts\Abilities\TowerBuff.cs" />
+     <Compile Include="Assets\Scripts\Abilities\SlowAura.cs" />
      <Compile Include="Assets\Scripts\Abilities\MinusArmor.cs" />
      <Compile Include="Assets\Scripts\GameScenario.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Toxin.cs" />

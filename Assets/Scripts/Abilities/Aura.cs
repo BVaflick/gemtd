@@ -14,7 +14,7 @@ public class Aura : ScriptableObject {
     [SerializeField]
     public Sprite icon = default;
     
-    public void Modify(Tower tower) {
+    public virtual void Modify(Tower tower) {
         buff.level = level;
         buff.icon = icon;
         buff.name1 = buff.GetType().Name + level;

@@ -1141,27 +1141,23 @@ public class Game : MonoBehaviour {
 	}
 
 	public static Explosion SpawnExplosion(bool flag) {
-		Explosion explosion = instance.warFactory.Explosion;
-		if (flag) instance.nonEnemies.Add(explosion);
-		return explosion;
+		return instance.warFactory.Explosion;
+	}
+	
+	public static Fire SpawnFire(bool flag) {
+		return instance.warFactory.Fire;
 	}
 
 	public static Corrosion SpawnCorrosion() {
-		Corrosion corrosion = instance.warFactory.Corrosion;
-		// instance.nonEnemies.Add(explosion);
-		return corrosion;
+		return instance.warFactory.Corrosion;
 	}
 
 	public static Ice SpawnIce() {
-		Ice ice = instance.warFactory.Ice;
-		// instance.nonEnemies.Add(slow);
-		return ice;
+		return instance.warFactory.Ice;
 	}
 
 	public static Toxin SpawnToxin() {
-		Toxin toxin = instance.warFactory.Toxin;
-		// instance.nonEnemies.Add(poison);
-		return toxin;
+		return instance.warFactory.Toxin;
 	}
 }
 

@@ -379,7 +379,7 @@ MonoBehaviour:
   healthBar: {fileID: 9127820606101094947}
   selection: {fileID: 1410242130021314432}
   aim: {fileID: 3559737756446606748}
-  untouchable: 1
+  isInvisible: 0
 --- !u!1 &4988774883117324312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,6 +1454,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -125.71758
       objectReference: {fileID: 0}
+    - target: {fileID: 137111010946803922, guid: f88c6ad57910d8648807bcf0c131f49d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: bcaad48fae9d78948944fe183b6e39fe, type: 2}
     m_RemovedComponents:
     - {fileID: 95025375702580604, guid: f88c6ad57910d8648807bcf0c131f49d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f88c6ad57910d8648807bcf0c131f49d, type: 3}
