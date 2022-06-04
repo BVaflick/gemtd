@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Splash1
   m_EditorClassIdentifier: 
   level: 1
-  buff: {fileID: 11400000, guid: 144f7125f4aca0f4cb1135a4674ab4c5, type: 2}
+  buff: {fileID: 0}
   icon: {fileID: 21300000, guid: c95da33b8c400ed42bfb136e175ea99d, type: 3}

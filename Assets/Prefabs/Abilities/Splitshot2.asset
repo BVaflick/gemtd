@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Splitshot2
   m_EditorClassIdentifier: 
   level: 2
-  buff: {fileID: 11400000, guid: 8f4c0b40a3f95664c9c39f96ca448175, type: 2}
+  buff: {fileID: 0}
   icon: {fileID: 21300000, guid: a7961abf9cf7ac547a68e53a5a65a3a2, type: 3}
