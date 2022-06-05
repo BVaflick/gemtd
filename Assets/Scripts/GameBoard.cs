@@ -156,7 +156,11 @@ public class GameBoard : MonoBehaviour {
 			if (checkpoints.Count == 5) {
 				tile.Content = contentFactory.Get(GameTileContentType.Destination);
 				tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
-			} else tile.Content = contentFactory.Get(GameTileContentType.Flag);
+			}
+			else {
+				tile.Content = contentFactory.Get(GameTileContentType.Flag);
+				tile.checkpointIndex = checkpoints.Count;
+			}
 			checkpoints.Add(tile);
 			// FindPaths();
 		}

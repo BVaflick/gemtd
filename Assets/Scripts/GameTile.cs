@@ -32,6 +32,8 @@ public class GameTile : MonoBehaviour {
 
     GameTile nextOnPath = null;
 
+    public int checkpointIndex = -1;
+
     int distance;
 
     GameTileContent content;

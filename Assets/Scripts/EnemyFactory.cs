@@ -17,7 +17,7 @@ public class EnemyFactory : GameObjectFactory {
 		[FloatRangeSlider(-0.4f, 0.4f)]
 		public FloatRange pathOffset = new FloatRange(0f);
 
-		[FloatRangeSlider(10f, 5000f)]
+		[FloatRangeSlider(1f, 5000f)]
 		public FloatRange health = new FloatRange(50f);
 
 		[FloatRangeSlider(0f, 1000f)]

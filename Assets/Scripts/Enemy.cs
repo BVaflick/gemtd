@@ -123,6 +123,9 @@ public class Enemy : GameBehavior {
 			progress = (progress - 1f) / progressFactor;
 			progress = 0;
 			PrepareNextState();
+			if (currentTile.checkpointIndex != -1) {
+				Game.EnemyReachedFlag(currentTile.checkpointIndex);
+			}
 			if (nextTile == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
 				animator.PlayOutro();

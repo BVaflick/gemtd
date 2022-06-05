@@ -76,8 +76,24 @@ public class Game : MonoBehaviour {
 	int level = 1;
 
 	private int gold = 0;
+	
+	private float progress = 10.5f;
 
 	private int experience = 0;
+	
+	public int Experience {
+		get => experience;
+		set {
+			experience = value;
+			if (value >= 100) {
+				experience = value - 100;
+				level++;
+			}
+			else {
+				experience = value;
+			}
+		}
+	}
 	
 	private Dictionary<Tower, float> dealtDamage = new Dictionary<Tower, float>();
 
@@ -449,13 +465,21 @@ public class Game : MonoBehaviour {
 		nonEnemies.Clear();
 		board.Clear();
 	}
+	
+	public static void EnemyReachedFlag(int index) {
+		float regress = 0.0005f * (index == 0 ? 0 : Mathf.Pow(2, index - 1));
+		instance.progress -= regress;
+	}
 
 	public static void EnemyReachedDestination(int damage) {
 		instance.playerHealth -= damage;
+		instance.progress -= 0.05f;
 	}
 	
 	public static void EnemyDied(int gold) {
 		instance.gold += gold;
+		instance.Experience += 2;
+		instance.progress += 0.0075f;
 	}
 	
 	public static void RecordDealtDamage(Tower tower, float damage) {
@@ -832,7 +856,7 @@ public class Game : MonoBehaviour {
 							mainParam.GetComponent<Text>().text = availableBuilds + "/5";
 							break;
 						case "Level Value":
-							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(0.1f);
+							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience / 100f);
 							break;
 					}
 				}
@@ -861,7 +885,9 @@ public class Game : MonoBehaviour {
 		position.z -= 0.4f;
 		Handles.Label(position, "HP: " + playerHealth, style);
 		position.z -= 0.4f;
-		Handles.Label(position, "Level: " + level, style);
+		Handles.Label(position, "Level: " + level + "+" + experience / 100f + "%", style);
+		position.z -= 0.4f;
+		Handles.Label(position, "Progress: " + (int) progress + "+" + (progress - (int) progress) * 100 + "%", style);
 		position.z -= 0.4f;
 		Handles.Label(position, "Build phase: " + isBuildPhase, style);
 		position.z -= 0.4f;
@@ -1200,11 +1226,11 @@ public class Game : MonoBehaviour {
  * 		б. Увороты														-
  * 		в. Отскок снарядов для цепной молнии и чайника					-
  * 		г. ПВО															-
- * 		д. Невидимость													-
+ * 		д. Невидимость													+
  * 5. Добавить способности для башен:		
  * 		а. Точность														-
  * 		б. Дальность													-
- * 		в. Замедление по области (Желтый сапфир)						-
+ * 		в. Замедление по области (Желтый сапфир)						+
  * 		г. Иммунитет к магии для башен									-
  * 6. Летающие юниты													+
  * 7. Выделение объектов												+-
@@ -1214,6 +1240,6 @@ public class Game : MonoBehaviour {
  * 11. Педали															-
  * 12. Визуализация нанесенного урона									-
  * 13. Шкала здоровья													+
- * 14. MVP																-
+ * 14. MVP																+
  * 15. GUI																+-
  */
