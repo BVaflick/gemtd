@@ -6,7 +6,7 @@ using System.Linq;
 public class Aura : ScriptableObject {
 
     [SerializeField, Range(1, 5)]
-    protected int level;
+    public int level;
 
     [SerializeField]
     public Buff buff = default;

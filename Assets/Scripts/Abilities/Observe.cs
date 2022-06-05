@@ -7,9 +7,10 @@ using UnityEditor;
 public class Observe : EnemyAuraBuff {
 
    public override void Modify(Enemy enemy) {
-      Color c = enemy.modelMaterial.color;
-      c.a = 0.5f;
-      enemy.modelMaterial.color = c;
-      enemy.healthBar.gameObject.SetActive(true);
+      if (enemy.isInvisible) {
+         enemy.transform.GetComponentInChildren<SkinnedMeshRenderer>().material = enemy.revealedInvisibleMaterial; 
+         enemy.healthBar.gameObject.SetActive(true);
+         enemy.isInvisible = false;
+      }
    }
 }

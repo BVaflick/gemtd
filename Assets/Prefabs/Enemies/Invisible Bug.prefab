@@ -372,7 +372,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 6203277498881417615}
-  modelMaterial: {fileID: 2100000, guid: 343efc4e4daa6884fb114514185426c9, type: 2}
+  invisibleMaterial: {fileID: 2100000, guid: 343efc4e4daa6884fb114514185426c9, type: 2}
+  revealedInvisibleMaterial: {fileID: 2100000, guid: 24218e40947574e4a9198f5ababf79a8,
+    type: 2}
   blastPatricals: {fileID: 2046620288238143109, guid: 3beed3d597dd5fc4e82057c2f51d98cd,
     type: 3}
   material: {fileID: 2100000, guid: 6698c6422bbe6f24391ed406ac227712, type: 2}
@@ -380,7 +382,8 @@ MonoBehaviour:
   healthBar: {fileID: 9127820606101094947}
   selection: {fileID: 1410242130021314432}
   aim: {fileID: 3559737756446606748}
-  isInvisible: 1
+  isInvisiblable: 1
+  isInvisible: 0
 --- !u!1 &4988774883117324312
 GameObject:
   m_ObjectHideFlags: 0

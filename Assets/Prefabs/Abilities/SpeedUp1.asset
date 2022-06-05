@@ -7,11 +7,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 124a3296eb0c0d44a9cd87debaf0d19b, type: 3}
   m_Name: SpeedUp1
   m_EditorClassIdentifier: 
   level: 1
-  buff: {fileID: 11400000, guid: 320daedb153592340a2bdd6aa933ff2e, type: 2}
+  buffPrefab: {fileID: 11400000, guid: 320daedb153592340a2bdd6aa933ff2e, type: 2}
   icon: {fileID: 21300000, guid: b84bcfc21192c7c4ea7dd2fe7c9297f2, type: 3}

@@ -7,11 +7,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 124a3296eb0c0d44a9cd87debaf0d19b, type: 3}
   m_Name: Splash1
   m_EditorClassIdentifier: 
   level: 1
-  buff: {fileID: 11400000, guid: 144f7125f4aca0f4cb1135a4674ab4c5, type: 2}
+  buffPrefab: {fileID: 11400000, guid: 144f7125f4aca0f4cb1135a4674ab4c5, type: 2}
   icon: {fileID: 21300000, guid: c95da33b8c400ed42bfb136e175ea99d, type: 3}

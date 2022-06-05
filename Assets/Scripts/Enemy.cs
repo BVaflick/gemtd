@@ -10,7 +10,10 @@ public class Enemy : GameBehavior {
 	public Transform model = default;
 	
 	[SerializeField]
-	public Material modelMaterial = default;
+	public Material invisibleMaterial = default;
+	
+	[SerializeField]
+	public Material revealedInvisibleMaterial = default;
 
 	[SerializeField]
 	GameObject blastPatricals = null;
@@ -30,7 +33,9 @@ public class Enemy : GameBehavior {
 	float aimAge = 0;
 	
 	[SerializeField]
-	bool isInvisible = false;
+	public bool isInvisiblable = false;
+	
+	public bool isInvisible = false;
 	
 	EnemyAnimator animator;
 	
@@ -93,8 +98,9 @@ public class Enemy : GameBehavior {
 		}
 		additionalSpeed = 0f;
 		additionalArmor = 0f;
-		bool shouldDisappear = isInvisible && !StatusEffects.Exists(statusEffect => statusEffect is Observe);
+		bool shouldDisappear = isInvisiblable && !StatusEffects.Exists(statusEffect => statusEffect is Observe);
 		if (shouldDisappear) {
+			isInvisible = true;
 			disappear();
 		}
 		VisualEffects.GameUpdate();
@@ -151,6 +157,7 @@ public class Enemy : GameBehavior {
 			model.GetChild(0).gameObject.AddComponent<Animator>(),
 			animationConfig
 		);
+		if(isInvisiblable) healthBar.gameObject.SetActive(false);
 	}
 
 	public override void Recycle() {
@@ -159,9 +166,7 @@ public class Enemy : GameBehavior {
 	}
 
 	public void disappear() {
-		Color c = modelMaterial.color;
-		c.a = 0f;
-		modelMaterial.color = c;
+		transform.GetComponentInChildren<SkinnedMeshRenderer>().material = invisibleMaterial; 
 		healthBar.gameObject.SetActive(false);
 	}
 	

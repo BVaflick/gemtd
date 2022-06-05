@@ -49,6 +49,10 @@ public class GameTile : MonoBehaviour {
         }
     }
 
+    public void setTower(GameTileContent tower) {
+        content = tower;
+        content.transform.localPosition = transform.localPosition;
+    }
     public bool IsAlternative { get; set; }
 
     public bool HasPath() => distance != int.MaxValue;

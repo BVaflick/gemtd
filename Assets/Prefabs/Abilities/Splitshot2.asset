@@ -7,11 +7,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 124a3296eb0c0d44a9cd87debaf0d19b, type: 3}
   m_Name: Splitshot2
   m_EditorClassIdentifier: 
   level: 2
-  buff: {fileID: 11400000, guid: 8f4c0b40a3f95664c9c39f96ca448175, type: 2}
+  buffPrefab: {fileID: 11400000, guid: 8f4c0b40a3f95664c9c39f96ca448175, type: 2}
   icon: {fileID: 21300000, guid: a7961abf9cf7ac547a68e53a5a65a3a2, type: 3}

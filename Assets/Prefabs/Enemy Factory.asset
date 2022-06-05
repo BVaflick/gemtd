@@ -48,7 +48,7 @@ MonoBehaviour:
     armor:
       min: 5
       max: 5
-  large:
+  invisibleBug:
     prefab: {fileID: 7012074777765284301, guid: bff5bf8217e24d9499234435a7f401dd,
       type: 3}
     scale:
@@ -62,10 +62,10 @@ MonoBehaviour:
       max: 0
     health:
       min: 50
-      max: 100
+      max: 50
     armor:
       min: 5
-      max: 10
+      max: 5
   bug:
     prefab: {fileID: 7012074777765284301, guid: 5b5e6032e5138d14789c5f49d5bfa84c,
       type: 3}

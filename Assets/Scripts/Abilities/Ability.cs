@@ -9,13 +9,17 @@ public class Ability : ScriptableObject {
     public int level;
 
     [SerializeField]
-    public Buff buff = default;
+    public Buff buffPrefab = default; 
     
     [SerializeField]
     public Sprite icon = default;
 
-    private void Awake() {
-        buff = Instantiate(buff);
+    private Buff buff;
+
+    public Buff Buff => buff;
+    
+    private void OnEnable() {
+        buff = Instantiate(buffPrefab);
     }
 
     public void Modify(Tower tower) {

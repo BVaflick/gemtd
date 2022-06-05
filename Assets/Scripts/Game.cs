@@ -113,16 +113,16 @@ public class Game : MonoBehaviour {
 	GameScenario.State activeScenario;
 
 	int availableBuilds = 5;
-
 	bool isBuildPhase = true;
-
 	private bool isBuilding = false;
+	
 	private bool isSpawningGift = false;
-
 	private bool giftAvailable = false;
-
 	private GameTile giftTile;
 
+	private bool isSwaping = false;
+	private GameTile swapBuffer = null;
+	
 	List<GameTile> newTowers = new List<GameTile>();
 	List<GameTile> builtTowers = new List<GameTile>();
 
@@ -224,14 +224,16 @@ public class Game : MonoBehaviour {
 			wallConstructionPanel.position = camera.WorldToScreenPoint(pos);
 		}
 
-		if (isBuilding && availableBuilds > 0) {
+		if (isSpawningGift || isSwaping || isBuilding && availableBuilds > 0) {
 			GameTile tile = board.GetTile(TouchRay);
 			if (tile != null) {
 				if (hoveredTile != null && hoveredTile != tile) hoveredTile.Dehover();
-				flyingTower.gameObject.SetActive(true);
-				flyingTower.transform.position = tile.transform.position;
 				tile.Hover();
 				hoveredTile = tile;
+				if (isBuilding) {
+					flyingTower.gameObject.SetActive(true);
+					flyingTower.transform.position = tile.transform.position;
+				}
 			}
 			else {
 				flyingTower.gameObject.SetActive(false);
@@ -261,7 +263,7 @@ public class Game : MonoBehaviour {
 		dealtDamage.Clear();
 		if (sortedMVPs.Count == 0) return;
 		Tower mvp = sortedMVPs.Keys.First();
-		Ability mvpAbility = mvp.Abilities.Find(x => x.buff.name1.Contains("MVP"));
+		Ability mvpAbility = mvp.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
 		if (mvpAbility == null) {
 			mvp.Abilities.Add(Instantiate(MVPAbility));
 			return;
@@ -471,6 +473,10 @@ public class Game : MonoBehaviour {
 	public void startSpawningGift() {
 		if (isBuildPhase) isSpawningGift = true;
 	}
+	
+	public void startSwaping() {
+		isSwaping = true;
+	}
 
 	public void buildSelected() {
 		if (isBuildPhase && availableBuilds == 0) {
@@ -536,7 +542,11 @@ public class Game : MonoBehaviour {
 		}
 		if (isSpawningGift) {
 			SpawnGift();
-			isSpawningGift = false;
+			return;
+		}
+		
+		if (isSwaping) {
+			SwapTowers();
 			return;
 		}
 
@@ -742,16 +752,16 @@ public class Game : MonoBehaviour {
 				foreach (Ability ability in selectedTower.Abilities) {
 					RectTransform image = Instantiate(AbilityIconPrefab);
 					Image icon = image.GetComponent<Image>();
-					icon.sprite = ability.buff.icon;
-					image.GetComponent<Tooltip>().tip = ability.buff.name1;
+					icon.sprite = ability.icon;
+					image.GetComponent<Tooltip>().tip = ability.Buff.name1;
 					image.GetComponent<Tooltip>().range = 0f;
 					image.SetParent(panel);
 				}
 				foreach (Aura aura in selectedTower.Auras) {
 					RectTransform image = Instantiate(AbilityIconPrefab, panel, true);
 					Image icon = image.GetComponent<Image>();
-					icon.sprite = aura.buff.icon;
-					image.GetComponent<Tooltip>().tip = aura.buff.name1;
+					icon.sprite = aura.buff ? aura.buff.icon : aura.icon;
+					image.GetComponent<Tooltip>().tip = aura.buff ? aura.buff.name1 : aura.GetType().Name;
 					image.GetComponent<Tooltip>().range = 3.5f;
 					image.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
 				}
@@ -790,7 +800,7 @@ public class Game : MonoBehaviour {
 				foreach (Transform image in panel) {
 					Destroy(image.gameObject);
 				}
-				List<Buff> thirdPartyStatusEffects = selectedTower.StatusEffects.FindAll(se => !selectedTower.Abilities.Select(a => a.buff).Contains(se));
+				List<Buff> thirdPartyStatusEffects = selectedTower.StatusEffects.FindAll(se => !selectedTower.Abilities.Select(a => a.Buff).Contains(se));
 				foreach (Buff buff in thirdPartyStatusEffects) {
 					RectTransform image = Instantiate(statusEffectIconPrefab);
 					image.GetComponent<Tooltip>().tip = buff.name1;
@@ -799,6 +809,11 @@ public class Game : MonoBehaviour {
 					icon.gameObject.SetActive(true);
 					icon.transform.SetParent(panel);
 				}
+			}
+			else if (child.name == "HP") {
+				child.GetComponent<Text>().text = playerHealth + "/100";
+			} else if (child.name == "HealthBar") {
+				child.GetComponent<Slider>().value = playerHealth / 100f;
 			}
 		}
 	}
@@ -1047,7 +1062,7 @@ public class Game : MonoBehaviour {
 			if (content.Type == GameTileContentType.Tower) {
 				Tower tower = (Tower) content;
 				if(combined == null) combined = findCombos(tower, builtTowers.Select(x => (Tower) x.Content).ToList())[0];
-				Ability currentMvp = tower.Abilities.Find(ability => ability.buff is MVPAbility);
+				Ability currentMvp = tower.Abilities.Find(ability => ability.Buff is MVPAbility);
 				int comboMVP = currentMvp ? currentMvp.level : 0;
 				combined.Combo.ToList().ForEach(t => {
 					if (t != tower.TowerType) {
@@ -1092,7 +1107,7 @@ public class Game : MonoBehaviour {
 			return;
 		}
 
-		Ability mvp = tower.Abilities.Find(ability => ability.buff is MVPAbility);
+		Ability mvp = tower.Abilities.Find(ability => ability.Buff is MVPAbility);
 		if (mvp) {
 			mvpLevel += mvp.level;
 		}
@@ -1117,10 +1132,22 @@ public class Game : MonoBehaviour {
 		giftAvailable = true;
 		giftTile = tile;
 		board.ToggleGift(tile);
+		isSpawningGift = false;
 	}
 
 	void SwapTowers() {
-		
+		GameTile tile = board.GetTile(TouchRay);
+		if (!(tile.Content is Tower) && (tile.Content.Type != GameTileContentType.Wall)) return;
+		if (swapBuffer == null) {
+			swapBuffer = tile;
+		}
+		else {
+			GameTileContent temp = swapBuffer.Content;
+			swapBuffer.setTower(tile.Content);
+			tile.setTower(temp);
+			isSwaping = false;
+			swapBuffer = null;
+		}
 	}
 
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {

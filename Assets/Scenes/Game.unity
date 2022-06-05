@@ -1910,7 +1910,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &344659468
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4605,7 +4605,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 948285385}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2025098017}
+        m_TargetAssemblyTypeName: Game, Assembly-CSharp
+        m_MethodName: startSpawningGift
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &948285385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7404,7 +7416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1496083188
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7469,7 +7481,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1496083190}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2025098017}
+        m_TargetAssemblyTypeName: Game, Assembly-CSharp
+        m_MethodName: startSwaping
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1496083190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7490,7 +7514,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7aae733694313b94288d540d5ce21db7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3ff5a4d4616c24940965447771f38b97, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7525,7 +7549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1501211344
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7578,7 +7602,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: G
+  m_Text: S
 --- !u!222 &1501211346
 CanvasRenderer:
   m_ObjectHideFlags: 0
