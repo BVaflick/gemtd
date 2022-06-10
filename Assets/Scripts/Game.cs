@@ -37,6 +37,12 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	RectTransform mainPanel = default;
+	
+	[SerializeField]
+	RectTransform damagePanel = default;
+	
+	[SerializeField]
+	RectTransform recipesPanel = default;
 
 	[SerializeField]
 	RectTransform wallConstructionPanel = default;
@@ -51,8 +57,14 @@ public class Game : MonoBehaviour {
 	RectTransform enemyDescriptionPanel = default;
 	
 	[SerializeField]
+	RectTransform towerDamagePrefab = default;
+	
+	[SerializeField]
 	RectTransform statusEffectIconPrefab = default;
 	
+	[SerializeField]
+	RectTransform towerRecipePrefab = default;
+
 	[SerializeField]
 	RectTransform AbilityIconPrefab = default;
 	
@@ -275,10 +287,10 @@ public class Game : MonoBehaviour {
 	}
 
 	void calculateMVP() {
-		var sortedMVPs = dealtDamage.Where(x => !x.Key.Auras.Contains(MVPAura)).OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+		var towersWithoutMaxMVP = dealtDamage.Where(x => !x.Key.Auras.Contains(MVPAura)).ToDictionary(x => x.Key, x => x.Value);
 		dealtDamage.Clear();
-		if (sortedMVPs.Count == 0) return;
-		Tower mvp = sortedMVPs.Keys.First();
+		if (towersWithoutMaxMVP.Count == 0) return;
+		Tower mvp = towersWithoutMaxMVP.Keys.First();
 		Ability mvpAbility = mvp.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
 		if (mvpAbility == null) {
 			mvp.Abilities.Add(Instantiate(MVPAbility));
@@ -319,6 +331,10 @@ public class Game : MonoBehaviour {
 			else {
 				CombineSame(tile, true);
 			}
+		}
+		if (Input.GetKeyDown(KeyCode.R)) {
+			if(recipesPanel.gameObject.activeSelf) closeTowerRecipes();
+			else showTowerRecipes();
 		}
 
 		if (Input.GetMouseButtonDown(0)) {
@@ -402,7 +418,13 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.G)) {
-			SpawnGift();
+			if(quickCast) SpawnGift();
+			else startSpawningGift();
+		}
+		
+		if (Input.GetKeyDown(KeyCode.S)) {
+			if(quickCast) SwapTowers();
+			else startSwaping();
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -418,6 +440,8 @@ public class Game : MonoBehaviour {
 			// }
 
 			if (isBuilding) isBuilding = !isBuilding;
+			else if (isSwaping) isSwaping = !isSwaping;
+			else if (isSpawningGift) isSpawningGift = !isSpawningGift;
 		}
 
 		if (Input.GetKeyDown(KeyCode.KeypadPlus)) {
@@ -478,8 +502,8 @@ public class Game : MonoBehaviour {
 	
 	public static void EnemyDied(int gold) {
 		instance.gold += gold;
-		instance.Experience += 2;
 		instance.progress += 0.0075f;
+		instance.Experience += 2;
 	}
 	
 	public static void RecordDealtDamage(Tower tower, float damage) {
@@ -488,6 +512,8 @@ public class Game : MonoBehaviour {
 		else {
 			dictionary[tower] += damage;
 		}
+		instance.dealtDamage = dictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+		instance.showTowerDamage();
 	}
 
 	public void startBuilding() {
@@ -534,7 +560,8 @@ public class Game : MonoBehaviour {
 
 	void HandleAlternativeTouch() {
 		if (isBuilding) isBuilding = !isBuilding;
-
+		else if (isSwaping) isSwaping = !isSwaping;
+		else if (isSpawningGift) isSpawningGift = !isSpawningGift;
 		if (selectedStructures.Count > 0 &&
 		    Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
 			selectedStructures.FindAll(structure => structure.Type == GameTileContentType.Tower).ForEach(tower =>
@@ -842,6 +869,46 @@ public class Game : MonoBehaviour {
 		}
 	}
 
+	void showTowerDamage() {
+		foreach (Transform line in damagePanel) {
+			Destroy(line.gameObject);
+		}
+		foreach(var item in dealtDamage) {
+			RectTransform line = Instantiate(towerDamagePrefab, damagePanel, true);
+			Tower tower = item.Key;
+			Ability mvp = tower.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
+			bool isMvpMax = tower.Auras.Exists(x => x.buff.name1.Contains("MVP"));
+			string towerName = tower.name.Replace("(Clone)", "");
+			line.GetChild(0).GetComponent<Text>().text = mvp || isMvpMax ? getColoredString(towerName + " (MVP" + (isMvpMax ? " MAX" : mvp.level + "") + ")") : towerName;
+			line.GetChild(1).GetComponent<Text>().text = (int)item.Value+"";
+			line.gameObject.SetActive(true);
+		}
+	}
+
+	void showTowerRecipes() {
+		recipesPanel.gameObject.SetActive(true);
+		foreach (Transform line in recipesPanel) {
+			Destroy(line.gameObject);
+		}
+		List<Tower> combosTypes = tileContentFactory.TowerPrefabs.ToList().FindAll(t => t.Combo.Length > 0);
+		foreach(Tower comboType in combosTypes) {
+			RectTransform line = Instantiate(towerRecipePrefab, recipesPanel, true);
+			line.GetChild(0).GetChild(0).GetComponent<Text>().text = comboType.name.Replace("(Clone)", "");
+			for(int i = 0; i < comboType.Combo.Length; i++) {
+				TowerType ingredient = comboType.Combo[i];
+				bool doesTowerExist = builtTowers.Exists(tile => (tile.Content as Tower).TowerType == ingredient);
+				line.GetChild(i+1).GetChild(0).GetComponent<Text>().text = doesTowerExist ? getColoredString(ingredient.ToString()) : ingredient.ToString();
+				if(newTowers.Exists(tile => (tile.Content as Tower).TowerType == ingredient)) {
+					line.GetChild(i+1).GetComponent<Image>().color = new Color(1f, 1f, 0.5f, 0.5f);;
+				}
+			}
+		}
+	}
+	
+	void closeTowerRecipes() {
+		recipesPanel.gameObject.SetActive(false);
+	}
+
 	void showMainPanel() {
 		mainPanel.gameObject.SetActive(true);
 		foreach (Transform child in mainPanel.transform) {
@@ -856,7 +923,7 @@ public class Game : MonoBehaviour {
 							mainParam.GetComponent<Text>().text = availableBuilds + "/5";
 							break;
 						case "Level Value":
-							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience / 100f);
+							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience)  + "%";
 							break;
 					}
 				}
@@ -874,6 +941,10 @@ public class Game : MonoBehaviour {
 			additionalParam > 0 ? "<color=green>+" + additionalParam + "</color>" :
 			"<color=red>" + additionalParam + "</color>";
 	}
+	
+	String getColoredString(string text) {
+		return "<color=green>" + text + "</color>";
+	}
 
 	void OnDrawGizmos() {
 		GUIStyle style = new GUIStyle();
@@ -885,7 +956,7 @@ public class Game : MonoBehaviour {
 		position.z -= 0.4f;
 		Handles.Label(position, "HP: " + playerHealth, style);
 		position.z -= 0.4f;
-		Handles.Label(position, "Level: " + level + "+" + experience / 100f + "%", style);
+		Handles.Label(position, "Level: " + level + "+" + experience + "%", style);
 		position.z -= 0.4f;
 		Handles.Label(position, "Progress: " + (int) progress + "+" + (progress - (int) progress) * 100 + "%", style);
 		position.z -= 0.4f;
@@ -1038,6 +1109,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
+		sum = 0;
 		rand = Random.value;
 		for (int i = 0; i < towerLevelProbability[level - 1].Length; i++) {
 			sum += towerLevelProbability[level - 1][i];
@@ -1171,9 +1243,20 @@ public class Game : MonoBehaviour {
 			GameTileContent temp = swapBuffer.Content;
 			swapBuffer.setTower(tile.Content);
 			tile.setTower(temp);
+			if (tile.Content.Type == GameTileContentType.Wall) {
+				if (builtTowers.Contains(tile)) builtTowers[builtTowers.IndexOf(tile)] = swapBuffer;
+				else newTowers[newTowers.IndexOf(tile)] = swapBuffer;
+			} else if (swapBuffer.Content.Type == GameTileContentType.Wall) {
+				if (builtTowers.Contains(swapBuffer)) builtTowers[builtTowers.IndexOf(swapBuffer)] = tile;
+				else newTowers[newTowers.IndexOf(swapBuffer)] = tile;
+			}
 			isSwaping = false;
 			swapBuffer = null;
 		}
+	}
+
+	public static int getCurrentProgress() {
+		return instance.activeScenario.CurrentWave() == 9 ? 1 : (int) instance.progress;
 	}
 
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {

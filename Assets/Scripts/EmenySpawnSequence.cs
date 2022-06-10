@@ -22,17 +22,20 @@ public class EnemySpawnSequence {
 
 		int count;
 
+		private int amount;
+
 		float cooldown;
 
 		public State(EnemySpawnSequence sequence) {
 			this.sequence = sequence;
 			count = 0;
+			amount = Game.getCurrentProgress();
 			cooldown = sequence.cooldown;
 		}
 
 		public bool Progress(float deltaTime) {
-			if (count >= sequence.amount) return false;
-
+			if (count >= amount) return false;
+			
 			cooldown += deltaTime;
 			if (cooldown >= sequence.cooldown) {
 				cooldown -= sequence.cooldown;

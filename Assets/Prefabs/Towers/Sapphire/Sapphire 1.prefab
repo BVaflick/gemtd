@@ -466,10 +466,8 @@ MonoBehaviour:
   newTowerCircle: {fileID: 2868647759664820235}
   launchSpeed: 30
   abilities:
-  - {fileID: 11400000, guid: 28bf7252cfc8af54a9a99334ca07dd0d, type: 2}
   - {fileID: 11400000, guid: 85c0e7fe4bdba2949961cecce23c0a5d, type: 2}
-  auras:
-  - {fileID: 11400000, guid: 2878104e5b3bff140be7100c5a887f75, type: 2}
+  auras: []
 --- !u!1 &2005408820998414305
 GameObject:
   m_ObjectHideFlags: 0
