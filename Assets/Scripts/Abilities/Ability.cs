@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [CreateAssetMenu]
 public class Ability : ScriptableObject {
 
-    [SerializeField, Range(1, 5)]
+    [SerializeField, Range(1, 10)]
     public int level;
 
     [SerializeField]

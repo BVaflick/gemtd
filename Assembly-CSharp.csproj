@@ -114,6 +114,7 @@
      <None Include="Assets\TowerDefence_Vsquad\INFO\Info.txt" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\Alien.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeLash.shader" />
+     <None Include="Assets\Resources\test.txt" />
      <None Include="Assets\3D Game Kit - Character Pack\Shaders\EyeBallsHD.shader" />
      <None Include="Assets\3D Game Kit - Character Pack\Characters\Spitter\AnimationClips\animations.txt" />
      <None Include="Assets\TowerDefence_Vsquad\Materials\Scene\sky.shader" />

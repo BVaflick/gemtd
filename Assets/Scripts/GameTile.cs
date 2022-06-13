@@ -28,6 +28,8 @@ public class GameTile : MonoBehaviour {
         } 
     }
 
+    public Transform Arrow => arrow;
+
     private GameTile north, northEast, east, southEast, south, southWest, west, northWest;
 
     GameTile nextOnPath = null;
@@ -123,7 +125,6 @@ public class GameTile : MonoBehaviour {
         // arrow.gameObject.SetActive(true);
         grass.transform.GetComponent<MeshRenderer>().material = pathMaterial;
     }
-
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
         Debug.Assert(
             west.east == null && east.west == null, "Redefined neighbors!"

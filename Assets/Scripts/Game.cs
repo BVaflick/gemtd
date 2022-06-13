@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -20,29 +21,32 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	GameBoard board = default;
-	
+
 	[SerializeField]
-	Ability MVPAbility = default;
-	
+	Ability[] MVPAbilities = default;
+
 	[SerializeField]
-	Sprite MVPIcon = default;
-	
-	[SerializeField]
-	Aura MVPAura = default;
+	Aura MVPAuraPrefab = default;
 
 	private int MVPMaxLevel = 3;
-	
+
 	[SerializeField]
 	UIManager uiManager = default;
 
 	[SerializeField]
 	RectTransform mainPanel = default;
-	
+
+	[SerializeField]
+	RectTransform headerPanel = default;
+
 	[SerializeField]
 	RectTransform damagePanel = default;
-	
+
 	[SerializeField]
 	RectTransform recipesPanel = default;
+	
+	[SerializeField]
+	RectTransform mazePanel = default;
 
 	[SerializeField]
 	RectTransform wallConstructionPanel = default;
@@ -55,44 +59,52 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	RectTransform enemyDescriptionPanel = default;
-	
+
 	[SerializeField]
 	RectTransform towerDamagePrefab = default;
-	
+
 	[SerializeField]
 	RectTransform statusEffectIconPrefab = default;
-	
+
 	[SerializeField]
 	RectTransform towerRecipePrefab = default;
 
 	[SerializeField]
 	RectTransform AbilityIconPrefab = default;
-	
+
 	[SerializeField]
 	RectTransform BuildButtonPrefab = default;
-	
+
 	[SerializeField]
 	RectTransform Upgrade1ButtonPrefab = default;
-	
+
 	[SerializeField]
 	RectTransform Upgrade2ButtonPrefab = default;
-	
+
 	[SerializeField]
 	RectTransform CombineButtonPrefab = default;
 
 	[SerializeField]
 	RectTransform selectionBox = default;
+	
+	private float time;
 
 	int playerHealth = 100;
 
 	int level = 1;
 
+	private int wave = 1;
+
+	private int enemiesLeft = 10;
+
+	private int kills = 0;
+
 	private int gold = 0;
-	
+
 	private float progress = 10.5f;
 
 	private int experience = 0;
-	
+
 	public int Experience {
 		get => experience;
 		set {
@@ -106,7 +118,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	private Dictionary<Tower, float> dealtDamage = new Dictionary<Tower, float>();
 
 	private bool quickCast = false;
@@ -143,14 +155,14 @@ public class Game : MonoBehaviour {
 	int availableBuilds = 5;
 	bool isBuildPhase = true;
 	private bool isBuilding = false;
-	
+
 	private bool isSpawningGift = false;
 	private bool giftAvailable = false;
 	private GameTile giftTile;
 
 	private bool isSwaping = false;
 	private GameTile swapBuffer = null;
-	
+
 	List<GameTile> newTowers = new List<GameTile>();
 	List<GameTile> builtTowers = new List<GameTile>();
 
@@ -190,7 +202,8 @@ public class Game : MonoBehaviour {
 
 	void Awake() {
 		board.Initialize(boardSize, tileContentFactory);
-		board.ShowGrid = true;
+		// board.saveMaze(mazePanel);
+		initMazePanel();
 		flyingTower = Instantiate(flyingTower);
 		flyingTower.gameObject.SetActive(false);
 		// uiManager.showPlayerAbilities(playerAbilities);
@@ -211,6 +224,7 @@ public class Game : MonoBehaviour {
 	}
 
 	void Update() {
+		time += Time.deltaTime;
 		handleInput();
 		if (playerHealth <= 0) {
 			playerHealth = 0;
@@ -225,27 +239,14 @@ public class Game : MonoBehaviour {
 		else if (scenarioIsInProgress && !activeScenario.WaveIsInProgress() && enemies.IsEmpty) {
 			if (!isBuildPhase) {
 				calculateMVP();
+				wave++;
+				enemiesLeft = (int) progress;
 				isBuildPhase = true;
 				availableBuilds = 5;
 				if (giftAvailable) board.ToggleGift(giftTile);
 			}
 		}
 
-		// if (towerConstructionPanel.gameObject.activeSelf) {
-		// 	towerConstructionPanel.position = camera.WorldToScreenPoint(selectedStructures[0].transform.position);
-		// 	float scale = 1 + (19 - camera.transform.position.y) / 20;
-		// 	towerConstructionPanel.localScale = new Vector3(scale, scale, scale);
-		// 	if (camera.transform.position.y < 8) {
-		// 		foreach (Transform child in towerConstructionPanel) {
-		// 			child.localScale = new Vector3(0.5f * scale, 0.5f * scale, 0.5f * scale);
-		// 		}
-		// 	}
-		// 	else {
-		// 		foreach (Transform child in towerConstructionPanel) {
-		// 			child.localScale = new Vector3(1, 1, 1);
-		// 		}
-		// 	}
-		// }
 		else if (wallConstructionPanel.gameObject.activeSelf) {
 			Vector3 pos = selectedStructures[0].transform.position;
 			pos.z += 1f;
@@ -279,29 +280,92 @@ public class Game : MonoBehaviour {
 		board.GameUpdate();
 		if (selectedEnemy != null) {
 			showEnemyDescription();
-		} else if (selectedStructures.Count != 0) {
+		}
+		else if (selectedStructures.Count != 0) {
 			// showTowerDescription();
-		} else {
+		}
+		else {
 			showMainPanel();
+		}
+
+		showHeader();
+	}
+
+	private void initMazePanel() {
+		string path = "Assets/Resources/test.txt";
+		StreamReader reader = new StreamReader(path); 
+		String mazeString = reader.ReadToEnd();
+		for (var i = 0; i < mazeString.Length; i++) {
+			int x = i / boardSize.x;
+			int y = i - boardSize.x * x;
+			int newX = boardSize.x - x - 1;
+			board.mazes[3, newX, y] = Int32.Parse(mazeString[i].ToString());
+		}
+		reader.Close();
+		for (int maze = 0; maze < board.mazes.GetLength(0); maze++) {
+			Transform m = mazePanel.GetChild(maze);
+			int maze1 = maze;
+			m.GetComponent<Button>().onClick.AddListener(() => {
+				if (board.CurrentMaze == maze1) {
+					board.ShowMaze = !board.ShowMaze;
+					if (board.ShowMaze) {
+						board.CurrentMaze = maze1;
+						m.GetComponent<Image>().color = Color.gray;
+					}
+					else {
+						board.CurrentMaze = maze1;
+						m.GetComponent<Image>().color = Color.clear;
+					}
+				}
+				else {
+					mazePanel.GetChild(board.CurrentMaze).GetComponent<Image>().color = Color.clear;
+					m.GetComponent<Image>().color = Color.gray;
+					board.CurrentMaze = maze1;
+					board.ShowMaze = true;
+				}
+			});
+			drawMazeOnPanel(maze1);
+		}
+	}
+
+	void drawMazeOnPanel(int index) {
+		Transform maze = mazePanel.GetChild(index);
+		for (int row = 0; row < board.mazes.GetLength(1); row++) {
+			for (int column = 0; column < board.mazes.GetLength(2); column++) {
+				switch (board.mazes[index, row, column]) {
+					case 0:
+						maze.GetChild(row * boardSize.x + column).GetComponent<Image>().color = Color.white;
+						break;
+					case 1:
+						maze.GetChild(row * boardSize.x + column).GetComponent<Image>().color = new Color(.39f, .52f, .52f, 1);
+						break;
+					case 2:
+						maze.GetChild(row * boardSize.x + column).GetComponent<Image>().color = new Color(1f, .41f, .41f, 1);
+						break;
+				}
+			}
 		}
 	}
 
 	void calculateMVP() {
-		var towersWithoutMaxMVP = dealtDamage.Where(x => !x.Key.Auras.Contains(MVPAura)).ToDictionary(x => x.Key, x => x.Value);
+		var towersWithoutMaxMVP = dealtDamage.Where(x => !x.Key.Auras.Exists(aura => aura.buff is MVPAura))
+			.ToDictionary(x => x.Key, x => x.Value);
 		dealtDamage.Clear();
 		if (towersWithoutMaxMVP.Count == 0) return;
 		Tower mvp = towersWithoutMaxMVP.Keys.First();
 		Ability mvpAbility = mvp.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
 		if (mvpAbility == null) {
-			mvp.Abilities.Add(Instantiate(MVPAbility));
+			mvp.Abilities.Add(Instantiate(MVPAbilities[0]));
 			return;
 		}
-		if (++mvpAbility.level >= MVPMaxLevel) {
-			mvp.Abilities.Remove(mvpAbility);
-			Destroy(mvpAbility);
-			mvp.Auras.Add(MVPAura);
-		}
-		dealtDamage.Clear();
+
+		int mvpLevel = mvpAbility.level + 1;
+		mvp.Abilities.Remove(mvpAbility);
+		Destroy(mvpAbility);
+		if (mvpLevel >= MVPMaxLevel)
+			mvp.Auras.Add(Instantiate(MVPAuraPrefab));
+		else
+			mvp.Abilities.Add(Instantiate(MVPAbilities[mvpLevel - 1]));
 	}
 
 	void handleInput() {
@@ -332,8 +396,9 @@ public class Game : MonoBehaviour {
 				CombineSame(tile, true);
 			}
 		}
+
 		if (Input.GetKeyDown(KeyCode.R)) {
-			if(recipesPanel.gameObject.activeSelf) closeTowerRecipes();
+			if (recipesPanel.gameObject.activeSelf) closeTowerRecipes();
 			else showTowerRecipes();
 		}
 
@@ -418,13 +483,29 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.G)) {
-			if(quickCast) SpawnGift();
+			if (quickCast) SpawnGift();
 			else startSpawningGift();
 		}
-		
+
 		if (Input.GetKeyDown(KeyCode.S)) {
-			if(quickCast) SwapTowers();
+			if (quickCast) SwapTowers();
 			else startSwaping();
+		}
+		
+		if (Input.GetKeyDown(KeyCode.Z)) {
+			board.saveMaze(mazePanel);
+			// initMazePanel();
+			if (board.CurrentMaze == 3)
+				deselectMazeOnPanel();
+			drawMazeOnPanel(3);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.X)) {
+			deselectMazeOnPanel();
+		}
+		
+		if (Input.GetKeyDown(KeyCode.C)) {
+			mazePanel.gameObject.SetActive(!mazePanel.gameObject.activeSelf);
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -489,29 +570,35 @@ public class Game : MonoBehaviour {
 		nonEnemies.Clear();
 		board.Clear();
 	}
-	
+
 	public static void EnemyReachedFlag(int index) {
 		float regress = 0.0005f * (index == 0 ? 0 : Mathf.Pow(2, index - 1));
-		instance.progress -= regress;
+		float newProgress = instance.progress - regress;
+		instance.progress = (int) newProgress < (int) instance.progress ? newProgress - .5f : newProgress;
 	}
 
 	public static void EnemyReachedDestination(int damage) {
 		instance.playerHealth -= damage;
-		instance.progress -= 0.05f;
+		float newProgress = instance.progress - 0.05f;
+		instance.progress = (int) newProgress < (int) instance.progress ? newProgress - .5f : newProgress;
 	}
-	
+
 	public static void EnemyDied(int gold) {
 		instance.gold += gold;
-		instance.progress += 0.0075f;
+		float newProgress = instance.progress + 0.0075f;
+		instance.progress = (int) newProgress > (int) instance.progress ? newProgress + .5f : newProgress;
 		instance.Experience += 2;
+		instance.enemiesLeft--;
+		instance.kills++;
 	}
-	
+
 	public static void RecordDealtDamage(Tower tower, float damage) {
 		Dictionary<Tower, float> dictionary = instance.dealtDamage;
-		if(!dictionary.ContainsKey(tower)) dictionary.Add(tower, damage);
+		if (!dictionary.ContainsKey(tower)) dictionary.Add(tower, damage);
 		else {
 			dictionary[tower] += damage;
 		}
+
 		instance.dealtDamage = dictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 		instance.showTowerDamage();
 	}
@@ -519,11 +606,11 @@ public class Game : MonoBehaviour {
 	public void startBuilding() {
 		if (availableBuilds > 0) isBuilding = true;
 	}
-	
+
 	public void startSpawningGift() {
 		if (isBuildPhase) isSpawningGift = true;
 	}
-	
+
 	public void startSwaping() {
 		isSwaping = true;
 	}
@@ -591,11 +678,12 @@ public class Game : MonoBehaviour {
 			isBuilding = false;
 			return;
 		}
+
 		if (isSpawningGift) {
 			SpawnGift();
 			return;
 		}
-		
+
 		if (isSwaping) {
 			SwapTowers();
 			return;
@@ -694,6 +782,11 @@ public class Game : MonoBehaviour {
 		enemyDescriptionPanel.gameObject.SetActive(false);
 	}
 
+	void deselectMazeOnPanel() {
+		board.ShowMaze = !board.ShowMaze;
+		mazePanel.GetChild(board.CurrentMaze).GetComponent<Image>().color = board.ShowMaze ? Color.gray : Color.clear;
+	}
+
 	// void showTowerConstructionPanel() {
 	// 	towerConstructionPanel.gameObject.SetActive(true);
 	// 	Tower selectedTower = selectedStructures[0] as Tower;
@@ -756,6 +849,7 @@ public class Game : MonoBehaviour {
 						Destroy(image.gameObject);
 					}
 				}
+
 				for (var i = 0; i < selectedEnemy.VisualEffects.Count; i++) {
 					RectTransform image = Instantiate(statusEffectIconPrefab);
 					image.GetComponent<Tooltip>().tip = (selectedEnemy.VisualEffects.Behaviors[i] as WarEntity).name1;
@@ -800,6 +894,7 @@ public class Game : MonoBehaviour {
 				foreach (Transform ability in panel) {
 					Destroy(ability.gameObject);
 				}
+
 				foreach (Ability ability in selectedTower.Abilities) {
 					RectTransform image = Instantiate(AbilityIconPrefab);
 					Image icon = image.GetComponent<Image>();
@@ -808,6 +903,7 @@ public class Game : MonoBehaviour {
 					image.GetComponent<Tooltip>().range = 0f;
 					image.SetParent(panel);
 				}
+
 				foreach (Aura aura in selectedTower.Auras) {
 					RectTransform image = Instantiate(AbilityIconPrefab, panel, true);
 					Image icon = image.GetComponent<Image>();
@@ -816,21 +912,24 @@ public class Game : MonoBehaviour {
 					image.GetComponent<Tooltip>().range = 3.5f;
 					image.GetComponent<Tooltip>().rangeCirclePos = selectedTower.transform.position;
 				}
+
 				if (isBuildPhase && availableBuilds == 0) {
 					RectTransform buildButton = Instantiate(BuildButtonPrefab, panel, true);
 					buildButton.GetComponent<Button>().onClick.AddListener(buildSelected);
-					if (newTowers.FindAll(tower => 
-							(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2) {
+					if (newTowers.FindAll(tower =>
+						(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2) {
 						RectTransform upgrade1Button = Instantiate(Upgrade1ButtonPrefab);
 						upgrade1Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(true));
 						upgrade1Button.SetParent(panel);
 					}
-					if (newTowers.FindAll(tower => 
+
+					if (newTowers.FindAll(tower =>
 						(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4) {
 						RectTransform upgrade2Button = Instantiate(Upgrade2ButtonPrefab, panel, true);
 						upgrade2Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(false));
 					}
 				}
+
 				if (isBuildPhase && availableBuilds == 0 || !isBuildPhase) {
 					List<GameTile> list;
 					if (isBuildPhase) list = newTowers.FindAll(tile => tile.Content is Tower);
@@ -851,7 +950,10 @@ public class Game : MonoBehaviour {
 				foreach (Transform image in panel) {
 					Destroy(image.gameObject);
 				}
-				List<Buff> thirdPartyStatusEffects = selectedTower.StatusEffects.FindAll(se => !selectedTower.Abilities.Select(a => a.Buff).Contains(se));
+
+				List<Buff> thirdPartyStatusEffects =
+					selectedTower.StatusEffects.FindAll(se =>
+						!selectedTower.Abilities.Select(a => a.Buff).Contains(se));
 				foreach (Buff buff in thirdPartyStatusEffects) {
 					RectTransform image = Instantiate(statusEffectIconPrefab);
 					image.GetComponent<Tooltip>().tip = buff.name1;
@@ -863,7 +965,8 @@ public class Game : MonoBehaviour {
 			}
 			else if (child.name == "HP") {
 				child.GetComponent<Text>().text = playerHealth + "/100";
-			} else if (child.name == "HealthBar") {
+			}
+			else if (child.name == "HealthBar") {
 				child.GetComponent<Slider>().value = playerHealth / 100f;
 			}
 		}
@@ -873,14 +976,17 @@ public class Game : MonoBehaviour {
 		foreach (Transform line in damagePanel) {
 			Destroy(line.gameObject);
 		}
-		foreach(var item in dealtDamage) {
+
+		foreach (var item in dealtDamage) {
 			RectTransform line = Instantiate(towerDamagePrefab, damagePanel, true);
 			Tower tower = item.Key;
 			Ability mvp = tower.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
 			bool isMvpMax = tower.Auras.Exists(x => x.buff.name1.Contains("MVP"));
 			string towerName = tower.name.Replace("(Clone)", "");
-			line.GetChild(0).GetComponent<Text>().text = mvp || isMvpMax ? getColoredString(towerName + " (MVP" + (isMvpMax ? " MAX" : mvp.level + "") + ")") : towerName;
-			line.GetChild(1).GetComponent<Text>().text = (int)item.Value+"";
+			line.GetChild(0).GetComponent<Text>().text = mvp || isMvpMax
+				? getColoredString(towerName + " (MVP" + (isMvpMax ? " MAX" : mvp.level + "") + ")")
+				: towerName;
+			line.GetChild(1).GetComponent<Text>().text = (int) item.Value + "";
 			line.gameObject.SetActive(true);
 		}
 	}
@@ -890,21 +996,24 @@ public class Game : MonoBehaviour {
 		foreach (Transform line in recipesPanel) {
 			Destroy(line.gameObject);
 		}
+
 		List<Tower> combosTypes = tileContentFactory.TowerPrefabs.ToList().FindAll(t => t.Combo.Length > 0);
-		foreach(Tower comboType in combosTypes) {
+		foreach (Tower comboType in combosTypes) {
 			RectTransform line = Instantiate(towerRecipePrefab, recipesPanel, true);
 			line.GetChild(0).GetChild(0).GetComponent<Text>().text = comboType.name.Replace("(Clone)", "");
-			for(int i = 0; i < comboType.Combo.Length; i++) {
+			for (int i = 0; i < comboType.Combo.Length; i++) {
 				TowerType ingredient = comboType.Combo[i];
 				bool doesTowerExist = builtTowers.Exists(tile => (tile.Content as Tower).TowerType == ingredient);
-				line.GetChild(i+1).GetChild(0).GetComponent<Text>().text = doesTowerExist ? getColoredString(ingredient.ToString()) : ingredient.ToString();
-				if(newTowers.Exists(tile => (tile.Content as Tower).TowerType == ingredient)) {
-					line.GetChild(i+1).GetComponent<Image>().color = new Color(1f, 1f, 0.5f, 0.5f);;
+				line.GetChild(i + 1).GetChild(0).GetComponent<Text>().text =
+					doesTowerExist ? getColoredString(ingredient.ToString()) : ingredient.ToString();
+				if (newTowers.Exists(tile => (tile.Content as Tower).TowerType == ingredient)) {
+					line.GetChild(i + 1).GetComponent<Image>().color = new Color(1f, 1f, 0.5f, 0.5f);
+					;
 				}
 			}
 		}
 	}
-	
+
 	void closeTowerRecipes() {
 		recipesPanel.gameObject.SetActive(false);
 	}
@@ -923,26 +1032,41 @@ public class Game : MonoBehaviour {
 							mainParam.GetComponent<Text>().text = availableBuilds + "/5";
 							break;
 						case "Level Value":
-							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience)  + "%";
+							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience) + "%";
 							break;
 					}
 				}
 			}
 			else if (child.name == "HP") {
 				child.GetComponent<Text>().text = playerHealth + "/100";
-			} else if (child.name == "HealthBar") {
+			}
+			else if (child.name == "HealthBar") {
 				child.GetComponent<Slider>().value = playerHealth / 100f;
 			}
 		}
 	}
 
-	String getColoredAdditionalParam(float additionalParam) {
+	void showHeader() {
+		headerPanel.GetChild(1).GetComponent<Text>().text = getTime();
+		headerPanel.GetChild(3).GetComponent<Text>().text = "" + wave;
+		headerPanel.GetChild(5).GetComponent<Text>().text = "" + enemiesLeft;
+		headerPanel.GetChild(7).GetComponent<Text>().text = "" + kills;
+		headerPanel.GetChild(9).GetComponent<Text>().text = (int) progress + "+" + (int)(progress % 1 * 100) + "%";
+		headerPanel.GetChild(11).GetComponent<Text>().text = "" + board.GroundPath.Count;
+	}
+
+	string getTime() {
+		TimeSpan timeSpan = TimeSpan.FromSeconds(time);
+		return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+	}
+
+	string getColoredAdditionalParam(float additionalParam) {
 		return additionalParam == 0 ? "" :
 			additionalParam > 0 ? "<color=green>+" + additionalParam + "</color>" :
 			"<color=red>" + additionalParam + "</color>";
 	}
 	
-	String getColoredString(string text) {
+	string getColoredString(string text) {
 		return "<color=green>" + text + "</color>";
 	}
 
@@ -950,7 +1074,7 @@ public class Game : MonoBehaviour {
 		GUIStyle style = new GUIStyle();
 		style.normal.textColor = Color.white;
 		Vector3 position = new Vector3(-15f, 0f, 8f);
-		Handles.Label(position, "Wave: " + (1 + activeScenario.CurrentWave()), style);
+		Handles.Label(position, "Wave: " + wave, style);
 		position.z -= 0.4f;
 		Handles.Label(position, "Enemies: " + enemies.Count, style);
 		position.z -= 0.4f;
@@ -1173,11 +1297,11 @@ public class Game : MonoBehaviour {
 				board.ToggleTower(tile, combined.TowerType);
 				Tower combinedTower = tile.Content as Tower;
 				if (comboMVP != 0 && comboMVP < MVPMaxLevel) {
-					Ability mvp = Instantiate(MVPAbility);
+					Ability mvp = Instantiate(MVPAbilities[comboMVP - 1]);
 					mvp.level = comboMVP;
 					combinedTower.Abilities.Add(mvp);
 				} else if (comboMVP >= MVPMaxLevel) {
-					combinedTower.Auras.Add(MVPAura);
+					combinedTower.Auras.Add(Instantiate(MVPAuraPrefab));
 				}
 				deselectAndClose();
 			}
@@ -1317,12 +1441,12 @@ public class Game : MonoBehaviour {
  * 		г. Иммунитет к магии для башен									-
  * 6. Летающие юниты													+
  * 7. Выделение объектов												+-
- * 8. Прогресс волн														-
- * 9. Система опыта														-
+ * 8. Прогресс волн														+
+ * 9. Система опыта														+
  * 10. Убрать возможность строить поверх существующей башни				-
  * 11. Педали															-
  * 12. Визуализация нанесенного урона									-
  * 13. Шкала здоровья													+
- * 14. MVP																+
+ * 14. MVP																+-
  * 15. GUI																+-
  */

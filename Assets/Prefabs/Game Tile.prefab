@@ -57,6 +57,7 @@ MonoBehaviour:
   - {fileID: 3297686904820585463}
   hoverMaterial: {fileID: 2100000, guid: 82d80d7a0a152de40a8c12d40c8ea783, type: 2}
   pathMaterial: {fileID: 2100000, guid: 940589b17db38594abfd62d58c297c28, type: 2}
+  checkpointIndex: -1
 --- !u!64 &7780755091336640665
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -146,8 +147,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9059902544444053879}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.001, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: 0, y: 0, z: -0.01}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 7762656924110642770}
   m_RootOrder: 0
@@ -179,7 +180,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6cab40748a2ca2d49b71236be30d1223, type: 2}
+  - {fileID: 2100000, guid: 0c2da211c9dbf3f45b628c80e8248b47, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

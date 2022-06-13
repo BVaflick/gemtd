@@ -279,10 +279,10 @@ MonoBehaviour:
   combo: 
   damage: 50
   turret: {fileID: 5441879686828577471}
-  laserBeam: {fileID: 0}
   newTowerCircle: {fileID: 2365923653727974209}
   launchSpeed: 30
-  abilities: []
+  abilities:
+  - {fileID: 11400000, guid: 1c462b574de52754991ce1431846a6d5, type: 2}
   auras: []
 --- !u!1 &6787000539347584138
 GameObject:

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 1
   buffPrefab: {fileID: 11400000, guid: 144f7125f4aca0f4cb1135a4674ab4c5, type: 2}
-  icon: {fileID: 21300000, guid: c95da33b8c400ed42bfb136e175ea99d, type: 3}
+  icon: {fileID: 21300000, guid: 094c171a051d20740bd9c0114d1a5ea9, type: 3}

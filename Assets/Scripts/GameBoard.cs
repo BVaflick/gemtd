@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public class GameBoard : MonoBehaviour {
-	
 	[SerializeField]
 	Material greenGround = default;
-	
+
 	[SerializeField]
 	Material darkGreenGround = default;
 
@@ -24,9 +26,9 @@ public class GameBoard : MonoBehaviour {
 	List<GameTile> spawnPoints = new List<GameTile>();
 
 	List<GameTile> checkpoints = new List<GameTile>();
-	
+
 	List<GameTile> groundPath = new List<GameTile>();
-	
+
 	List<GameTile> flyingPath = new List<GameTile>();
 
 	List<Queue<GameTile>> searchFrontiers = new List<Queue<GameTile>>();
@@ -35,23 +37,108 @@ public class GameBoard : MonoBehaviour {
 
 	GameTileContentFactory contentFactory;
 
-	bool showGrid;
+	bool showMaze;
 
 	bool showPath = false;
+	
+	public int CurrentMaze { get; set; }
 
-	public bool ShowGrid {
-		get => showGrid;
+	public int[,,] mazes = {
+		{
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0},
+			{0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 1, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+			{0, 1, 2, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 2, 0, 0},
+			{1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0}
+		}, {
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+			{0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0},
+			{0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0},
+			{1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 2, 1, 0},
+			{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		},  {
+			{0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 2, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			{0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1},
+			{0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2, 0, 0},
+			{0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0},
+			{0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0},
+			{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 1, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		}, {
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		}
+	};
+	
+	public bool ShowMaze {
+		get => showMaze;
 		set {
-			showGrid = value;
-			// Material m = ground.GetComponent<MeshRenderer>().material;
-			if (showGrid) {
-				// m.mainTexture = gridTexture;
-				// m.SetTextureScale("_MainTex", size / 3);
-			} else {
-				// m.mainTexture = null;
+			showMaze = value;
+			foreach (GameTile t in tiles) {
+				t.Arrow.gameObject.SetActive(false);
+			}
+			if (showMaze) {
+				
+				for (int x = 0; x < mazes.GetLength(1); x++) {
+					for (int y = 0; y < mazes.GetLength(2); y++) {
+						if (mazes[CurrentMaze, x, y] == 1) {
+							GetTile(size.x - 1 - x, y).Arrow.gameObject.SetActive(true);
+						}
+					}
+				}
 			}
 		}
 	}
+
 	public bool ShowPath {
 		get => showPath;
 		set {
@@ -59,6 +146,7 @@ public class GameBoard : MonoBehaviour {
 			foreach (GameTile t in tiles) {
 				t.Dehover();
 			}
+
 			if (showPath) {
 				for (int i = 1; i < groundPath.Count - 1; i++) {
 					groundPath[i].ShowPath();
@@ -67,7 +155,7 @@ public class GameBoard : MonoBehaviour {
 		}
 	}
 
-	public int  SpawnPointCount => spawnPoints.Count;
+	public int SpawnPointCount => spawnPoints.Count;
 	public List<GameTile> GroundPath => groundPath;
 	public List<GameTile> FlyingPath => flyingPath;
 
@@ -82,14 +170,18 @@ public class GameBoard : MonoBehaviour {
 		for (int i = 0, y = 0; y < size.y; y++) {
 			for (int x = 0; x < size.x; x++, i++) {
 				GameTile tile = tiles[i] = Instantiate(tilePrefab);
-				tile.Initialize(transform, i % 2 == 0 ? greenGround : darkGreenGround, new Vector3(x - offset.x, 0f, y - offset.y), 90 * random.Next(0,4),180 * random.Next(0,2), random.Next(0,2));
+				tile.Initialize(transform, i % 2 == 0 ? greenGround : darkGreenGround,
+					new Vector3(x - offset.x, 0f, y - offset.y), 90 * random.Next(0, 4), 180 * random.Next(0, 2),
+					random.Next(0, 2));
 				if (x > 0) {
 					GameTile.MakeEastWestNeighbors(tile, tiles[i - 1]);
 				}
+
 				if (y > 0) {
 					GameTile.MakeNorthSouthNeighbors(tile, tiles[i - size.x]);
 				}
-				if (y > 0 && x < size.x -1) GameTile.MakeDiagonalNeighbors2(tile, tiles[i - size.x + 1]);
+
+				if (y > 0 && x < size.x - 1) GameTile.MakeDiagonalNeighbors2(tile, tiles[i - size.x + 1]);
 				if (y > 0 && x > 0) GameTile.MakeDiagonalNeighbors1(tile, tiles[i - size.x - 1]);
 				tile.IsAlternative = (x & 1) == 0;
 				if ((y & 1) == 0) {
@@ -99,6 +191,7 @@ public class GameBoard : MonoBehaviour {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 			}
 		}
+
 		prepareCheckPoints();
 		flyingPath.Add(spawnPoints[0]);
 		flyingPath.AddRange(checkpoints);
@@ -119,6 +212,7 @@ public class GameBoard : MonoBehaviour {
 		foreach (GameTile tile in tiles) {
 			tile.Content = contentFactory.Get(GameTileContentType.Empty);
 		}
+
 		spawnPoints.Clear();
 		checkpoints.Clear();
 		updatingContent.Clear();
@@ -152,7 +246,8 @@ public class GameBoard : MonoBehaviour {
 				checkpoints.Remove(tile);
 				// FindPaths();
 			}
-		} else if (tile.Content.Type == GameTileContentType.Empty) {
+		}
+		else if (tile.Content.Type == GameTileContentType.Empty) {
 			if (checkpoints.Count == 5) {
 				tile.Content = contentFactory.Get(GameTileContentType.Destination);
 				tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
@@ -161,6 +256,7 @@ public class GameBoard : MonoBehaviour {
 				tile.Content = contentFactory.Get(GameTileContentType.Flag);
 				tile.checkpointIndex = checkpoints.Count;
 			}
+
 			checkpoints.Add(tile);
 			// FindPaths();
 		}
@@ -170,13 +266,15 @@ public class GameBoard : MonoBehaviour {
 		if (tile.Content.Type == GameTileContentType.Wall) {
 			tile.Content = contentFactory.Get(GameTileContentType.Empty);
 			FindPaths();
-		} else if (tile.Content.Type == GameTileContentType.Empty) {
+		}
+		else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.Wall);
 			if (!FindPaths()) {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 				FindPaths();
 			}
-		} else if (tile.Content.Type == GameTileContentType.Tower) {
+		}
+		else if (tile.Content.Type == GameTileContentType.Tower) {
 			updatingContent.Remove(tile.Content);
 			tile.Content = contentFactory.Get(GameTileContentType.Wall);
 		}
@@ -194,22 +292,29 @@ public class GameBoard : MonoBehaviour {
 			tile.Content = contentFactory.Get(towerType);
 			if (FindPaths()) {
 				updatingContent.Add(tile.Content);
-			} else {
+			}
+			else {
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 				FindPaths();
 				return false;
 			}
+
 			return true;
-		} if (tile.Content.Type == GameTileContentType.Wall) {
+		}
+
+		if (tile.Content.Type == GameTileContentType.Wall) {
 			tile.Content = contentFactory.Get(towerType);
 			updatingContent.Add(tile.Content);
 			return true;
-		} if (tile.Content.Type == GameTileContentType.Tower) {
+		}
+
+		if (tile.Content.Type == GameTileContentType.Tower) {
 			updatingContent.Remove(tile.Content);
 			tile.Content = contentFactory.Get(towerType);
 			updatingContent.Add(tile.Content);
 			return true;
 		}
+
 		return false;
 	}
 
@@ -219,7 +324,8 @@ public class GameBoard : MonoBehaviour {
 				spawnPoints.Remove(tile);
 				tile.Content = contentFactory.Get(GameTileContentType.Empty);
 			}
-		} else if (tile.Content.Type == GameTileContentType.Empty) {
+		}
+		else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
 			tile.Material = tile.Content.transform.GetComponent<MeshRenderer>().material;
 			spawnPoints.Add(tile);
@@ -232,7 +338,8 @@ public class GameBoard : MonoBehaviour {
 			FlyingPath.RemoveAt(1);
 			checkpoints.RemoveAt(0);
 			FindPaths();
-		} else if (tile.Content.Type == GameTileContentType.Empty) {
+		}
+		else if (tile.Content.Type == GameTileContentType.Empty) {
 			tile.Content = contentFactory.Get(GameTileContentType.Gift);
 			FlyingPath.Insert(1, tile);
 			checkpoints.Insert(0, tile);
@@ -257,17 +364,49 @@ public class GameBoard : MonoBehaviour {
 				return tiles[x + y * size.x];
 			}
 		}
+
 		return null;
 	}
 
 	public GameTile GetTile(Vector3 position) {
-		int x = (int) (position.x + size.x * 0.5f);
-		int y = (int) (position.z + size.y * 0.5f);
-		print(position.x + " " + position.y + " " + x + " " + y);
-		if (x >= 0 && x < size.x && y >= 0 && y < size.y) {
-			return tiles[x + y * size.x];
+		int row = (int) (position.z + size.y * 0.5f);
+		int column = (int) (position.x + size.x * 0.5f);
+		if (column >= 0 && column < size.x && column >= 0 && column < size.y) {
+			return tiles[row * size.x + column];
 		}
+
 		return null;
+	}
+
+	public GameTile GetTile(int row, int column) {
+		if (row >= 0 && row < size.x && column >= 0 && column < size.y) {
+			return tiles[row * size.x + column];
+		}
+
+		return null;
+	}
+
+	public void saveMaze(Transform mazePanel) {
+		string path = "Assets/Resources/test.txt";
+		StreamWriter writer = new StreamWriter(path, false);
+		for (int i = 0; i < tiles.Length; i++) {
+			GameTile t = tiles[i];
+			int x = i / size.x;
+			int y = i - size.x * x;
+			int newX = size.x - x - 1;
+			if (t.Content.Type == GameTileContentType.Wall || t.Content.Type == GameTileContentType.Tower) {
+				mazes[3, newX, y] = 1;
+				writer.Write(1);
+			} else if (t.Content.Type == GameTileContentType.Flag || t.Content.Type == GameTileContentType.Destination ||
+			          t.Content.Type == GameTileContentType.SpawnPoint) {
+				mazes[3, newX, y] = 2;
+				writer.Write(2);
+			} else {
+				mazes[3, newX, y] = 0;
+				writer.Write(0);
+			}
+		}
+		writer.Close();
 	}
 
 	bool FindPaths() {
@@ -276,13 +415,14 @@ public class GameBoard : MonoBehaviour {
 			foreach (GameTile tile in tiles) {
 				tile.ClearPath();
 			}
+
 			GameTile checkpoint = checkpoints[i];
 			checkpoint.BecomeDestination(i);
 			Queue<GameTile> searchFrontier = new Queue<GameTile>();
 			searchFrontier.Enqueue(checkpoint);
 			while (searchFrontier.Count > 0) {
 				GameTile tile = searchFrontier.Dequeue();
-				if (i == 0 && spawnPoints[0] == tile || i != 0 && checkpoints[i - 1] == tile) 
+				if (i == 0 && spawnPoints[0] == tile || i != 0 && checkpoints[i - 1] == tile)
 					break;
 				if (tile != null) {
 					searchFrontier.Enqueue(tile.GrowPathNorth());
@@ -295,6 +435,7 @@ public class GameBoard : MonoBehaviour {
 					searchFrontier.Enqueue(tile.GrowPathNorthWest());
 				}
 			}
+
 			if ((i == 0 && !spawnPoints[0].HasPath()) || (i != 0 && !checkpoints[i - 1].HasPath())) {
 				return false;
 			}
