@@ -292,7 +292,7 @@ public class Game : MonoBehaviour {
 	}
 
 	private void initMazePanel() {
-		string path = "Assets/Resources/test.txt";
+		string path = "Assets/Resources/maze.txt";
 		StreamReader reader = new StreamReader(path); 
 		String mazeString = reader.ReadToEnd();
 		for (var i = 0; i < mazeString.Length; i++) {

@@ -387,7 +387,7 @@ public class GameBoard : MonoBehaviour {
 	}
 
 	public void saveMaze(Transform mazePanel) {
-		string path = "Assets/Resources/test.txt";
+		string path = "Assets/Resources/maze.txt";
 		StreamWriter writer = new StreamWriter(path, false);
 		for (int i = 0; i < tiles.Length; i++) {
 			GameTile t = tiles[i];
