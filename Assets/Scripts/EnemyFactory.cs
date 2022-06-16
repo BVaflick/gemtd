@@ -41,7 +41,6 @@ public class EnemyFactory : GameObjectFactory {
 			config.speed.RandomValueInRange,
 			(1 + wave) * 20,
 			wave
-			// config.health.RandomValueInRange,
 			// config.armor.RandomValueInRange
 		);
 		return instance;

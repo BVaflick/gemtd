@@ -252,6 +252,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9036947740573815580}
+  - component: {fileID: 5053132620058798575}
   m_Layer: 0
   m_Name: Huge Pink Diamond
   m_TagString: Untagged
@@ -287,6 +288,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5053132620058798575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729093383374336394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b67f92050f9c0448fcf6e3fe05a18b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
+  selection: {fileID: 780780692417603840}
+  targetingRange: 4
+  towerType: 51
+  combo: 2c0000000e00000030000000
+  damage: 50
+  turret: {fileID: 22765812930791765}
+  newTowerCircle: {fileID: 0}
+  launchSpeed: 30
+  abilities:
+  - {fileID: 11400000, guid: 1c462b574de52754991ce1431846a6d5, type: 2}
+  - {fileID: 11400000, guid: 85c0e7fe4bdba2949961cecce23c0a5d, type: 2}
+  - {fileID: 11400000, guid: 3e08790bc56a320468a28b83e5d13a97, type: 2}
+  auras: []
 --- !u!1 &1841458627173839273
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +494,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &780780692417603840
 Transform:
   m_ObjectHideFlags: 0

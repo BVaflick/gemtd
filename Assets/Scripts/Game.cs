@@ -1391,6 +1391,7 @@ public class Game : MonoBehaviour {
 
 	public static int getCurrentProgress() {
 		return new [] {9, 19, 20}.Contains(instance.activeScenario.CurrentWave()) ? 1 : (int) instance.progress;
+		// return 1;
 	}
 	
 	public static RectTransform getAdditionalPanel() {
@@ -1400,7 +1401,7 @@ public class Game : MonoBehaviour {
 	public static void SpawnDamagePopup(Enemy enemy, int damage) {
 		if(damage < 1) damage = 1;
 		PopupText popup = Instantiate(instance.damagePopupPrefab, instance.additionalPanel);
-		popup.Initialize(enemy.transform, damage, instance.camera);
+		popup.Initialize(enemy, damage);
 		instance.nonEnemies.Add(popup);
 	}
 	
