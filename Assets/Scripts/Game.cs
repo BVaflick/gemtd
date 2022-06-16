@@ -41,6 +41,9 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	RectTransform damagePanel = default;
+	
+	[SerializeField]
+	RectTransform additionalPanel = default;
 
 	[SerializeField]
 	RectTransform recipesPanel = default;
@@ -83,6 +86,12 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	RectTransform CombineButtonPrefab = default;
+	
+	[SerializeField]
+	PopupText damagePopupPrefab = default;
+	
+	[SerializeField]
+	HealthBar healthBarPrefab = default;
 
 	[SerializeField]
 	RectTransform selectionBox = default;
@@ -561,6 +570,7 @@ public class Game : MonoBehaviour {
 		deselectAndClose();
 		newTowers.Clear();
 		builtTowers.Clear();
+		dealtDamage.Clear();
 		availableBuilds = 5;
 		scenarioIsInProgress = false;
 		isBuilding = false;
@@ -981,7 +991,7 @@ public class Game : MonoBehaviour {
 			RectTransform line = Instantiate(towerDamagePrefab, damagePanel, true);
 			Tower tower = item.Key;
 			Ability mvp = tower.Abilities.Find(x => x.Buff.name1.Contains("MVP"));
-			bool isMvpMax = tower.Auras.Exists(x => x.buff.name1.Contains("MVP"));
+			bool isMvpMax = tower.Auras.Exists(x => x.buff && x.buff.name1.Contains("MVP"));
 			string towerName = tower.name.Replace("(Clone)", "");
 			line.GetChild(0).GetComponent<Text>().text = mvp || isMvpMax
 				? getColoredString(towerName + " (MVP" + (isMvpMax ? " MAX" : mvp.level + "") + ")")
@@ -1380,13 +1390,28 @@ public class Game : MonoBehaviour {
 	}
 
 	public static int getCurrentProgress() {
-		return instance.activeScenario.CurrentWave() == 9 ? 1 : (int) instance.progress;
+		return new [] {9, 19, 20}.Contains(instance.activeScenario.CurrentWave()) ? 1 : (int) instance.progress;
+	}
+	
+	public static RectTransform getAdditionalPanel() {
+		return instance.additionalPanel;
+	}
+
+	public static void SpawnDamagePopup(Enemy enemy, int damage) {
+		if(damage < 1) damage = 1;
+		PopupText popup = Instantiate(instance.damagePopupPrefab, instance.additionalPanel);
+		popup.Initialize(enemy.transform, damage, instance.camera);
+		instance.nonEnemies.Add(popup);
+	}
+	
+	public static HealthBar SpawnHealthBar() {
+		return Instantiate(instance.healthBarPrefab, instance.additionalPanel);
 	}
 
 	public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
 		// GameTile spawnPoint = instance.board.GetSpawnPoint(Random.Range(0, instance.board.SpawnPointCount));
-		Enemy enemy = factory.Get(type);
-		if (type == EnemyType.Bee)
+		Enemy enemy = factory.Get(type, instance.activeScenario.CurrentWave());
+		if (type == EnemyType.Gyro || type == EnemyType.Beholder || type == EnemyType.Whale)
 			enemy.Spawn(instance.board.FlyingPath);
 		else
 			enemy.Spawn(instance.board.GroundPath);

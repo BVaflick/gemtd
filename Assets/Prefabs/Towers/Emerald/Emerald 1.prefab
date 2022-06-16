@@ -686,7 +686,7 @@ GameObject:
   - component: {fileID: 1469493571587700997}
   - component: {fileID: 1878573484476236595}
   - component: {fileID: 7333757261335088044}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: New Tower Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Spitter_Body_Mat
   m_Shader: {fileID: 4800000, guid: df778dfc69de7fb48809501a413b8bbf, type: 3}
   m_ShaderKeywords: _METALLICGLOSSMAP _NORMALMAP _SPECGLOSSMAP _USE_GRADIENT_ON
@@ -102,7 +103,7 @@ Material:
     - _DstBlend: 0
     - _EdgeSize: 0.321
     - _GlossMapScale: 0.971
-    - _Glossiness: 1
+    - _Glossiness: 0.501
     - _GlossyReflections: 1
     - _MaxDiff: 0.109
     - _Metallic: 0
@@ -128,3 +129,4 @@ Material:
     - _RimColor: {r: 0.25999996, g: 0.18999997, b: 0.15999997, a: 0}
     - _SpecCol: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.1102941, g: 0.1102941, b: 0.1102941, a: 1}
+  m_BuildTextureStacks: []

@@ -302,14 +302,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 5370134279699682224}
+  invisibleMaterial: {fileID: 0}
+  revealedInvisibleMaterial: {fileID: 0}
   blastPatricals: {fileID: 2046620288238143109, guid: 3beed3d597dd5fc4e82057c2f51d98cd,
     type: 3}
-  material: {fileID: 2100000, guid: 7873de4622758f5488a11ca523dbcde3, type: 2}
+  material: {fileID: 2100000, guid: 14fb0c75b6466e648bfd606901b9291a, type: 2}
   animationConfig: {fileID: 11400000, guid: b65d04075e5a83e4baee99e7fe8df7ad, type: 2}
   healthBar: {fileID: 2990476204866218620}
   selection: {fileID: 6748944806030277115}
   aim: {fileID: 7427457982275045487}
-  untouchable: 1
+  isInvisiblable: 0
+  isInvisible: 0
 --- !u!1 &5369023003205106678
 GameObject:
   m_ObjectHideFlags: 0

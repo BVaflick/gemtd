@@ -1,21 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu]
 public class EnemyFactory : GameObjectFactory {
 
 	[System.Serializable]
-	class EnemyConfig {
+	public class EnemyConfig {
 
 		public Enemy prefab = default;
+
+		public EnemyType type = default;
 
 		[FloatRangeSlider(0.1f, 2f)]
 		public FloatRange scale = new FloatRange(0.4f, 0.6f);
 
 		[FloatRangeSlider(0.2f, 5f)]
 		public FloatRange speed = new FloatRange(2f);
-
-		[FloatRangeSlider(-0.4f, 0.4f)]
-		public FloatRange pathOffset = new FloatRange(0f);
 
 		[FloatRangeSlider(1f, 5000f)]
 		public FloatRange health = new FloatRange(50f);
@@ -25,45 +26,23 @@ public class EnemyFactory : GameObjectFactory {
 	}
 
 	[SerializeField]
-	EnemyConfig knight = default, bee = default, invisibleBug = default, bug = default, chest = default, chomper = default, mushroom = default, orc = default, spitter = default, turtle = default;
+	List<EnemyConfig> enemies = default;
 
 	EnemyConfig GetConfig(EnemyType type) {
-		switch (type) {
-			case EnemyType.Knight:
-				return knight;
-			case EnemyType.Bee:
-				return bee;
-			case EnemyType.InvisibleBug:
-				return invisibleBug;
-			case EnemyType.Bug:
-				return bug;
-			case EnemyType.Chest:
-				return chest;
-			case EnemyType.Chomper:
-				return chomper;
-			case EnemyType.Mushroom:
-				return mushroom;
-			case EnemyType.Orc:
-				return orc;
-			case EnemyType.Spitter:
-				return spitter;
-			case EnemyType.Turtle:
-				return turtle;
-		}
-		Debug.Assert(false, "Unsupported enemy type!");
-		return null;
+		return enemies.Find(enemy => enemy.type == type);
 	}
 
-	public Enemy Get(EnemyType type = EnemyType.Bee) {
+	public Enemy Get(EnemyType type, int wave) {
 		EnemyConfig config = GetConfig(type);
 		Enemy instance = CreateGameObjectInstance(config.prefab);
 		instance.OriginFactory = this;
 		instance.Initialize(
 			config.scale.RandomValueInRange,
 			config.speed.RandomValueInRange,
-			config.pathOffset.RandomValueInRange,
-			config.health.RandomValueInRange,
-			config.armor.RandomValueInRange
+			(1 + wave) * 20,
+			wave
+			// config.health.RandomValueInRange,
+			// config.armor.RandomValueInRange
 		);
 		return instance;
 	}

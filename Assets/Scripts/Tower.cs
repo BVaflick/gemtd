@@ -132,7 +132,7 @@ public class Tower : GameTileContent {
 			Vector3 rot2 = turret.transform.eulerAngles;
 			turret.eulerAngles = new Vector3(rot.x, rot2.y, rot.z);
 			launchProgress += (attackSpeed + additionalAttackSpeed) * Time.deltaTime;
-			if (launchProgress >= 1f) {
+			if (launchProgress >= 1f && damage > 0) {
 				Launch(targets);
 				launchProgress -= 1f;
 			}

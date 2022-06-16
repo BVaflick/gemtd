@@ -3,5 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyType {
-	Knight, Bee, InvisibleBug, Bug, Chest, Chomper, Mushroom, Orc, Spitter, Turtle
+	Bee,
+	Beholder, 
+	BlackSpider, 
+	Bug, 
+	InvisibleBug, 
+	Chest, 
+	Chomper,
+	Diver,
+	Dog,
+	Fox,
+	FunnySpider,
+	Golem,
+	Grunt,
+	Gyro,
+	Knight,
+	Mummy,
+	Orc, 
+	PolyKnight,
+	Slime, 
+	Spitter, 
+	Turtle,
+	Whale,
+	УшастоеЧувырло,
+	ЧувырлоВКолпаке
 }

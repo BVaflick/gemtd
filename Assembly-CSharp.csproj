@@ -104,6 +104,7 @@
      <Compile Include="Assets\Scripts\WarEntity.cs" />
      <Compile Include="Assets\Scripts\EnemyFactory.cs" />
      <Compile Include="Assets\Scripts\HealthBar.cs" />
+     <Compile Include="Assets\Scripts\PopupText.cs" />
      <Compile Include="Assets\Scripts\Abilities\Aura.cs" />
      <Compile Include="Assets\Scripts\FloatRange.cs" />
      <Compile Include="Assets\Scripts\Abilities\Entities\Corrosion.cs" />

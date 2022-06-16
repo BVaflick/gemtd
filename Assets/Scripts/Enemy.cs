@@ -70,7 +70,10 @@ public class Enemy : GameBehavior {
 	}
 	public override bool GameUpdate() {
 		animator.GameUpdate();
+		
 		healthBar.transform.LookAt(transform.position + Camera.main.transform.forward);
+		// healthBar.GameUpdate();
+		
 		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
 			if (!animator.IsDone) {
 				return true;
@@ -109,7 +112,7 @@ public class Enemy : GameBehavior {
 		if (Health <= 0f) {
 			Vector3 position = transform.position;
 			position.y += 0.5f;
-			GameObject effectInstance = (GameObject) Instantiate(blastPatricals, position, transform.rotation);
+			GameObject effectInstance = Instantiate(blastPatricals, position, transform.rotation);
 			Game.EnemyDied(5);
 			Destroy(effectInstance, 2f);
 			Recycle();
@@ -135,11 +138,10 @@ public class Enemy : GameBehavior {
 		if(directionChanged)
 			transform.rotation = Quaternion.Slerp(transform.rotation, direction, progress);
 		transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
-
 		return true;
 	}
 
-	public void Initialize(float scale, float speed, float pathOffset, float health, float armor) {
+	public void Initialize(float scale, float speed, float health, float armor) {
 		Scale = scale;
 		Vector3 s = model.localScale;
 		model.localScale = new Vector3(scale * s.x, scale * s.y, scale * s.z);
@@ -151,7 +153,11 @@ public class Enemy : GameBehavior {
 		StatusEffects = new List<Buff>();
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
-		healthBar.setMaxValue((int) health);
+		
+		healthBar.setMaxValue((int)health);
+		
+		// healthBar = Game.SpawnHealthBar();
+		// healthBar.Initialize(this);
 		// Health = 20f * scale;
 	}
 	
@@ -164,6 +170,7 @@ public class Enemy : GameBehavior {
 	}
 
 	public override void Recycle() {
+		// healthBar.Recycle();
 		animator.Stop();
 		OriginFactory.Reclaim(this);
 	}
@@ -179,8 +186,11 @@ public class Enemy : GameBehavior {
 		if (isDamagePhysical) {
 			modifier = 1f - ((0.052f * (armor + additionalArmor)) / (0.9f + (0.048f * Math.Abs(armor + additionalArmor))));
 		}
-		Health -= damage * modifier;
-		Game.RecordDealtDamage(tower, damage * modifier);
+
+		float actualDamage = damage * modifier;
+		Health -= actualDamage;
+		Game.SpawnDamagePopup(this, (int) actualDamage);
+		Game.RecordDealtDamage(tower, actualDamage);
 		if (Health < 0) Health = 0;
 		healthBar.setValue((int) Health);
 	}
