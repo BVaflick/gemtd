@@ -10,6 +10,8 @@ public class GameTileContent : MonoBehaviour {
 	GameTileContentFactory originFactory;
 
 	public GameTileContentType Type => type;
+	
+	public Transform swapEffect;
 
 	public bool BlocksPath => Type == GameTileContentType.Wall || Type == GameTileContentType.Tower;
 

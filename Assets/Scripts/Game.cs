@@ -110,6 +110,8 @@ public class Game : MonoBehaviour {
 	private int enemiesLeft = 10;
 
 	private int kills = 0;
+	
+	private int deaths = 0;
 
 	private int gold = 0;
 
@@ -420,8 +422,7 @@ public class Game : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.R)) {
-			if (recipesPanel.gameObject.activeSelf) closeTowerRecipes();
-			else showTowerRecipes();
+			toggleTowerRecipes();
 		}
 
 		if (Input.GetMouseButtonDown(0)) {
@@ -529,7 +530,7 @@ public class Game : MonoBehaviour {
 		}
 		
 		if (Input.GetKeyDown(KeyCode.C)) {
-			mazePanel.gameObject.SetActive(!mazePanel.gameObject.activeSelf);
+			toggleMazePanel();
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -581,7 +582,7 @@ public class Game : MonoBehaviour {
 		cameraTransform.position = pos1;
 	}
 
-	void BeginNewGame() {
+	public void BeginNewGame() {
 		deselectAndClose();
 		newTowers.Clear();
 		builtTowers.Clear();
@@ -604,8 +605,9 @@ public class Game : MonoBehaviour {
 	}
 
 	public static void EnemyReachedDestination(int damage) {
-		instance.playerHealth -= damage;
 		damage = 1; //Удалить
+		instance.playerHealth -= damage;
+		instance.deaths++;
 		float newProgress = instance.progress - 0.05f * damage;
 		instance.progress = (int) newProgress < (int) instance.progress ? newProgress - .5f : newProgress;
 		instance.showMainPanel();
@@ -1034,6 +1036,15 @@ public class Game : MonoBehaviour {
 		}
 	}
 
+	public void toggleMazePanel() {
+		mazePanel.gameObject.SetActive(!mazePanel.gameObject.activeSelf);
+	}
+
+	public void toggleTowerRecipes() {
+		if (recipesPanel.gameObject.activeSelf) closeTowerRecipes();
+		else showTowerRecipes();
+	}
+
 	void showTowerRecipes() {
 		recipesPanel.gameObject.SetActive(true);
 		foreach (Transform line in recipesPanel) {
@@ -1075,7 +1086,7 @@ public class Game : MonoBehaviour {
 							mainParam.GetComponent<Text>().text = availableBuilds + "/5";
 							break;
 						case "Level Value":
-							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience) + "%";
+							mainParam.GetComponent<Text>().text = level + getColoredAdditionalParam(experience) + (experience > 0 ? "%" : "");
 							break;
 					}
 				}
@@ -1091,11 +1102,11 @@ public class Game : MonoBehaviour {
 
 	void showHeader() {
 		headerPanel.GetChild(1).GetComponent<Text>().text = getTime();
-		headerPanel.GetChild(3).GetComponent<Text>().text = "" + wave;
-		headerPanel.GetChild(5).GetComponent<Text>().text = "" + enemiesLeft;
-		headerPanel.GetChild(7).GetComponent<Text>().text = "" + kills;
-		headerPanel.GetChild(9).GetComponent<Text>().text = (int) progress + "+" + (int)(progress % 1 * 100) + "%";
-		headerPanel.GetChild(11).GetComponent<Text>().text = "" + board.GroundPath.Count;
+		headerPanel.GetChild(2).GetComponent<Text>().text = "WAVE " + wave;
+		headerPanel.GetChild(3).GetComponent<Text>().text = "Enemies " + enemiesLeft + "/" + (int) progress + "(" + (int)(progress % 1 * 100) + "%)";
+		headerPanel.GetChild(4).GetComponent<Text>().text = "K/D " + kills + "/" + deaths;
+		headerPanel.GetChild(5).GetComponent<Text>().text = "Path " + board.GroundPath.Count;
+		// headerPanel.GetChild(11).GetComponent<Text>().text = "" + board.GroundPath.Count;
 	}
 
 	string getTime() {
@@ -1405,23 +1416,22 @@ public class Game : MonoBehaviour {
 		if (!(tile.Content is Tower) && (tile.Content.Type != GameTileContentType.Wall)) return;
 		if (swapBuffer == null) {
 			swapBuffer = tile;
-			Tower tower = tile.Content as Tower;
-			Transform effect = Instantiate(towerEffectPrefab,tower.swapEffect );
-			Vector3 pos = tower.transform.position;
+			Transform effect = Instantiate(towerEffectPrefab,tile.Content.swapEffect );
+			Vector3 pos = tile.Content.transform.position;
 			pos.y += 1;
 			effect.position = pos;
 		}
 		else {
 			GameTileContent temp = swapBuffer.Content;
-			Destroy((temp as Tower).swapEffect.GetChild(0).gameObject);
+			Destroy(temp.swapEffect.GetChild(0).gameObject);
 			swapBuffer.setTower(tile.Content);
 			tile.setTower(temp);
 			if (tile.Content.Type == GameTileContentType.Wall) {
 				if (builtTowers.Contains(tile)) builtTowers[builtTowers.IndexOf(tile)] = swapBuffer;
-				else newTowers[newTowers.IndexOf(tile)] = swapBuffer;
+				else if (newTowers.Contains(tile)) newTowers[newTowers.IndexOf(tile)] = swapBuffer;
 			} else if (swapBuffer.Content.Type == GameTileContentType.Wall) {
 				if (builtTowers.Contains(swapBuffer)) builtTowers[builtTowers.IndexOf(swapBuffer)] = tile;
-				else newTowers[newTowers.IndexOf(swapBuffer)] = tile;
+				else if (newTowers.Contains(swapBuffer)) newTowers[newTowers.IndexOf(swapBuffer)] = tile;
 			}
 			isSwaping = false;
 			swapBuffer = null;

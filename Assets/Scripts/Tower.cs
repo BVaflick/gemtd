@@ -54,8 +54,6 @@ public class Tower : GameTileContent {
 
 	public List<Aura> Auras => auras;
 
-	public Transform swapEffect;
-
 	public int TargetNumber { get => additionalTargets; set => additionalTargets = value; }
 
 	public float Dmg { get => damage;}
@@ -109,10 +107,10 @@ public class Tower : GameTileContent {
 	}
 
 	void Awake() {
-		float x = targetingRange + 0.25001f;
-		float y = -turret.position.y;
 		swapEffect = new GameObject().transform;
 		swapEffect.SetParent(transform);
+		// float x = targetingRange + 0.25001f;
+		// float y = -turret.position.y;
 		// launchSpeed = Mathf.Sqrt(9.81f * (y + Mathf.Sqrt(x * x + y * y)));
 	}
 
