@@ -92,6 +92,9 @@ public class Game : MonoBehaviour {
 	
 	[SerializeField]
 	HealthBar healthBarPrefab = default;
+	
+	[SerializeField]
+	Transform towerEffectPrefab = default;
 
 	[SerializeField]
 	RectTransform selectionBox = default;
@@ -178,7 +181,7 @@ public class Game : MonoBehaviour {
 	private GameTile hoveredTile = null;
 	// private GameTile selectedTile = null;
 
-	private Enemy selectedEnemy = null;
+	private List<Enemy> selectedEnemies = new List<Enemy>();
 	private List<GameTileContent> selectedStructures = new List<GameTileContent>();
 	private bool isDragSelection;
 	Rect selectionRect = new Rect();
@@ -205,6 +208,9 @@ public class Game : MonoBehaviour {
 
 	[SerializeField]
 	private Tower flyingTower = null;
+	
+	[SerializeField]
+	private GameTileContent flyingGift = null;
 
 	[SerializeField, Range(1f, 10f)]
 	float playSpeed = 1f;
@@ -215,6 +221,8 @@ public class Game : MonoBehaviour {
 		initMazePanel();
 		flyingTower = Instantiate(flyingTower);
 		flyingTower.gameObject.SetActive(false);
+		flyingGift = Instantiate(flyingGift);
+		flyingGift.gameObject.SetActive(false);
 		// uiManager.showPlayerAbilities(playerAbilities);
 	}
 
@@ -271,15 +279,20 @@ public class Game : MonoBehaviour {
 				if (isBuilding) {
 					flyingTower.gameObject.SetActive(true);
 					flyingTower.transform.position = tile.transform.position;
+				} else if (isSpawningGift) {
+					flyingGift.gameObject.SetActive(true);
+					flyingGift.transform.position = tile.transform.position;
 				}
 			}
 			else {
 				flyingTower.gameObject.SetActive(false);
+				flyingGift.gameObject.SetActive(false);
 				if (hoveredTile != null) hoveredTile.Dehover();
 			}
 		}
 		else {
 			flyingTower.gameObject.SetActive(false);
+			flyingGift.gameObject.SetActive(false);
 			if (hoveredTile != null) hoveredTile.Dehover();
 		}
 
@@ -287,7 +300,7 @@ public class Game : MonoBehaviour {
 		enemies.GameUpdate();
 		Physics.SyncTransforms();
 		board.GameUpdate();
-		if (selectedEnemy != null) {
+		if (selectedEnemies.Count != 0 && selectedEnemies[0]) {
 			showEnemyDescription();
 		}
 		else if (selectedStructures.Count != 0) {
@@ -425,7 +438,7 @@ public class Game : MonoBehaviour {
 		}
 		else if (Input.GetMouseButtonUp(0)) {
 			if (isDragSelection) {
-				selectStructureWithDrag();
+				selectWithDrag();
 				dragStartPosition = Vector2.zero;
 				dragEndPosition = Vector2.zero;
 				showSelectionBox();
@@ -446,6 +459,8 @@ public class Game : MonoBehaviour {
 
 		if (Input.GetMouseButtonDown(1)) {
 			HandleAlternativeTouch();
+		} else if (Input.GetMouseButton(1)) {
+			aim();
 		}
 
 		float a = Input.mouseScrollDelta.y;
@@ -581,16 +596,19 @@ public class Game : MonoBehaviour {
 		board.Clear();
 	}
 
-	public static void EnemyReachedFlag(int index) {
-		float regress = 0.0005f * (index == 0 ? 0 : Mathf.Pow(2, index - 1));
+	public static void EnemyReachedFlag(int index, int damage) {
+		damage = 1; //Удалить
+		float regress = 0.0005f * damage * (index == 0 ? 0 : Mathf.Pow(2, index - 1));
 		float newProgress = instance.progress - regress;
 		instance.progress = (int) newProgress < (int) instance.progress ? newProgress - .5f : newProgress;
 	}
 
 	public static void EnemyReachedDestination(int damage) {
 		instance.playerHealth -= damage;
-		float newProgress = instance.progress - 0.05f;
+		damage = 1; //Удалить
+		float newProgress = instance.progress - 0.05f * damage;
 		instance.progress = (int) newProgress < (int) instance.progress ? newProgress - .5f : newProgress;
+		instance.showMainPanel();
 	}
 
 	public static void EnemyDied(int gold) {
@@ -659,12 +677,7 @@ public class Game : MonoBehaviour {
 		if (isBuilding) isBuilding = !isBuilding;
 		else if (isSwaping) isSwaping = !isSwaping;
 		else if (isSpawningGift) isSpawningGift = !isSpawningGift;
-		if (selectedStructures.Count > 0 &&
-		    Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
-			selectedStructures.FindAll(structure => structure.Type == GameTileContentType.Tower).ForEach(tower =>
-				(tower as Tower).aimTarget(hit.collider.GetComponent<TargetPoint>()));
-			hit.transform.root.gameObject.GetComponent<Enemy>().showAim();
-		}
+		aim();
 
 		// Добавление респаунов и точек назначения
 		// GameTile tile = board.GetTile(TouchRay);
@@ -676,6 +689,15 @@ public class Game : MonoBehaviour {
 		// 		board.ToggleSpawnPoint(tile);
 		// 	}
 		// }
+	}
+
+	void aim() {
+		if (selectedStructures.Count > 0 &&
+		    Physics.Raycast(TouchRay, out RaycastHit hit, float.MaxValue, enemyLayerMask)) {
+			selectedStructures.FindAll(structure => structure.Type == GameTileContentType.Tower).ForEach(tower =>
+				(tower as Tower).aimTarget(hit.collider.GetComponent<TargetPoint>()));
+			hit.transform.root.gameObject.GetComponent<Enemy>().showAim();
+		}
 	}
 
 	void HandleTouch() {
@@ -715,8 +737,8 @@ public class Game : MonoBehaviour {
 
 	void selectEnemy(Enemy enemy) {
 		deselectAndClose();
-		selectedEnemy = enemy;
-		enemy.swithSelection();
+		selectedEnemies.Add(enemy);
+		enemy.switchSelection();
 		showEnemyDescription();
 	}
 
@@ -731,8 +753,8 @@ public class Game : MonoBehaviour {
 		selectionRect.max = boxPosition + extents;
 	}
 
-	void selectStructureWithDrag() {
-		if (!Input.GetKey(KeyCode.LeftShift) || selectedEnemy != null) deselectAndClose();
+	void selectWithDrag() {
+		if (!Input.GetKey(KeyCode.LeftShift) || selectedEnemies.Count > 0) deselectAndClose();
 		List<GameTile> allTowers = builtTowers;
 		allTowers.AddRange(newTowers);
 		allTowers.ForEach(newTower => {
@@ -743,10 +765,20 @@ public class Game : MonoBehaviour {
 			}
 		});
 		if (selectedStructures.Count > 0) showTowerDescription();
+		else {
+			enemies.Behaviors.ForEach(e => {
+				Enemy enemy = e as Enemy;
+				if (selectionRect.Contains(camera.WorldToScreenPoint(enemy.transform.position)) &&
+				    !selectedEnemies.Contains(enemy)) {
+					selectedEnemies.Insert(0, enemy);
+					enemy.switchSelection();
+				}
+			});
+		}
 	}
 
 	void selectStructure(GameTileContent structure) {
-		if (selectedEnemy != null) deselectAndClose();
+		if (selectedEnemies.Count > 0) deselectAndClose();
 		else if (selectedStructures.Contains(structure) && selectedStructures.Count == 1) {
 			if (Input.GetKey(KeyCode.LeftShift)) deselectAndClose();
 			return;
@@ -767,9 +799,9 @@ public class Game : MonoBehaviour {
 	}
 
 	void deselectAll() {
-		if (selectedEnemy != null) {
-			selectedEnemy.swithSelection();
-			selectedEnemy = null;
+		if (selectedEnemies.Count > 0) {
+			selectedEnemies.FindAll(e => e != null).ForEach(e => e.switchSelection());
+			selectedEnemies.Clear();
 		}
 		else if (selectedStructures.Count > 0) {
 			selectedStructures.ForEach(s => s.switchSelection());
@@ -819,6 +851,7 @@ public class Game : MonoBehaviour {
 	// }
 
 	void showEnemyDescription() {
+		Enemy selectedEnemy = selectedEnemies[0];
 		enemyDescriptionPanel.gameObject.SetActive(true);
 		foreach (Transform child in enemyDescriptionPanel.transform) {
 			if (child.name == "Label") {
@@ -1372,9 +1405,15 @@ public class Game : MonoBehaviour {
 		if (!(tile.Content is Tower) && (tile.Content.Type != GameTileContentType.Wall)) return;
 		if (swapBuffer == null) {
 			swapBuffer = tile;
+			Tower tower = tile.Content as Tower;
+			Transform effect = Instantiate(towerEffectPrefab,tower.swapEffect );
+			Vector3 pos = tower.transform.position;
+			pos.y += 1;
+			effect.position = pos;
 		}
 		else {
 			GameTileContent temp = swapBuffer.Content;
+			Destroy((temp as Tower).swapEffect.GetChild(0).gameObject);
 			swapBuffer.setTower(tile.Content);
 			tile.setTower(temp);
 			if (tile.Content.Type == GameTileContentType.Wall) {

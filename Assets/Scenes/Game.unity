@@ -102882,6 +102882,8 @@ MonoBehaviour:
     type: 3}
   healthBarPrefab: {fileID: 3307458558487026700, guid: 110f9150cfb4ce046948f41ff2a27cd7,
     type: 3}
+  towerEffectPrefab: {fileID: 7872178048716539540, guid: a9cc4c62d34bd7045bc9c559f2db90a7,
+    type: 3}
   selectionBox: {fileID: 1550244578}
   tileContentFactory: {fileID: 11400000, guid: c32a5bc6e40adb94c83f737ffdd679bb, type: 2}
   warFactory: {fileID: 11400000, guid: cc4ae3791562d054397b5b079992ebe4, type: 2}
@@ -102890,6 +102892,8 @@ MonoBehaviour:
   - {fileID: 1233944394}
   scenario: {fileID: 11400000, guid: 77984653207800d4ab44f41420ca3637, type: 2}
   flyingTower: {fileID: 3897473011227932263, guid: 4c86e8e1846c2e041826ffb483cdc522,
+    type: 3}
+  flyingGift: {fileID: 629718647651993770, guid: fb74693c6bd088e4d8313e29815d946b,
     type: 3}
   playSpeed: 1
 --- !u!4 &2025098018

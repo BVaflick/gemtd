@@ -421,7 +421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &411524
 Transform:
   m_ObjectHideFlags: 0
@@ -430,7 +430,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187918}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -7, y: 0, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children:
   - {fileID: 409546}
@@ -455,11 +455,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  selection: {fileID: 0}
   targetingRange: 3
   towerType: 58
   combo: 
   damage: 10
   turret: {fileID: 2918400420497168791}
+  newTowerCircle: {fileID: 0}
   launchSpeed: 30
   abilities:
   - {fileID: 11400000, guid: 28bf7252cfc8af54a9a99334ca07dd0d, type: 2}

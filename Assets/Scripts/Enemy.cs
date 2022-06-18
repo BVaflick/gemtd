@@ -71,8 +71,8 @@ public class Enemy : GameBehavior {
 	public override bool GameUpdate() {
 		animator.GameUpdate();
 		
-		healthBar.transform.LookAt(transform.position + Camera.main.transform.forward);
-		// healthBar.GameUpdate();
+		// healthBar.transform.LookAt(transform.position + Camera.main.transform.forward);
+		healthBar.GameUpdate();
 		
 		if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
 			if (!animator.IsDone) {
@@ -127,7 +127,7 @@ public class Enemy : GameBehavior {
 			progress = 0;
 			PrepareNextState();
 			if (currentTile.checkpointIndex != -1) {
-				Game.EnemyReachedFlag(currentTile.checkpointIndex);
+				Game.EnemyReachedFlag(currentTile.checkpointIndex, (int) Mathf.Ceil(Health));
 			}
 			if (nextTile == null) {
 				Game.EnemyReachedDestination((int) Mathf.Ceil(Health));
@@ -154,10 +154,10 @@ public class Enemy : GameBehavior {
 		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
 		
-		healthBar.setMaxValue((int)health);
+		// healthBar.setMaxValue((int)health);
 		
-		// healthBar = Game.SpawnHealthBar();
-		// healthBar.Initialize(this);
+		healthBar = Game.SpawnHealthBar();
+		healthBar.Initialize(this);
 		// Health = 20f * scale;
 	}
 	
@@ -170,7 +170,7 @@ public class Enemy : GameBehavior {
 	}
 
 	public override void Recycle() {
-		// healthBar.Recycle();
+		healthBar.Recycle();
 		animator.Stop();
 		OriginFactory.Reclaim(this);
 	}
@@ -192,7 +192,7 @@ public class Enemy : GameBehavior {
 		Game.SpawnDamagePopup(this, (int) actualDamage);
 		Game.RecordDealtDamage(tower, actualDamage);
 		if (Health < 0) Health = 0;
-		healthBar.setValue((int) Health);
+		// healthBar.setValue((int) Health);
 	}
 
 	public void Spawn(List<GameTile> path) {
@@ -233,12 +233,12 @@ public class Enemy : GameBehavior {
 		positionTo = currentTile.transform.localPosition;
 	}
 	
-	public void swithSelection() {
+	public void switchSelection() {
 		selection.gameObject.SetActive(!selection.gameObject.activeSelf);
 	}
 	
 	public void showAim() {
-		aimAge = 0f;
+		if(aimAge > .2f) aimAge = 0f;
 		aim.gameObject.SetActive(true);
 	}
 	

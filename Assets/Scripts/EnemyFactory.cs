@@ -39,7 +39,7 @@ public class EnemyFactory : GameObjectFactory {
 		instance.Initialize(
 			config.scale.RandomValueInRange,
 			config.speed.RandomValueInRange,
-			(1 + wave) * 20,
+			40 * (wave + 1)  * (wave + 1),
 			wave
 			// config.armor.RandomValueInRange
 		);

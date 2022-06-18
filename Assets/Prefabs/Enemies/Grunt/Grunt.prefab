@@ -294,8 +294,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.6
+  m_Center: {x: -0.03, y: 0.45, z: 0.1}
 --- !u!1001 &2782739485125366624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -586,17 +586,22 @@ PrefabInstance:
     - target: {fileID: 7517051588003730254, guid: 110f9150cfb4ce046948f41ff2a27cd7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7517051588003730254, guid: 110f9150cfb4ce046948f41ff2a27cd7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8970178595857077803, guid: 110f9150cfb4ce046948f41ff2a27cd7,
         type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8970178595857077803, guid: 110f9150cfb4ce046948f41ff2a27cd7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 110f9150cfb4ce046948f41ff2a27cd7, type: 3}

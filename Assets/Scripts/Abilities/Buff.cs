@@ -9,4 +9,6 @@ public abstract class Buff : ScriptableObject {
     public int level { get; set; }
     
     public Sprite icon { get; set; }
+
+    public bool isRepeatable = false;
 }

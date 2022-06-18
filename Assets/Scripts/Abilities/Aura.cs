@@ -21,7 +21,7 @@ public class Aura : ScriptableObject {
         TargetPoint.FillBuffer(tower.transform.localPosition, 3.5f, Game.towerLayerMask);
         for (int i = 0; i < TargetPoint.BufferedCount; i++) {
             TargetPoint localTarget = TargetPoint.GetBuffered(i);
-            if(localTarget != null && localTarget.Tower.StatusEffects.All(effect => effect.name1 != buff.name1)) {                
+            if(localTarget != null && (buff.isRepeatable || localTarget.Tower.StatusEffects.All(effect => effect.name1 != buff.name1))) {                
                 localTarget.Tower.StatusEffects.Add(buff);
             }
         }

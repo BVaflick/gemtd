@@ -347,6 +347,7 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 2cb7b0e0f82aba44aa0b1b11c7f12ed0, type: 2}
   auras: []
+  swapEffect: {fileID: 0}
 --- !u!1 &6592435421381884172
 GameObject:
   m_ObjectHideFlags: 0

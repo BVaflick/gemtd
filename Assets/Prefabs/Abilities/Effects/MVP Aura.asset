@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec22e91d79e94ea785a85437a2a9098a, type: 3}
   m_Name: MVP Aura
   m_EditorClassIdentifier: 
+  isRepeatable: 1
