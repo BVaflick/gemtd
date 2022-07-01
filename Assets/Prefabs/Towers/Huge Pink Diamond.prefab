@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1860822609842299934}
   - component: {fileID: 1907529019987223778}
   - component: {fileID: 939269203232881526}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_cone (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 659706287738478498}
   - component: {fileID: 3723375661579461059}
   - component: {fileID: 7867472866890477995}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_spring1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 8769546212154038792}
   - component: {fileID: 8693305082276516584}
   - component: {fileID: 3249735501682015881}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_cone2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9036947740573815580}
   - component: {fileID: 5053132620058798575}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Huge Pink Diamond
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,9 +302,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 5
   selection: {fileID: 780780692417603840}
+  swapEffect: {fileID: 0}
   targetingRange: 4
   towerType: 51
-  combo: 2c0000000e00000030000000
+  combo: 2c0000000e00000032000000
   damage: 50
   turret: {fileID: 22765812930791765}
   newTowerCircle: {fileID: 0}
@@ -325,7 +326,7 @@ GameObject:
   - component: {fileID: 6763527767988964436}
   - component: {fileID: 9221457386092158925}
   - component: {fileID: 1949965125474262634}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_crystal2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,7 +407,7 @@ GameObject:
   - component: {fileID: 4779926411989414817}
   - component: {fileID: 2558732169160121510}
   - component: {fileID: 950528970536235244}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_spring3 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +586,7 @@ GameObject:
   - component: {fileID: 8991252950952177868}
   - component: {fileID: 8471203424849402176}
   - component: {fileID: 2953944007224047663}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_cone1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +667,7 @@ GameObject:
   - component: {fileID: 7473540033502217690}
   - component: {fileID: 1364834187359257928}
   - component: {fileID: 1114968401932700858}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_spring (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -747,7 +748,7 @@ GameObject:
   - component: {fileID: 8811867800060653029}
   - component: {fileID: 5318945278225390842}
   - component: {fileID: 1937967795685716877}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_cone3 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -828,7 +829,7 @@ GameObject:
   - component: {fileID: 3194157894805343014}
   - component: {fileID: 2026707931409715887}
   - component: {fileID: 1777009767765238832}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_spring2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -909,7 +910,7 @@ GameObject:
   - component: {fileID: 6015136963216991097}
   - component: {fileID: 4031962609815919535}
   - component: {fileID: 2503037351341680944}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_crystal3 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -990,7 +991,7 @@ GameObject:
   - component: {fileID: 2093101761310120641}
   - component: {fileID: 1549580611753728679}
   - component: {fileID: 5052711799693633740}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_mini_crystal1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1071,7 +1072,7 @@ GameObject:
   - component: {fileID: 22765812930791765}
   - component: {fileID: 1343617798520097283}
   - component: {fileID: 6769609276592818383}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: t4_lvl4_crystal (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1152,7 +1153,9 @@ GameObject:
   - component: {fileID: 2505115635759243538}
   - component: {fileID: 7306793272373872799}
   - component: {fileID: 1935045659306977278}
-  m_Layer: 0
+  - component: {fileID: 5899019377200510436}
+  - component: {fileID: 4328876909278923458}
+  m_Layer: 10
   m_Name: t4_lvl4_bot (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1222,3 +1225,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5899019377200510436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826833020424685113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef593472c8a8af439d1dd850c6eebef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &4328876909278923458
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826833020424685113}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0012995179
+  m_Center: {x: 0, y: 0, z: 0}

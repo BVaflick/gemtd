@@ -5,7 +5,7 @@ public class PopupText : GameBehavior {
 	
 	private Vector3 position;
 	
-	private Enemy enemy;
+	public Enemy enemy;
 
 	private Camera camera;
 	

@@ -10,12 +10,14 @@ public class Splash : EnemyBuff {
       for (int i = 0; i < TargetPoint.BufferedCount; i++) {
          TargetPoint localTarget = TargetPoint.GetBuffered(i);
          if (localTarget != enemy) {
-            localTarget.Enemy.ApplyDamage(tower,damage / 2f, false);
-            Explosion explosion = Game.SpawnExplosion(false);         
-            explosion.Initialize(tower, localTarget, this.GetType().Name + level, icon);         
-            localTarget.Enemy.VisualEffects.Add(explosion);
+            Enemy targetEnemy = localTarget.Enemy;
+            targetEnemy.ApplyDamage(tower,damage / 2f, false);
+            if (!targetEnemy.VisualEffects.Behaviors.Exists(effect => effect is Explosion)) {
+               Explosion explosion = Game.SpawnExplosion(false);         
+               explosion.Initialize(tower, localTarget, this.GetType().Name + level, icon);         
+               localTarget.Enemy.VisualEffects.Add(explosion);
+            }
          }
       }
    }
-
 }

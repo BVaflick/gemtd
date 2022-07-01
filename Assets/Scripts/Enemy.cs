@@ -242,17 +242,17 @@ public class Enemy : GameBehavior {
 		aim.gameObject.SetActive(true);
 	}
 	
-	void OnDrawGizmos() {
-		GUIStyle style = new GUIStyle();
-		style.normal.textColor = Color.white;
-		Handles.color = Color.red;
-		Vector3 position = transform.localPosition;
-		Handles.Label(position, "HP: " + Mathf.Ceil(Health), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "SP: " + speed + (additionalSpeed != 0 ? "" + additionalSpeed : ""), style);
-		position.z -= 0.3f;
-		Handles.Label(position, "Armor: " + armor + (additionalArmor != 0 ? "" + additionalArmor : ""), style);
-		position.z -= 0.3f;
-		// Handles.Label(position, "Effects: " + Effects.Count, style);
-	}
+	// void OnDrawGizmos() {
+	// 	GUIStyle style = new GUIStyle();
+	// 	style.normal.textColor = Color.white;
+	// 	Handles.color = Color.red;
+	// 	Vector3 position = transform.localPosition;
+	// 	Handles.Label(position, "HP: " + Mathf.Ceil(Health), style);
+	// 	position.z -= 0.3f;
+	// 	Handles.Label(position, "SP: " + speed + (additionalSpeed != 0 ? "" + additionalSpeed : ""), style);
+	// 	position.z -= 0.3f;
+	// 	Handles.Label(position, "Armor: " + armor + (additionalArmor != 0 ? "" + additionalArmor : ""), style);
+	// 	position.z -= 0.3f;
+	// 	// Handles.Label(position, "Effects: " + Effects.Count, style);
+	// }
 }

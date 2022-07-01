@@ -41,6 +41,6 @@ public class WarFactory : GameObjectFactory {
 
 	public void Reclaim (WarEntity entity) {
 		Debug.Assert(entity.OriginFactory == this, "Wrong factory reclaimed!");
-		Destroy(entity.gameObject, .1f);
+		Destroy(entity.gameObject);
 	}
 }

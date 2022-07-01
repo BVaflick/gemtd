@@ -32,8 +32,8 @@ public class Shell : WarEntity {
 				foreach (var debuff in debuffs) {
 					debuff.Modify(tower, target, damage);
 				}	
-				GameObject effectInstance = (GameObject) Instantiate(blastPatricals, transform.position, transform.rotation);
-				Destroy(effectInstance, 2f);
+				GameObject effectInstance = Instantiate(blastPatricals, transform.position, transform.rotation);
+				Destroy(effectInstance, .5f);
 				target.Enemy.ApplyDamage(tower, damage, true);
 				OriginFactory.Reclaim(this);
 				return false;

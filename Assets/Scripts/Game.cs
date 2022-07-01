@@ -50,6 +50,9 @@ public class Game : MonoBehaviour {
 	
 	[SerializeField]
 	RectTransform mazePanel = default;
+	
+	[SerializeField]
+	RectTransform flyingWarningPanel = default;
 
 	[SerializeField]
 	RectTransform wallConstructionPanel = default;
@@ -262,7 +265,11 @@ public class Game : MonoBehaviour {
 				enemiesLeft = (int) progress;
 				isBuildPhase = true;
 				availableBuilds = 5;
-				if (giftAvailable) board.ToggleGift(giftTile);
+				if (giftAvailable) {
+					giftAvailable = false;
+					board.ToggleGift(giftTile);
+					giftTile = null;
+				}
 			}
 		}
 
@@ -316,8 +323,9 @@ public class Game : MonoBehaviour {
 	}
 
 	private void initMazePanel() {
-		string path = "Assets/Resources/maze.txt";
-		StreamReader reader = new StreamReader(path); 
+		string path = "maze.txt";
+		using FileStream fileStream = File.Open(path, FileMode.OpenOrCreate);
+		StreamReader reader = new StreamReader(fileStream); 
 		String mazeString = reader.ReadToEnd();
 		for (var i = 0; i < mazeString.Length; i++) {
 			int x = i / boardSize.x;
@@ -628,8 +636,7 @@ public class Game : MonoBehaviour {
 		else {
 			dictionary[tower] += damage;
 		}
-
-		instance.dealtDamage = dictionary.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+		instance.dealtDamage = dictionary.OrderByDescending(x => x.Value).Take(10).ToDictionary(x => x.Key, x => x.Value);
 		instance.showTowerDamage();
 	}
 
@@ -645,26 +652,52 @@ public class Game : MonoBehaviour {
 		isSwaping = true;
 	}
 
-	public void buildSelected() {
+	public void buildSelected(bool ignoreFlyingWarning) {
 		if (isBuildPhase && availableBuilds == 0) {
-			chooseTower(board.GetTile(selectedStructures[0].transform.localPosition));
-			(selectedStructures[0] as Tower).switchNewTowerCircle();
-			deselectAndClose();
+			if(new [] {5, 15, 20}.Contains(wave) && giftTile == null && !ignoreFlyingWarning) {
+				toggleFlyingWaveWarning();
+			} else {
+				chooseTower(board.GetTile(selectedStructures[0].transform.localPosition));
+				(selectedStructures[0] as Tower).switchNewTowerCircle();
+				deselectAndClose();
+			}
 		}
 	}
 
-	public void combineSelected(bool two) {
+	public void confirmBuildSelected() {
+		buildSelected(true);
+		toggleFlyingWaveWarning();
+	}
+	
+	public void confirmCombineTwo() {
+		combineSelected(true, true);
+		toggleFlyingWaveWarning();
+	}
+	
+	public void confirmCombineFour() {
+		buildSelected(true);
+		toggleFlyingWaveWarning();
+	}
+
+	public void combineSelected(bool two, bool ignoreFlyingWarning) {
 		if (isBuildPhase && availableBuilds == 0) {
-			CombineSame(board.GetTile(selectedStructures[0].transform.localPosition), two);
-			deselectAndClose();
+			if(new [] {5, 15, 20}.Contains(wave) && giftTile == null && !ignoreFlyingWarning) {
+				toggleFlyingWaveWarning();
+			}
+			else {
+				CombineSame(board.GetTile(selectedStructures[0].transform.localPosition), two);
+				deselectAndClose();
+			}
 		}
 	}
 
 	public void combineOneshotSelected(Tower combo) {
-		// if (availableBuilds == 0) {
-		CombineOneshot(board.GetTile(selectedStructures[0].transform.localPosition), combo);
-		deselectAndClose();
-		// }
+		if(new [] {5, 15, 20}.Contains(wave) && giftTile == null) {
+			toggleFlyingWaveWarning();
+		} else {
+			CombineOneshot(board.GetTile(selectedStructures[0].transform.localPosition), combo);
+			deselectAndClose();
+		}
 	}
 
 	public void removeSelectedWall() {
@@ -960,18 +993,18 @@ public class Game : MonoBehaviour {
 
 				if (isBuildPhase && availableBuilds == 0) {
 					RectTransform buildButton = Instantiate(BuildButtonPrefab, panel, true);
-					buildButton.GetComponent<Button>().onClick.AddListener(buildSelected);
+					buildButton.GetComponent<Button>().onClick.AddListener(() => buildSelected(false));
 					if (newTowers.FindAll(tower =>
 						(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 2) {
 						RectTransform upgrade1Button = Instantiate(Upgrade1ButtonPrefab);
-						upgrade1Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(true));
+						upgrade1Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(true, false));
 						upgrade1Button.SetParent(panel);
 					}
 
 					if (newTowers.FindAll(tower =>
 						(tower.Content as Tower).TowerType == selectedTower.TowerType).Count >= 4) {
 						RectTransform upgrade2Button = Instantiate(Upgrade2ButtonPrefab, panel, true);
-						upgrade2Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(false));
+						upgrade2Button.GetComponent<Button>().onClick.AddListener(() => combineSelected(false, false));
 					}
 				}
 
@@ -1043,6 +1076,10 @@ public class Game : MonoBehaviour {
 	public void toggleTowerRecipes() {
 		if (recipesPanel.gameObject.activeSelf) closeTowerRecipes();
 		else showTowerRecipes();
+	}
+
+	public void toggleFlyingWaveWarning() {
+		flyingWarningPanel.gameObject.SetActive(!flyingWarningPanel.gameObject.activeSelf);
 	}
 
 	void showTowerRecipes() {
@@ -1124,113 +1161,113 @@ public class Game : MonoBehaviour {
 		return "<color=green>" + text + "</color>";
 	}
 
-	void OnDrawGizmos() {
-		GUIStyle style = new GUIStyle();
-		style.normal.textColor = Color.white;
-		Vector3 position = new Vector3(-15f, 0f, 8f);
-		Handles.Label(position, "Wave: " + wave, style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Enemies: " + enemies.Count, style);
-		position.z -= 0.4f;
-		Handles.Label(position, "HP: " + playerHealth, style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Level: " + level + "+" + experience + "%", style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Progress: " + (int) progress + "+" + (progress - (int) progress) * 100 + "%", style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Build phase: " + isBuildPhase, style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Builds: " + availableBuilds, style);
-		position.z -= 0.4f;
-		Handles.Label(position,
-			"Towers built: " + string.Join(" ", newTowers.Select(item => $"{item.Content.name.Split('(')[0]}")), style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Wave is in progress: " + activeScenario.WaveIsInProgress(), style);
-		position.z -= 0.4f;
-		Handles.Label(position, "Scenario is in progress: " + scenarioIsInProgress, style);
-		position.z -= 0.4f;
-		if (selectedStructures.Count == 1) {
-			Tower selectedTower = selectedStructures[0] as Tower;
-			position = selectedTower.transform.localPosition;
-			
-			Handles.color = new Color(85, 215, 55, 0.01f);
-			Handles.DrawSolidDisc(position, transform.up, selectedTower.Range);
-			Handles.color = new Color(85, 215, 55, 1f);
-			Handles.DrawWireDisc(position, transform.up, selectedTower.Range);
-		}
-	}
+	// void OnDrawGizmos() {
+	// 	GUIStyle style = new GUIStyle();
+	// 	style.normal.textColor = Color.white;
+	// 	Vector3 position = new Vector3(-15f, 0f, 8f);
+	// 	Handles.Label(position, "Wave: " + wave, style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Enemies: " + enemies.Count, style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "HP: " + playerHealth, style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Level: " + level + "+" + experience + "%", style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Progress: " + (int) progress + "+" + (progress - (int) progress) * 100 + "%", style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Build phase: " + isBuildPhase, style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Builds: " + availableBuilds, style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position,
+	// 		"Towers built: " + string.Join(" ", newTowers.Select(item => $"{item.Content.name.Split('(')[0]}")), style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Wave is in progress: " + activeScenario.WaveIsInProgress(), style);
+	// 	position.z -= 0.4f;
+	// 	Handles.Label(position, "Scenario is in progress: " + scenarioIsInProgress, style);
+	// 	position.z -= 0.4f;
+	// 	if (selectedStructures.Count == 1) {
+	// 		Tower selectedTower = selectedStructures[0] as Tower;
+	// 		position = selectedTower.transform.localPosition;
+	// 		
+	// 		Handles.color = new Color(85, 215, 55, 0.01f);
+	// 		Handles.DrawSolidDisc(position, transform.up, selectedTower.Range);
+	// 		Handles.color = new Color(85, 215, 55, 1f);
+	// 		Handles.DrawWireDisc(position, transform.up, selectedTower.Range);
+	// 	}
+	// }
 
-	void OnGUI() {
-		// if (isDragSelection) {
-		if (selectedStructures.Count > 0) {
-			Vector3 position = selectedStructures[0].transform.position;
-			position.y += 0.01f;
-			Handles.color = new Color(1, 1, 1, 0.05f);
-			Handles.DrawSolidDisc(position, transform.up, 2f);
-		}
-		// }
-
-		GizmoExtensions.showPath = GUI.Toggle(new Rect(220, 805, 100, 20), GizmoExtensions.showPath, "Show paths");
-		GizmoExtensions.showTowerRange = GUI.Toggle(new Rect(220, 825, 150, 20), GizmoExtensions.showTowerRange,
-			"Show attack range");
-		if (GUI.Button(new Rect(220, 785, 100, 20), GizmoExtensions.buildButtonText))
-			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-		if (GizmoExtensions.showTowerTypes) {
-			if (GUI.Button(new Rect(220, 605, 100, 20), "Random")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Random";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 625, 100, 20), "Amethyst")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Amethyst";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 645, 100, 20), "Aquamarine")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Aquamarine";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 665, 100, 20), "Diamond")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Diamond";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 685, 100, 20), "Emerald")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Emerald";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 705, 100, 20), "Opal")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Opal";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 725, 100, 20), "Ruby")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Ruby";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 745, 100, 20), "Sapphire")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Sapphire";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-
-			if (GUI.Button(new Rect(220, 765, 100, 20), "Topaz")) {
-				isBuilding = true;
-				GizmoExtensions.buildButtonText = "Topaz";
-				GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
-			}
-		}
-	}
+	// void OnGUI() {
+	// 	// if (isDragSelection) {
+	// 	if (selectedStructures.Count > 0) {
+	// 		Vector3 position = selectedStructures[0].transform.position;
+	// 		position.y += 0.01f;
+	// 		Handles.color = new Color(1, 1, 1, 0.05f);
+	// 		Handles.DrawSolidDisc(position, transform.up, 2f);
+	// 	}
+	// 	// }
+	//
+	// 	GizmoExtensions.showPath = GUI.Toggle(new Rect(220, 805, 100, 20), GizmoExtensions.showPath, "Show paths");
+	// 	GizmoExtensions.showTowerRange = GUI.Toggle(new Rect(220, 825, 150, 20), GizmoExtensions.showTowerRange,
+	// 		"Show attack range");
+	// 	if (GUI.Button(new Rect(220, 785, 100, 20), GizmoExtensions.buildButtonText))
+	// 		GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 	if (GizmoExtensions.showTowerTypes) {
+	// 		if (GUI.Button(new Rect(220, 605, 100, 20), "Random")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Random";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 625, 100, 20), "Amethyst")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Amethyst";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 645, 100, 20), "Aquamarine")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Aquamarine";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 665, 100, 20), "Diamond")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Diamond";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 685, 100, 20), "Emerald")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Emerald";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 705, 100, 20), "Opal")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Opal";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 725, 100, 20), "Ruby")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Ruby";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 745, 100, 20), "Sapphire")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Sapphire";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	//
+	// 		if (GUI.Button(new Rect(220, 765, 100, 20), "Topaz")) {
+	// 			isBuilding = true;
+	// 			GizmoExtensions.buildButtonText = "Topaz";
+	// 			GizmoExtensions.showTowerTypes = !GizmoExtensions.showTowerTypes;
+	// 		}
+	// 	}
+	// }
 
 	void RemoveWall(GameTile tile) {
 		// bool isTower = newTowers.Find(t => t == tile);
@@ -1448,6 +1485,7 @@ public class Game : MonoBehaviour {
 	}
 
 	public static void SpawnDamagePopup(Enemy enemy, int damage) {
+		if (instance.nonEnemies.Behaviors.FindAll(behavior => behavior is PopupText p && p.enemy == enemy).Count >= 3) return;
 		if(damage < 1) damage = 1;
 		PopupText popup = Instantiate(instance.damagePopupPrefab, instance.additionalPanel);
 		popup.Initialize(enemy, damage);
