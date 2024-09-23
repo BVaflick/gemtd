@@ -603,6 +603,15 @@ public class Game : MonoBehaviour {
 		enemies.Clear();
 		nonEnemies.Clear();
 		board.Clear();
+		playerHealth = 100;
+		level = 1;
+		wave = 1;
+		enemiesLeft = 10;
+		kills = 0;
+		deaths = 0;
+		gold = 0;
+		progress = 10.5f;
+		experience = 0;
 	}
 
 	public static void EnemyReachedFlag(int index, int damage) {

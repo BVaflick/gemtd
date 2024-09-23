@@ -112,9 +112,9 @@ public class Enemy : GameBehavior {
 		if (Health <= 0f) {
 			Vector3 position = transform.position;
 			position.y += 0.5f;
-			GameObject effectInstance = Instantiate(blastPatricals, position, transform.rotation);
+			// GameObject effectInstance = Instantiate(blastPatricals, position, transform.rotation);
 			Game.EnemyDied(5);
-			Destroy(effectInstance, 2f);
+			// Destroy(effectInstance, 2f);
 			Recycle();
 			return false;
 		}
@@ -151,7 +151,7 @@ public class Enemy : GameBehavior {
 		FullHealth = health;
 		VisualEffects = new GameBehaviorCollection();
 		StatusEffects = new List<Buff>();
-		blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
+		// blastPatricals.transform.GetComponent<ParticleSystemRenderer>().material = material;
 		animator.PlayIntro();
 		
 		// healthBar.setMaxValue((int)health);
@@ -189,7 +189,7 @@ public class Enemy : GameBehavior {
 
 		float actualDamage = damage * modifier;
 		Health -= actualDamage;
-		Game.SpawnDamagePopup(this, (int) actualDamage);
+		// Game.SpawnDamagePopup(this, (int) actualDamage); //FIXME: кружится голова
 		Game.RecordDealtDamage(tower, actualDamage);
 		if (Health < 0) Health = 0;
 		// healthBar.setValue((int) Health);
