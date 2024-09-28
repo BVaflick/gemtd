@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SpeedAura3
   m_EditorClassIdentifier: 
   level: 3
-  buff: {fileID: 11400000, guid: d79498c9251a52445b30ee3d30a368c2, type: 2}
+  buff: {fileID: 11400000, guid: e952259d5375b49448d6b516006964ba, type: 2}
   icon: {fileID: 21300000, guid: 2c0c10835228e7c47b6a366f30f6c963, type: 3}
